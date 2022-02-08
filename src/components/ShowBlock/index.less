@@ -1,0 +1,29 @@
+.block {
+  display: flex;
+  flex-direction: column;
+
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
+
+  .img {
+    height: 300px;
+    width: 300px;
+    border: 1px solid #188fff48;
+  }
+
+  .info {
+    .title {
+      font-size: 32px;
+      font-weight: 500px;
+      color: #188fffc4;
+
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      font-size: 16px;
+      color: #188fff6e;
+    }
+  }
+}

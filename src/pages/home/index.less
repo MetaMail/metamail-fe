@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  min-height: calc(100vh - 64px); // 64px是header的高
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 64px;
+    .logo {
+      height: 48px;
+      width: 48px;
+    }
+
+    .brand {
+      margin-left: 8px;
+      font-size: 28px;
+      font-weight: 700px;
+      color: #fff;
+    }
+  }
+
+  .right {
+    color: #fff;
+  }
+}
