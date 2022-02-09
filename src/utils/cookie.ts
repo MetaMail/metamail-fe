@@ -1,6 +1,6 @@
 import { getCookie, setCookie, Types, removeCookie } from 'typescript-cookie';
 
-export const TokenCookieName = 'metamail-token';
+export const TokenCookieName = 'token';
 
 const baseConfigOptions = {
   domain: 'metamail.ink',

@@ -1,0 +1,41 @@
+@borderLine: 1px solid #eee;
+
+.itemWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  border-top: @borderLine;
+  border-bottom: @borderLine;
+
+  height: 40px;
+
+  font-size: 14px;
+  line-height: 20px;
+
+  .left {
+    max-width: 700px;
+    .from {
+      margin-right: 20px;
+    }
+
+    .subject {
+      max-width: 300px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .right {
+    .date {
+      font-size: 12px;
+    }
+  }
+
+  .read {
+    font-weight: 700;
+  }
+}

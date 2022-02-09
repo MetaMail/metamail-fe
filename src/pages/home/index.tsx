@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
-import { Layout, Menu } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Alert, Layout, List, Menu, notification } from 'antd';
 import styles from './index.less';
 import {
   AppstoreOutlined,
@@ -10,6 +9,7 @@ import {
 import logo from '../../assets/logo/favicon-96x96.png';
 import { MenuMap } from './constants';
 import { getMailList } from '@/services';
+import MailListItem from '@/components/MailListItem';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -17,7 +17,37 @@ const { SubMenu } = Menu;
 const SiderWidth = 180;
 
 export default function Home() {
-  const [state, setState] = useState({ value: null });
+  const [list, setList] = useState();
+  const [readStatus, setReadStatus] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const fetchMailList = async () => {
+    setLoading(true);
+    try {
+      const { data } = await getMailList({
+        filter: {
+          mailbox: 0,
+          read: readStatus,
+          meta_type: 0,
+        },
+      });
+
+      setList(data ?? []);
+    } catch {
+      notification.error({
+        message: 'Network Error',
+        description: 'Can not fetch mail list for now.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClickMail = async () => {};
+
+  useEffect(() => {
+    fetchMailList();
+  }, [readStatus]);
 
   return (
     <Layout>
@@ -27,7 +57,7 @@ export default function Home() {
           <span className={styles.brand}>MetaMail</span>
         </div>
         <div className={styles.right}>
-          <div>test</div>
+          <div>address ?? '-''</div>
         </div>
       </Header>
       <Layout className={styles.container}>
@@ -38,12 +68,10 @@ export default function Home() {
             defaultOpenKeys={[MenuMap.inbox.key, MenuMap.contacts.key]}
             mode="inline"
             onClick={(event) => {
-              console.log(event, '===test');
-
               if (event.key === MenuMap.read.key) {
-                getMailList({
-                  read_status: 1,
-                });
+                setReadStatus(1);
+              } else if (event.key === MenuMap.unread.key) {
+                setReadStatus(0);
               }
             }}
           >
@@ -76,7 +104,39 @@ export default function Home() {
             </Menu.Item>
           </Menu>
         </Sider>
+
+        <Content>
+          <div>
+            <List
+              size="large"
+              header={<div>工具栏</div>}
+              footer={<div>分页器</div>}
+              bordered
+              dataSource={list}
+              loading={loading}
+              renderItem={(item) => (
+                <MailListItem
+                  from={item.mail_from}
+                  subject={item.subject}
+                  date={item.mail_date}
+                  isRead={item.read === 1}
+                  onClick={handleClickMail}
+                />
+              )}
+            />
+          </div>
+        </Content>
       </Layout>
     </Layout>
   );
 }
+
+// function mapStateToProps(state: IUserStateProps) {
+//   const { address } = state;
+//   return {
+//     address,
+//   };
+// }
+
+// // export default Products;
+// export default connect(mapStateToProps)(Home);

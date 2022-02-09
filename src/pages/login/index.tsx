@@ -71,12 +71,10 @@ export default function Login() {
         signedMessage,
       }).then((res) => {
         const {
-          data: { token, user },
+          data: { user },
         } = res ?? {};
 
-        if (token && token.length > 0) {
-          setCookieByName(TokenCookieName, token);
-        }
+        console.log('TODO: save user info to store', user);
       });
     }
   };

@@ -1,11 +1,11 @@
 import { ReduxSagaEffects, ReduxAction, DvaModel } from '@/interfaces';
 import { getRandomStrToSign } from '@/services';
 
-interface IUserStateProps {
+export interface IUserStateProps {
   address?: string;
   ensName?: string;
   randomToken?: string;
-  jwtToken?: string;
+  accountStatus?: number;
 }
 
 export default {
@@ -27,15 +27,6 @@ export default {
       { payload: tokenForRandom }: { payload: string },
     ) {
       state.randomToken = tokenForRandom;
-
-      return state;
-    },
-
-    setJwtToken(
-      state: IUserStateProps,
-      { payload: token }: { payload: string },
-    ) {
-      state.jwtToken = token;
 
       return state;
     },
