@@ -75,6 +75,8 @@ export default function Login() {
         } = res ?? {};
 
         console.log('TODO: save user info to store', user);
+
+        history.push('/home');
       });
     }
   };
