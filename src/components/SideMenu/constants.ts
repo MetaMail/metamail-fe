@@ -1,4 +1,4 @@
-import { SiderFilterMap } from './interfaces';
+import { SiderFilterMap } from '../../pages/home/interfaces';
 
 export const MenuItems = {
   mailbox: {

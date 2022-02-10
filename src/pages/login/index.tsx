@@ -33,7 +33,7 @@ export default function Login() {
 
       setUserAddress(Array.isArray(newAccounts) ? newAccounts[0] : newAccounts);
     } catch (error) {
-      console.error(error);
+      console.error('Failed connect to MetaMask, see more: ', error);
     } finally {
       setIsConnectModalVisible(false);
     }

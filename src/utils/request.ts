@@ -42,6 +42,19 @@ const request = (url: string, config?: Record<string, string>) => {
 
       if (res && (res.status === 200 || res.status === 304)) return res.data;
     },
+
+    patch: async (params: requestParams = {}, config: requestParams = {}) => {
+      let res;
+      try {
+        res = await ajax.patch(url, params, {
+          ...(config ? { ...config } : {}),
+        });
+      } catch (e) {
+        console.error('Network went wrong, ', e);
+      }
+
+      if (res && (res.status === 200 || res.status === 304)) return res.data;
+    },
   };
 };
 
