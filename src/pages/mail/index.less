@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .mail {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 24px;
+
+    .subject {
+      font-size: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #585858;
+      .label {
+        color: #585858;
+      }
+
+      .info {
+        font-weight: 700;
+      }
+    }
+
+    .from {
+      font-size: 18px;
+      border-bottom: 1px solid #585858;
+      padding-top: 12px;
+      padding-bottom: 8px;
+
+      .label {
+        color: #585858;
+      }
+
+      .info {
+        font-weight: 400;
+      }
+    }
+
+    .content {
+      display: flex;
+      flex: 1;
+      margin-top: 24px;
+      height: fit-content;
+      padding: 20px;
+      background: #ddd;
+    }
+  }
+}

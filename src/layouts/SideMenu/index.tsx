@@ -1,7 +1,4 @@
-import {
-  ContactSubMenuItems,
-  MenuItems,
-} from '@/components/SideMenu/constants';
+import { ContactSubMenuItems, MenuItems } from '@/layouts/SideMenu/constants';
 import { FilterTypeEn, SiderFilterMap } from '@/pages/home/interfaces';
 import { Layout, Menu } from 'antd';
 import {

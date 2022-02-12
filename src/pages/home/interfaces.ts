@@ -24,8 +24,8 @@ export enum ReadStatusTypeEn {
 
 export enum MetaMailTypeEn {
   Plain = 0,
-  Signed,
-  Encrypted,
+  Signed = 1,
+  Encrypted = 2,
 }
 
 export enum FilterTypeEn {
@@ -65,16 +65,13 @@ export interface IMailItem {
   mail_bcc: string[];
   mail_cc: string[];
   mail_date: string;
-  mail_from: {
-    address: string;
-    name?: string;
-  };
+  mail_from: IPersonItem;
   mail_reference: string[];
   mail_to: string[];
   mailbox: number;
   mark: number;
   message_id: string;
-  meta_type: number;
+  meta_type: MetaMailTypeEn;
   metamail_headers: any;
   read: number;
   reply_to?: string;
@@ -83,7 +80,7 @@ export interface IMailItem {
 
 export interface IMailContentItem {
   message_id: string;
-  meta_type: 0;
+  meta_type: MetaMailTypeEn;
   metamail_headers: any;
   subject: string;
   mail_from: IPersonItem;
@@ -95,7 +92,7 @@ export interface IMailContentItem {
   reply_to?: IPersonItem;
   mail_reference: [];
   digest: string;
-  part_txt: string;
+  part_text: string;
   part_html?: string;
   attachments: {
     part_id_0: {

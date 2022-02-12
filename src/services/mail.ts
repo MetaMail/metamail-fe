@@ -1,3 +1,4 @@
+import { MetaMailTypeEn } from '@/pages/home/interfaces';
 import request from '../utils/request';
 
 const APIs = {
@@ -6,8 +7,10 @@ const APIs = {
   sendMail: '/mails/{mail_id}/send', // 发送邮件
 };
 
-export function createDraft() {
-  return request(APIs.createDraft).patch();
+export function createDraft(type: MetaMailTypeEn) {
+  return request(APIs.createDraft).post({
+    meta_type: type,
+  });
 }
 
 export function updateMail() {

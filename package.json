@@ -27,6 +27,7 @@
     "axios": "^0.25.0",
     "classnames": "^2.3.1",
     "ethers": "^5.5.4",
+    "html-react-parser": "^1.4.8",
     "moment": "^2.29.1",
     "react": "17.x",
     "react-dom": "17.x",

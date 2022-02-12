@@ -1,5 +1,5 @@
 export default {
-  'primary-color': '#1890ff',
+  'primary-color': '#0083C4',
   // Sider背景色
   'layout-sider-background': '#4da9ff',
   // Header

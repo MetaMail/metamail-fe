@@ -35,9 +35,7 @@ export default function MailListItem({
         </Popover>
         <span className={styles.subject}>{subject}</span>
       </div>
-      <div className={styles.right}>
-        {moment(date).format('YYYY/MM/DD HH:mm:ss')}
-      </div>
+      <div className={styles.right}>{moment(date).format('YYYY/MM/DD')}</div>
     </div>
   );
 }
