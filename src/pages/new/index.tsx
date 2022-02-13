@@ -58,7 +58,7 @@ export default forwardRef(function NewModal(
   }, [reactQuillRef]);
 
   const handleSend = async () => {
-    if (!draftIdRef.current || !quillRef.current.getHTML) return;
+    if (!draftIdRef.current) return;
 
     try {
       handleSave();
@@ -84,11 +84,17 @@ export default forwardRef(function NewModal(
   const handleSave = async () => {
     if (!draftIdRef.current) return;
 
-    if (!quillRef.current?.getHTML) {
+    if (
+      !quillRef.current ||
+      !quillRef.current?.getHTML ||
+      !quillRef.current?.getText
+    ) {
       notification.error({
         message: 'ERROR',
         description: 'Failed to get message content',
       });
+
+      return;
     }
 
     try {
@@ -107,6 +113,7 @@ export default forwardRef(function NewModal(
           subject: subject ?? '(No Subject)',
           mail_to: [receiver],
           part_html: quillRef.current.getHTML(),
+          part_text: quillRef.current.getText(),
         })) ?? {};
 
       if (data?.message_id !== draftIdRef?.current) {

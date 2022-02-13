@@ -32,7 +32,7 @@ export default function Login() {
   }, []);
 
   const handleConnectMetaMask = async () => {
-    if (hasMetaMask) {
+    if (!hasMetaMask) {
       notification.warn({
         message: 'No MetaMask detected',
         description: (
