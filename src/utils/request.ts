@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCookieByName, TokenCookieName } from './cookie';
 import { mergeUrlWithParams } from './url';
 
-const BASE_URL = 'http://api-metamail.us-west-2.elasticbeanstalk.com/';
+const BASE_URL = 'https://api.metamail.ink/';
 
 const ajax = axios.create({
   baseURL: BASE_URL,

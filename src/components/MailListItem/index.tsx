@@ -27,7 +27,7 @@ export default function MailListItem({
           title={null}
           content={
             <div>
-              {from?.name} {'<' + from?.address ?? '' + '>'}
+              {from?.name} {'<' + (from?.address ?? '') + '>'}
             </div>
           }
         >

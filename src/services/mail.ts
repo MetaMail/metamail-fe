@@ -1,4 +1,4 @@
-import { MetaMailTypeEn } from '@/pages/home/interfaces';
+import { IPersonItem, MetaMailTypeEn } from '@/pages/home/interfaces';
 import request from '../utils/request';
 
 const APIs = {
@@ -13,10 +13,25 @@ export function createDraft(type: MetaMailTypeEn) {
   });
 }
 
-export function updateMail() {
-  return request(APIs.updateMail).patch();
+interface IMailUpdateParams {
+  subject: string;
+  mail_from?: IPersonItem;
+  mail_to: IPersonItem[];
+  mail_cc?: IPersonItem[];
+  mail_bcc?: IPersonItem[];
+  in_reply_to?: string;
+  part_text?: string;
+  part_html?: string;
 }
 
-export function sendMail() {
-  return request(APIs.sendMail).post();
+export function updateMail(mailId: string, params: IMailUpdateParams) {
+  return request(
+    APIs.updateMail.replace('{mail_id}', window.btoa(mailId)),
+  ).patch(params);
+}
+
+export function sendMail(mailId: string) {
+  return request(
+    APIs.sendMail.replace('{mail_id}', window.btoa(mailId)),
+  ).post();
 }

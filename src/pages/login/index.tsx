@@ -1,4 +1,4 @@
-import { Button, Modal } from 'antd';
+import { Button, Modal, notification } from 'antd';
 import { useState, useEffect } from 'react';
 import logo from '../../assets/logo/favicon-196x196.png';
 import MetaMaskOnboarding from '@metamask/onboarding';
@@ -7,19 +7,45 @@ import styles from './index.less';
 import ShowBlock from '@/components/ShowBlock';
 import { getJwtToken, getRandomStrToSign } from '@/services';
 import LinkElement from '@/components/LinkElement';
-import {
-  getCookieByName,
-  setCookieByName,
-  TokenCookieName,
-} from '@/utils/cookie';
+import { getCookieByName, TokenCookieName } from '@/utils/cookie';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
 export default function Login() {
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
   const [userAddress, setUserAddress] = useState<string>();
+  const [hasMetaMask, setHasMetaMask] = useState(false);
+
+  const getMetaMask = async () => {
+    const provider = await detectEthereumProvider();
+
+    if (provider) {
+      setHasMetaMask(true);
+    } else {
+      setHasMetaMask(false);
+    }
+  };
+
+  useEffect(() => {
+    getMetaMask();
+  }, []);
 
   const handleConnectMetaMask = async () => {
+    if (hasMetaMask) {
+      notification.warn({
+        message: 'No MetaMask detected',
+        description: (
+          <div>
+            It seems like you hasn't install MetaMask, please{' '}
+            <a href="https://metamask.io/download/">install it</a> first.
+          </div>
+        ),
+      });
+
+      return;
+    }
+
     try {
       // @ts-ignore
       if (!ethereum) {
@@ -32,8 +58,11 @@ export default function Login() {
       });
 
       setUserAddress(Array.isArray(newAccounts) ? newAccounts[0] : newAccounts);
-    } catch (error) {
-      console.error('Failed connect to MetaMask, see more: ', error);
+    } catch (error: any) {
+      notification.error({
+        message: 'Failed connect to MetaMask',
+        description: '' + error?.message,
+      });
     } finally {
       setIsConnectModalVisible(false);
     }
