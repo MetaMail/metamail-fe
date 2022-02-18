@@ -1,0 +1,47 @@
+.sider {
+  display: flex;
+  flex-direction: column;
+
+  .createWrapper {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-self: center;
+    position: relative;
+
+    .btn {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      text-align: center;
+      height: 40px;
+      width: 80px;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 14px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .plain {
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+      background: #575757;
+    }
+
+    .encrypted {
+      background: #6fb1ff;
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
+    }
+
+    .icon {
+      position: absolute;
+      width: 20px;
+      height: 24px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}

@@ -1,15 +1,19 @@
 import MailListItem from '@/components/MailListItem';
-import { getMailDetailByID, getMailList } from '@/services';
 import { List, notification } from 'antd';
 import { useState, useEffect } from 'react';
 import { FilterTypeEn, IMailItem, ReadStatusTypeEn } from '../home/interfaces';
+import { createDraft, getMailList } from '@/services';
 
 interface IMailListProps {
   filter: FilterTypeEn;
   onClickMailItem: (id: string) => void;
 }
 
-export default function MailList({ filter, onClickMailItem }: IMailListProps) {
+export default function MailList(props: any) {
+  const {
+    location: { query },
+    history,
+  } = props;
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>();
 
@@ -17,7 +21,7 @@ export default function MailList({ filter, onClickMailItem }: IMailListProps) {
     setLoading(true);
     try {
       const { data } = await getMailList({
-        filter,
+        filter: Number(query?.filter) ?? 0,
       });
 
       setList(data ?? []);
@@ -33,7 +37,27 @@ export default function MailList({ filter, onClickMailItem }: IMailListProps) {
 
   useEffect(() => {
     fetchMailList();
-  }, [filter]);
+  }, [query]);
+
+  const handleClickNewMail = async (type = 0) => {
+    try {
+      const { data } = await createDraft(type);
+
+      if (data && data?.message_id) {
+        history.push({
+          pathname: '/home/new',
+          query: {
+            id: 'test',
+          },
+        });
+      }
+    } catch {
+      notification.error({
+        message: 'Network Error',
+        description: 'Can NOT create a new e-mail for now.',
+      });
+    }
+  };
 
   return (
     <div>
@@ -54,7 +78,7 @@ export default function MailList({ filter, onClickMailItem }: IMailListProps) {
               subject={item.subject}
               date={item.mail_date}
               isRead={item.read === ReadStatusTypeEn.read}
-              onClick={() => onClickMailItem(item?.message_id)}
+              onClick={handleClickNewMail}
             />
           )}
         />

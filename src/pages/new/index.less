@@ -1,6 +1,18 @@
 .container {
+  padding: 20px;
   input {
     margin-bottom: 8px;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    &:not(:first-child) {
+      margin-right: 8px;
+    }
   }
 
   .footer {

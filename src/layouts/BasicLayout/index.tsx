@@ -1,11 +1,21 @@
 import { Layout, Menu, List } from 'antd';
 import styles from './index.less';
 import SideMenu from '@/layouts/SideMenu';
-import logo from '../../assets/logo/favicon-96x96.png';
+import logo from '@/assets/logo/logo.svg';
+
+import { ReactChild, ReactFragment, ReactPortal } from 'react';
 
 const { Header, Content } = Layout;
 
-export default function BasicLayout() {
+export default function BasicLayout(props: {
+  children:
+    | boolean
+    | ReactChild
+    | ReactFragment
+    | ReactPortal
+    | null
+    | undefined;
+}) {
   return (
     <div>
       <Layout>
@@ -26,7 +36,7 @@ export default function BasicLayout() {
             }}
           />
 
-          <Content>{/* {render } */}</Content>
+          <Content>{props.children}</Content>
         </Layout>
       </Layout>
     </div>

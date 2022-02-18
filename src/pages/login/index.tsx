@@ -1,6 +1,6 @@
 import { Button, Modal, notification } from 'antd';
 import { useState, useEffect } from 'react';
-import logo from '../../assets/logo/favicon-196x196.png';
+import logo from '@/assets/logo/logo.svg';
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { history } from 'umi';
 import styles from './index.less';
