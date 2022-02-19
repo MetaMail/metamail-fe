@@ -52,19 +52,10 @@ export default function Home(props: {
           />
 
           <Content style={{ backgroundColor: '#fff' }}>
-            {props.children} {console.log(props.children)}
+            {props.children}
           </Content>
         </Layout>
       </Layout>
-
-      <Button
-        className={styles.composeBtn}
-        onClick={() => {
-          history.push('/home/new');
-        }}
-      >
-        New
-      </Button>
     </div>
   );
 }

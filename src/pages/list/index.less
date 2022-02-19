@@ -1,0 +1,55 @@
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 20px 10px;
+
+    .left {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .right {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .pageIndicator {
+        font-family: Rowdies;
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 17px;
+        text-align: center;
+        color: #575757;
+        margin-right: 56px;
+      }
+
+      .pageController {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 25px;
+
+        img {
+          width: 30px !important;
+          height: 30px !important;
+        }
+      }
+    }
+  }
+
+  .list {
+  }
+  .footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}

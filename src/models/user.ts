@@ -1,47 +1,38 @@
 import { ReduxSagaEffects, ReduxAction, DvaModel } from '@/interfaces';
 import { getRandomStrToSign } from '@/services';
 
+interface IUnreadCount {
+  unread: number;
+  total: number;
+}
 export interface IUserStateProps {
   address?: string;
   ensName?: string;
   randomToken?: string;
   accountStatus?: number;
+  unreadCount?: IUnreadCount;
 }
 
 export default {
   namespace: 'user',
   state: {},
   reducers: {
-    setAddress(
+    saveUnreadCount(
       state: IUserStateProps,
-      { payload: newAddress }: { payload: string },
+      { payload: unreadCount }: { payload: IUnreadCount },
     ) {
       return {
         ...state,
-        address: newAddress,
+        unreadCount,
       };
-    },
-
-    setRandom(
-      state: IUserStateProps,
-      { payload: tokenForRandom }: { payload: string },
-    ) {
-      state.randomToken = tokenForRandom;
-
-      return state;
     },
   },
 
   effects: {
-    *getRandomStrToSign(
-      { payload }: ReduxAction,
-      { call, put }: ReduxSagaEffects,
-    ) {
-      const { data } = yield call(getRandomStrToSign);
-      const { randomStr, signMethod, tokenForRandom } = data;
+    *setUnreadCount({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
-        type: 'save',
-        payload: { data },
+        type: 'saveUnreadCount',
+        payload,
       });
     },
   },

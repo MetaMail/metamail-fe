@@ -11,7 +11,7 @@ export function getMailDetailByID(id: string) {
 
 export function getMailList(params: Record<string, any>) {
   return request(APIs.getMailList).post({
-    limit: 10,
+    limit: 20,
     ...params,
   });
 }

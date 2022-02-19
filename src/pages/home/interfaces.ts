@@ -42,18 +42,6 @@ export enum FilterTypeEn {
   Unread,
 }
 
-export const SiderFilterMap = {
-  [FilterTypeEn.Inbox]: 'Inbox',
-  [FilterTypeEn.Encrypted]: 'Encrypted',
-  [FilterTypeEn.Read]: 'Read',
-  [FilterTypeEn.Unread]: 'Unread',
-  [FilterTypeEn.Starred]: 'Starred',
-  [FilterTypeEn.Sent]: 'Sent',
-  [FilterTypeEn.Trash]: 'Trash',
-  [FilterTypeEn.Draft]: 'Drafts',
-  [FilterTypeEn.Spam]: 'Spam',
-};
-
 export interface IPersonItem {
   address: string;
   name?: string;

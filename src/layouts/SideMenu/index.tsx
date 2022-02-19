@@ -1,9 +1,10 @@
-import { ContactSubMenuItems, MenuItems } from '@/layouts/SideMenu/constants';
 import {
-  FilterTypeEn,
-  MetaMailTypeEn,
+  ContactSubMenuItems,
+  MailMenuItems,
+  MenuItems,
   SiderFilterMap,
-} from '@/pages/home/interfaces';
+} from '@/layouts/SideMenu/constants';
+import { FilterTypeEn, MetaMailTypeEn } from '@/pages/home/interfaces';
 import { Layout, Menu, notification } from 'antd';
 import { MailOutlined, SettingOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
@@ -12,7 +13,7 @@ import { contacts, write } from '@/assets';
 import cn from 'classnames';
 import { useRef, useState } from 'react';
 import { createDraft } from '@/services';
-import { history } from 'umi';
+import { connect, history } from 'umi';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -26,9 +27,10 @@ export interface MenuInfo {
 
 interface ISiderMenuProps {
   handleClickMenuItem: (event: MenuInfo) => void;
+  [K: string]: any;
 }
 
-export default function SideMenu({ handleClickMenuItem }: ISiderMenuProps) {
+function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
@@ -82,24 +84,39 @@ export default function SideMenu({ handleClickMenuItem }: ISiderMenuProps) {
       </div>
       <Menu
         style={{ width: SiderWidth }}
-        defaultSelectedKeys={[SiderFilterMap[FilterTypeEn.Inbox]]}
+        defaultSelectedKeys={[FilterTypeEn.Inbox.toString()]}
         defaultOpenKeys={[MenuItems.mailbox.key]}
         mode="inline"
         onClick={handleClickMenuItem}
       >
-        <SubMenu
-          key={MenuItems.mailbox.key}
-          icon={<MailOutlined />}
-          title={MenuItems.mailbox.title}
-        >
-          {Object.keys(SiderFilterMap).map((key: string) => {
-            return (
-              <Menu.Item key={Number(key)}>
-                {SiderFilterMap?.[Number(key) as FilterTypeEn]}
-              </Menu.Item>
-            );
-          })}
-        </SubMenu>
+        {/* {Object.keys(SiderFilterMap).map((key: string) => {
+          return (
+            <Menu.Item key={Number(key)}>
+              {SiderFilterMap?.[Number(key) as FilterTypeEn]}
+            </Menu.Item>
+          );
+        })} */}
+
+        {MailMenuItems.map((item) => {
+          return (
+            <Menu.Item key={Number(item.key)} icon={<Icon url={item.logo} />}>
+              <div
+                className={styles.menuItemWrapper}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span className={styles.title}> {item.title}</span>
+                {item.title === 'Inbox' ? (
+                  <span className={styles.unreadBubble}>{unread}</span>
+                ) : null}
+              </div>
+            </Menu.Item>
+          );
+        })}
+
         <SubMenu
           key={MenuItems.contacts.key}
           icon={<Icon url={contacts} />}
@@ -119,3 +136,9 @@ export default function SideMenu({ handleClickMenuItem }: ISiderMenuProps) {
     </Sider>
   );
 }
+
+const mapStateToProps = (state: any) => {
+  return state.user.unreadCount;
+};
+
+export default connect(mapStateToProps)(SideMenu);
