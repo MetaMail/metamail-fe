@@ -23,6 +23,7 @@ import { IPersonItem } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets';
+import { history } from 'umi';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -62,6 +63,10 @@ export default (props: any) => {
         notification.success({
           message: 'Sent',
           description: 'Your message has been sent successfully.',
+        });
+
+        history.push({
+          pathname: '/home/list',
         });
       }
     } catch (error) {
@@ -108,11 +113,6 @@ export default (props: any) => {
 
       if (data?.message_id !== draftIdRef?.current) {
         console.warn('DANGER: wrong updating source');
-      } else {
-        notification.success({
-          message: 'Saved',
-          description: 'Your message has been saved successfully.',
-        });
       }
     } catch (error) {
       notification.error({

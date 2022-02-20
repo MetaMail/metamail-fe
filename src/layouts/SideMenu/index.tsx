@@ -26,11 +26,10 @@ export interface MenuInfo {
 }
 
 interface ISiderMenuProps {
-  handleClickMenuItem: (event: MenuInfo) => void;
   [K: string]: any;
 }
 
-function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
+function SideMenu({ unread }: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
@@ -48,12 +47,27 @@ function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
           },
         });
       }
+      setMailType(type);
     } catch {
       notification.error({
         message: 'Network Error',
         description: 'Can NOT create a new e-mail for now.',
       });
+      setMailType(undefined);
     }
+  };
+
+  const handleClickMenuItem = (filter: string) => {
+    if (!Number.isNaN(filter)) {
+      history.push({
+        pathname: '/home/list',
+        query: {
+          filter,
+        },
+      });
+    }
+
+    setMailType(undefined);
   };
 
   return (
@@ -65,37 +79,45 @@ function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
     >
       <div className={styles.createWrapper}>
         <div
-          className={cn(styles.btn, styles.plain)}
+          className={cn(
+            styles.btn,
+            styles.plain,
+            mailType === MetaMailTypeEn.Plain
+              ? styles.on
+              : mailType !== undefined && styles.off,
+          )}
           onClick={() => handleClickNewMail(MetaMailTypeEn.Plain)}
         >
-          Plain
-          <br />
-          Mail
+          Plain Mail
         </div>
         <div
-          className={cn(styles.btn, styles.encrypted)}
+          className={cn(
+            styles.btn,
+            styles.encrypted,
+            mailType === MetaMailTypeEn.Encrypted
+              ? styles.on
+              : mailType !== undefined && styles.off,
+          )}
           onClick={() => handleClickNewMail(MetaMailTypeEn.Encrypted)}
         >
-          Encrypted
-          <br />
-          Mail
+          Encrypted Mail
         </div>
-        <img src={write} className={styles.icon} />
+        <img
+          src={write}
+          className={cn(
+            styles.icon,
+            mailType !== undefined ? styles.onIcon : null,
+          )}
+        />
       </div>
       <Menu
         style={{ width: SiderWidth }}
         defaultSelectedKeys={[FilterTypeEn.Inbox.toString()]}
         mode="inline"
-        onClick={handleClickMenuItem}
+        onClick={(e) => {
+          handleClickMenuItem(e.key);
+        }}
       >
-        {/* {Object.keys(SiderFilterMap).map((key: string) => {
-          return (
-            <Menu.Item key={Number(key)}>
-              {SiderFilterMap?.[Number(key) as FilterTypeEn]}
-            </Menu.Item>
-          );
-        })} */}
-
         {MailMenuItems.map((item) => {
           return (
             <Menu.Item key={Number(item.key)} icon={<Icon url={item.logo} />}>

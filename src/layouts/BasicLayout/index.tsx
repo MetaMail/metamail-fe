@@ -29,13 +29,7 @@ export default function BasicLayout(props: {
           </div>
         </Header>
         <Layout className={styles.contentWrapper}>
-          <SideMenu
-            handleClickMenuItem={(event) => {
-              const filterKey = Number(event.key);
-              // !Number.isNaN(filterKey) && setFilter(Number(event.key));
-            }}
-          />
-
+          <SideMenu />
           <Content>{props.children}</Content>
         </Layout>
       </Layout>

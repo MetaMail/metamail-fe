@@ -36,20 +36,7 @@ export default function Home(props: {
           </div>
         </Header>
         <Layout className={styles.contentWrapper}>
-          <SideMenu
-            handleClickMenuItem={(event) => {
-              const filterKey = Number(event.key);
-
-              if (!Number.isNaN(filterKey)) {
-                history.push({
-                  pathname: '/home/list',
-                  query: {
-                    filter: event.key,
-                  },
-                });
-              }
-            }}
-          />
+          <SideMenu />
 
           <Content style={{ backgroundColor: '#fff' }}>
             {props.children}

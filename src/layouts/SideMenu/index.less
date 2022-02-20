@@ -11,6 +11,9 @@
     position: relative;
 
     .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding-top: 8px;
       padding-bottom: 8px;
       text-align: center;
@@ -27,12 +30,24 @@
       border-top-left-radius: 2px;
       border-bottom-left-radius: 2px;
       background: #575757;
+      align-items: center;
+      padding: 0px 20px;
+      word-wrap: break-word;
     }
 
     .encrypted {
       background: #6fb1ff;
       border-top-right-radius: 2px;
       border-bottom-right-radius: 2px;
+    }
+
+    .on {
+      width: 160px;
+    }
+
+    .off {
+      width: 0;
+      visibility: hidden;
     }
 
     .icon {
@@ -42,6 +57,11 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
+    }
+
+    .onIcon {
+      left: 78%;
+      top: 50%;
     }
   }
 }
