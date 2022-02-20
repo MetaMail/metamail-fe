@@ -9,6 +9,7 @@ import { getJwtToken, getRandomStrToSign } from '@/services';
 import LinkElement from '@/components/LinkElement';
 import { getCookieByName, TokenCookieName } from '@/utils/cookie';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { FilterTypeEn } from '../home/interfaces';
 
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
@@ -95,17 +96,25 @@ export default function Login() {
       // TODO: signMethod 最好以1/2/3的形式进行枚举，而非string
       const signedMessage = await handleSign(randomStr, userAddress!);
 
-      getJwtToken({
+      const res = await getJwtToken({
         tokenForRandom,
         signedMessage,
-      }).then((res) => {
-        const {
-          data: { user },
-        } = res ?? {};
+      });
 
-        console.log('TODO: save user info to store', user);
+      const { data: user } = res ?? {};
 
-        history.push('/home/list');
+      console.log('TODO: save user info to store', user);
+
+      history.push({
+        pathname: '/home/list',
+        query: {
+          filter: FilterTypeEn.Inbox + '',
+        },
+      });
+    } else {
+      notification.error({
+        message: 'Failed',
+        description: 'It seems like we have a network problem.',
       });
     }
   };
@@ -117,7 +126,7 @@ export default function Login() {
   }, [userAddress]);
 
   const handleOpenConnectModal = () => {
-    if (!getCookieByName(TokenCookieName)) {
+    if (!userAddress) {
       setIsConnectModalVisible(true);
     } else {
       history.push('/home/list');
@@ -131,22 +140,32 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <Button
-          type="primary"
-          ghost
-          onClick={handleOpenConnectModal}
-          className={styles.connectBtn}
-        >
-          {userAddress ?? 'Connect Wallet'}
-        </Button>
+        <div className={styles.left}>
+          <img src={logo} className={styles.logo} />
+          <span className={styles.brand}>MetaMail</span>
+        </div>
+        <div className={styles.right}>
+          <Button
+            type="primary"
+            ghost
+            onClick={handleOpenConnectModal}
+            className={styles.connectBtn}
+          >
+            {userAddress ?? 'Connect Wallet'}
+          </Button>
+        </div>
       </header>
       <div className={styles.detailBox}>
-        <img src={logo} className={styles.logo}></img>
+        {/* <img src={logo} className={styles.logo}></img> */}
 
-        <h2 className={styles.title}>Your Web3.0 Email </h2>
+        <div className={styles.title}>
+          Your web3.0 email <br /> Create and use your encrypted email
+        </div>
+        <div className={styles.divider}></div>
         <p className={styles.desc}>
-          Create and use your web3 email. <br /> Your address, your mail; your
-          ens, your mail.
+          Connect the email with your wallet, and send your encrypted or regular
+          email <br /> by your choice, to another metamail or common mail
+          product user.
         </p>
         {userAddress ?? (
           <Button

@@ -2,22 +2,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(
-    89.86deg,
-    rgba(236, 131, 79, 0.64) 0.14%,
-    rgba(58, 176, 234, 0.42) 99.89%
-  );
 
   .header {
     display: flex;
     flex-direction: row;
-    justify-content: end;
-
+    justify-content: space-between;
+    align-items: center;
+    height: 86px;
+    box-shadow: 0px 1px 30px rgba(0, 0, 0, 0.2);
     width: 100%;
     padding: 20px;
 
+    .left {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 64px;
+      .logo {
+        height: 48px;
+        width: 48px;
+      }
+
+      .brand {
+        font-family: Rowdies;
+        font-size: 20px;
+        line-height: 25px;
+        margin-left: 8px;
+        font-weight: 700px;
+        color: #000000;
+      }
+    }
+
+    .right {
+      color: #fff;
+    }
+
     .connectBtn {
       border-radius: 8px;
+      background-color: #1890ff;
+      border-color: #1890ff;
+      color: #fff;
     }
   }
 
@@ -30,18 +54,38 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 42px auto;
 
     .title {
       font-size: 64px;
       font-weight: 700;
       color: #1890ff;
       margin-bottom: 0;
+
+      font-family: Rowdies;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 40px;
+      line-height: 50px;
+      text-align: center;
+      color: #000000;
+    }
+
+    .divider {
+      margin: 13px 0;
+      width: 50vw;
+      height: 6px;
+      background: #1890ff;
+      border-radius: 3px;
     }
 
     .desc {
-      font-size: 14px;
-      color: #666;
+      font-family: Raleway;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 21px;
       text-align: center;
+      color: #666;
     }
   }
 
@@ -58,6 +102,9 @@
     height: 40px;
     border-radius: 8px;
     margin-top: 20px;
+    color: #fff;
+    background-color: #1890ff;
+    border-color: #1890ff;
   }
 
   .footer {
