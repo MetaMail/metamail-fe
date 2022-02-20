@@ -44,7 +44,7 @@ function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
         history.push({
           pathname: '/home/new',
           query: {
-            id: 'test',
+            id: data.message_id,
           },
         });
       }
@@ -85,7 +85,6 @@ function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
       <Menu
         style={{ width: SiderWidth }}
         defaultSelectedKeys={[FilterTypeEn.Inbox.toString()]}
-        defaultOpenKeys={[MenuItems.mailbox.key]}
         mode="inline"
         onClick={handleClickMenuItem}
       >
@@ -138,7 +137,7 @@ function SideMenu({ handleClickMenuItem, unread }: ISiderMenuProps) {
 }
 
 const mapStateToProps = (state: any) => {
-  return state.user.unreadCount;
+  return state.user.unreadCount ?? {};
 };
 
 export default connect(mapStateToProps)(SideMenu);

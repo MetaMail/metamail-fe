@@ -1,8 +1,14 @@
 import MailListItem from '@/components/MailListItem';
 import { List, notification } from 'antd';
-import { useState, useEffect } from 'react';
-import { FilterTypeEn, IMailItem, ReadStatusTypeEn } from '../home/interfaces';
-import { getMailList } from '@/services';
+import { useState, useEffect, useRef } from 'react';
+import {
+  FilterTypeEn,
+  getMailBoxType,
+  IMailItem,
+  MarkTypeEn,
+  ReadStatusTypeEn,
+} from '../home/interfaces';
+import { changeMailStatus, getMailList, IMailChangeParams } from '@/services';
 import styles from './index.less';
 import Icon from '@/components/Icon';
 import {
@@ -16,26 +22,43 @@ import {
   rightArrow,
 } from '@/assets';
 import { connect } from 'umi';
-interface IMailListProps {
-  filter: FilterTypeEn;
-  onClickMailItem: (id: string) => void;
-}
 
 function MailList(props: any) {
   const {
     location: { query },
     history,
   } = props;
+
+  const filter = query?.filter ? Number(query.filter) : 0;
+  const mailBox = getMailBoxType(filter);
+
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>();
   const [pageIdx, setPageIdx] = useState(1);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
+  const [selectList, setSelectList] = useState<Set<string>>(new Set());
+  const [isAll, setIsAll] = useState(false);
+  const [isAllFavorite, setIsAllFavorite] = useState(false);
+
+  const getMails = () => {
+    const res: IMailChangeParams[] = [];
+
+    selectList?.forEach((item) => {
+      res.push({
+        message_id: item,
+        mailbox: mailBox,
+      });
+    });
+
+    return res;
+  };
 
   const fetchMailList = async () => {
     setLoading(true);
     try {
       const { data } = await getMailList({
-        filter: Number(query?.filter) ?? 0,
+        filter,
+        page_index: pageIdx,
       });
 
       setList(data?.mails ?? []);
@@ -59,6 +82,23 @@ function MailList(props: any) {
     fetchMailList();
   }, [query]);
 
+  const handleChangeMailStatus = async (
+    inputMails?: IMailChangeParams[],
+    mark?: MarkTypeEn,
+    read?: ReadStatusTypeEn,
+  ) => {
+    const mails = inputMails ?? getMails();
+    try {
+      await changeMailStatus(mails, mark, read);
+    } catch {
+      notification.error({
+        message: 'Failed',
+        description: 'Sorry, network problem.',
+      });
+    } finally {
+      fetchMailList();
+    }
+  };
   return (
     <div className={styles.listWrapper}>
       <div className={styles.header}>
@@ -67,17 +107,29 @@ function MailList(props: any) {
             url={checkbox}
             checkedUrl={selected}
             onClick={(res: boolean) => {
-              console.log('---res', res);
+              setSelectList(() => {
+                return new Set(res ? list?.map((item) => item.message_id) : []);
+              });
+              setIsAll(res);
             }}
+            select={isAll}
             style={{
               marginRight: '12px',
             }}
           />
           <Icon
             url={favorite}
+            select={isAllFavorite}
             checkedUrl={markFavorite}
             style={{
               marginRight: '8px',
+            }}
+            onClick={(res) => {
+              handleChangeMailStatus(
+                undefined,
+                res ? MarkTypeEn.Starred : MarkTypeEn.Normal,
+              );
+              setIsAllFavorite(res);
             }}
           />
           <Icon
@@ -85,11 +137,21 @@ function MailList(props: any) {
             style={{
               marginRight: '8px',
             }}
+            onClick={() => {
+              handleChangeMailStatus(undefined, MarkTypeEn.Trash);
+            }}
           />
           <Icon
             url={read}
             style={{
               marginRight: '8px',
+            }}
+            onClick={() => {
+              handleChangeMailStatus(
+                undefined,
+                undefined,
+                ReadStatusTypeEn.read,
+              );
             }}
           />
         </div>
@@ -133,6 +195,7 @@ function MailList(props: any) {
         loading={loading}
         renderItem={(item) => (
           <MailListItem
+            mark={item?.mark}
             from={item.mail_from}
             subject={item.subject}
             date={item.mail_date}
@@ -142,6 +205,29 @@ function MailList(props: any) {
                 id: item?.message_id,
               });
             }}
+            select={selectList.has(item.message_id)}
+            onFavorite={(isSelect: boolean) => {
+              handleChangeMailStatus(
+                [
+                  {
+                    message_id: item?.message_id,
+                    mailbox: mailBox,
+                  },
+                ],
+                isSelect ? MarkTypeEn.Starred : MarkTypeEn.Normal,
+              );
+            }}
+            onSelect={(isSelect) => {
+              setSelectList((prev) => {
+                if (isSelect) {
+                  prev.add(item?.message_id);
+                } else {
+                  prev.delete(item?.message_id);
+                }
+
+                return new Set(prev);
+              });
+            }}
           />
         )}
       />
@@ -149,8 +235,10 @@ function MailList(props: any) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setUnreadCount: (data) =>
+const mapDispatchToProps = (
+  dispatch: (arg0: { type: string; payload: any }) => any,
+) => ({
+  setUnreadCount: (data: any) =>
     dispatch({
       type: 'user/setUnreadCount',
       payload: data,

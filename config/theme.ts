@@ -11,6 +11,7 @@ export default {
   'menu-highlight-color': '#000', // Item高亮字体色
   'menu-inline-submenu-bg': '#fff', // 子菜单背景色
   'menu-item-active-bg': '#fff', // 二级菜单项激活背景色
-  'menu-item-active-border-width': '0px', // 激活菜单项右侧indicator宽度
+  'menu-item-active-border-width': '1px', // 激活菜单项右侧indicator宽度
   'font-family': 'Arial',
+  'border-color-base': '#fff',
 };

@@ -7,6 +7,7 @@ interface IIconProps {
   className?: any;
   style?: React.CSSProperties;
   imgStyle?: React.CSSProperties;
+  select?: boolean;
 }
 
 export default function Icon({
@@ -16,13 +17,11 @@ export default function Icon({
   className,
   style,
   imgStyle,
+  select,
 }: IIconProps) {
-  const [isSelected, setIsSelected] = useState(false);
-
   const handleClick = () => {
     if (onClick) {
-      onClick(!isSelected);
-      setIsSelected(!isSelected);
+      onClick(!select);
     }
   };
 
@@ -33,7 +32,7 @@ export default function Icon({
       className={className}
     >
       <img
-        src={!isSelected ? url : checkedUrl ?? url}
+        src={!select ? url : checkedUrl ?? url}
         style={{
           height: '20px',
           width: '20px',

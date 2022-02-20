@@ -28,6 +28,17 @@ export enum MetaMailTypeEn {
   Encrypted = 2,
 }
 
+export const getMailBoxType = (filter: FilterTypeEn) => {
+  switch (filter) {
+    case FilterTypeEn.Draft:
+      return MailBoxTypeEn.Draft;
+    case FilterTypeEn.Sent:
+      return MailBoxTypeEn.Send;
+    default:
+      return MailBoxTypeEn.Inbox;
+  }
+};
+
 export enum FilterTypeEn {
   Inbox = 0,
   Encrypted,

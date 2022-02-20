@@ -1,12 +1,17 @@
+import {
+  MailBoxTypeEn,
+  MarkTypeEn,
+  ReadStatusTypeEn,
+} from '@/pages/home/interfaces';
 import request from '../utils/request';
 
 const APIs = {
-  getMailList: '/mails/filter', // 获取随机字符串，用户需要对这个字符串签名
-  getMailDetail: '/mails/', // 上传签名后的字符串，获取jwt token
+  getMailList: '/mails/filter', //
+  mailDetail: '/mails/', //
 };
 
 export function getMailDetailByID(id: string) {
-  return request(`${APIs.getMailDetail}${id}`).get();
+  return request(`${APIs.mailDetail}${id}`).get();
 }
 
 export function getMailList(params: Record<string, any>) {
@@ -15,3 +20,20 @@ export function getMailList(params: Record<string, any>) {
     ...params,
   });
 }
+
+export interface IMailChangeParams {
+  message_id: string;
+  mailbox?: MailBoxTypeEn;
+}
+
+export const changeMailStatus = (
+  mails: IMailChangeParams[],
+  mark?: MarkTypeEn,
+  read?: ReadStatusTypeEn,
+) => {
+  return request(`${APIs.mailDetail}`).post({
+    mails,
+    mark,
+    read,
+  });
+};

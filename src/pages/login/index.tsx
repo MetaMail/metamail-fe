@@ -105,7 +105,7 @@ export default function Login() {
 
         console.log('TODO: save user info to store', user);
 
-        history.push('/home');
+        history.push('/home/list');
       });
     }
   };
@@ -120,7 +120,7 @@ export default function Login() {
     if (!getCookieByName(TokenCookieName)) {
       setIsConnectModalVisible(true);
     } else {
-      history.push('/home');
+      history.push('/home/list');
     }
   };
 

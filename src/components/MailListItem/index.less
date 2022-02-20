@@ -23,25 +23,36 @@
     max-width: 700px;
     color: #575757;
 
-    span {
-      display: block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+    .markBar {
+      display: flex;
+      flex-direction: row;
+      column-gap: 8px;
+      margin-right: 12px;
     }
 
-    .from {
-      width: 150px;
-      margin-right: 20px;
-      max-width: 200px;
-    }
+    .infoBar {
+      display: flex;
+      flex-direction: row;
+      span {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
 
-    .subject {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      .from {
+        width: 150px;
+        margin-right: 20px;
+        max-width: 200px;
+      }
 
-      max-width: 200px;
+      .subject {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        max-width: 200px;
+      }
     }
   }
 

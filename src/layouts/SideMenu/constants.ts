@@ -49,8 +49,6 @@ export const MailMenuItems: {
   };
 });
 
-console.log(MailMenuItems);
-
 export const ContactSubMenuItems = {
   block: {
     key: 'block',
@@ -61,42 +59,3 @@ export const ContactSubMenuItems = {
     title: 'Allow List',
   },
 };
-
-// export const MenuMap = {
-//   inbox: {
-//     key: 'inbox',
-//     title: 'Inbox',
-//   },
-//   all: {
-//     key: 'all',
-//     title: 'All',
-//   },
-//   read: {
-//     key: 'read',
-//     title: 'Read',
-//   },
-//   unread: {
-//     key: 'unread',
-//     title: 'Unread',
-//   },
-//   draft: {
-//     key: 'draft',
-//     title: 'Draft',
-//   },
-//   contacts: {
-//     key: 'contacts',
-//     title: 'Contacts',
-//   },
-//   block: {
-//     key: 'block',
-//     title: 'Block List',
-//   },
-//   allow: {
-//     key: 'allow',
-//     title: 'Allow List',
-//   },
-//   settings: {
-//     key: 'settings',
-//     title: 'Settings',
-//   },
-// };

@@ -23,6 +23,7 @@ import favorite from './icons/favorite.svg';
 import markFavorite from './icons/markFavorite.svg';
 import leftArrow from './icons/leftArrow.svg';
 import rightArrow from './icons/rightArrow.svg';
+import attachment from './icons/attachment.svg';
 
 export {
   draft,
@@ -50,4 +51,5 @@ export {
   markFavorite,
   leftArrow,
   rightArrow,
+  attachment,
 };
