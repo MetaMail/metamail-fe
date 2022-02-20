@@ -2,7 +2,7 @@ import { Button, Modal, notification } from 'antd';
 import { useState, useEffect } from 'react';
 import logo from '@/assets/logo/logo.svg';
 import MetaMaskOnboarding from '@metamask/onboarding';
-import { history } from 'umi';
+import { connect, history } from 'umi';
 import styles from './index.less';
 import ShowBlock from '@/components/ShowBlock';
 import { getJwtToken, getRandomStrToSign } from '@/services';
@@ -13,9 +13,9 @@ import { FilterTypeEn } from '../home/interfaces';
 
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
-export default function Login() {
+function Login({ address, setUserAddress, setPublicKey }) {
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
-  const [userAddress, setUserAddress] = useState<string>();
+  // const [address, setUserAddress] = useState<string>();
   const [hasMetaMask, setHasMetaMask] = useState(false);
 
   const getMetaMask = async () => {
@@ -57,7 +57,6 @@ export default function Login() {
       const newAccounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
-
       setUserAddress(Array.isArray(newAccounts) ? newAccounts[0] : newAccounts);
     } catch (error: any) {
       notification.error({
@@ -88,13 +87,13 @@ export default function Login() {
   };
 
   const getRandomAuth = async () => {
-    const { data } = (await getRandomStrToSign(userAddress!)) ?? {};
+    const { data } = (await getRandomStrToSign(address!)) ?? {};
 
     if (data) {
       const { randomStr, signMethod, tokenForRandom } = data;
 
       // TODO: signMethod 最好以1/2/3的形式进行枚举，而非string
-      const signedMessage = await handleSign(randomStr, userAddress!);
+      const signedMessage = await handleSign(randomStr, address!);
 
       const res = await getJwtToken({
         tokenForRandom,
@@ -103,7 +102,7 @@ export default function Login() {
 
       const { data: user } = res ?? {};
 
-      console.log('TODO: save user info to store', user);
+      setPublicKey(user.user.public_key);
 
       history.push({
         pathname: '/home/list',
@@ -120,13 +119,13 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (userAddress && userAddress.length > 0) {
+    if (address && address.length > 0) {
       getRandomAuth();
     }
-  }, [userAddress]);
+  }, [address]);
 
   const handleOpenConnectModal = () => {
-    if (!userAddress) {
+    if (!address) {
       setIsConnectModalVisible(true);
     } else {
       history.push('/home/list');
@@ -151,7 +150,7 @@ export default function Login() {
             onClick={handleOpenConnectModal}
             className={styles.connectBtn}
           >
-            {userAddress ?? 'Connect Wallet'}
+            {address ?? 'Connect Wallet'}
           </Button>
         </div>
       </header>
@@ -167,7 +166,7 @@ export default function Login() {
           email <br /> by your choice, to another metamail or common mail
           product user.
         </p>
-        {userAddress ?? (
+        {address ?? (
           <Button
             type="primary"
             className={styles.tryBtn}
@@ -218,3 +217,24 @@ export default function Login() {
     </div>
   );
 }
+
+const mapStateToProps = (state: any) => {
+  return state.user ?? {};
+};
+
+const mapDispatchToProps = (
+  dispatch: (arg0: { type: string; payload: any }) => any,
+) => ({
+  setUserAddress: (data: any) =>
+    dispatch({
+      type: 'user/setUserAddress',
+      payload: data,
+    }),
+  setPublicKey: (data: any) =>
+    dispatch({
+      type: 'user/setPublicKey',
+      payload: data,
+    }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -9,9 +9,10 @@ const APIs = {
   uploadAttachment: '/mail/{mail_id}/attachments/{attachment_id}', //上传附件
 };
 
-export function createDraft(type: MetaMailTypeEn) {
+export function createDraft(type: MetaMailTypeEn, key?: string) {
   return request(APIs.createDraft).post({
     meta_type: type,
+    key,
   });
 }
 

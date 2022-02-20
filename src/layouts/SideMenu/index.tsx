@@ -14,6 +14,8 @@ import cn from 'classnames';
 import { useRef, useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
+import { generateRandom256Bits } from './utils';
+
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -29,14 +31,24 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({ unread }: ISiderMenuProps) {
+function SideMenu({
+  unreadCount,
+  publicKey,
+  setEncryptedKey,
+}: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
 
   const handleClickNewMail = async (type: MetaMailTypeEn) => {
     try {
-      const { data } = await createDraft(type);
+      let key;
+      if (type === MetaMailTypeEn.Encrypted) {
+        key = generateRandom256Bits(publicKey);
+        setEncryptedKey(key);
+      }
+
+      const { data } = await createDraft(type, key);
 
       if (data && data?.message_id) {
         setMailType(type);
@@ -48,7 +60,7 @@ function SideMenu({ unread }: ISiderMenuProps) {
         });
       }
       setMailType(type);
-    } catch {
+    } catch (e) {
       notification.error({
         message: 'Network Error',
         description: 'Can NOT create a new e-mail for now.',
@@ -131,7 +143,9 @@ function SideMenu({ unread }: ISiderMenuProps) {
               >
                 <span className={styles.title}> {item.title}</span>
                 {item.title === 'Inbox' ? (
-                  <span className={styles.unreadBubble}>{unread}</span>
+                  <span className={styles.unreadBubble}>
+                    {unreadCount?.unread}
+                  </span>
                 ) : null}
               </div>
             </Menu.Item>
@@ -159,7 +173,17 @@ function SideMenu({ unread }: ISiderMenuProps) {
 }
 
 const mapStateToProps = (state: any) => {
-  return state.user.unreadCount ?? {};
+  return state.user ?? {};
 };
 
-export default connect(mapStateToProps)(SideMenu);
+const mapDispatchToProps = (
+  dispatch: (arg0: { type: string; payload: any }) => any,
+) => ({
+  setEncryptedKey: (data: any) =>
+    dispatch({
+      type: 'user/setEncryptedKey',
+      payload: data,
+    }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

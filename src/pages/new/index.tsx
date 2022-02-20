@@ -23,14 +23,15 @@ import { IPersonItem } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets';
-import { history } from 'umi';
+import { connect, history } from 'umi';
+import { metaPack } from './utils';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
   hasDraft: () => boolean;
 }
 
-export default (props: any) => {
+const NewMail = (props: any) => {
   const {
     location: { query },
   } = props;
@@ -107,8 +108,14 @@ export default (props: any) => {
         (await updateMail(draftIdRef.current, {
           subject: subject ?? '(No Subject)',
           mail_to: receiver,
-          part_html: quillRef.current.getHTML(),
-          part_text: quillRef.current.getText(),
+          part_html: CryptoJS.AES.encrypt(
+            quillRef.current.getHTML(),
+            props.publicKey,
+          ).toString(),
+          part_text: CryptoJS.AES.encrypt(
+            quillRef.current.getText(),
+            props.publicKey,
+          ).toString(),
         })) ?? {};
 
       if (data?.message_id !== draftIdRef?.current) {
@@ -208,13 +215,13 @@ export default (props: any) => {
               var encrypted = CryptoJS.AES.encrypt(wordArray, key).toString(); // Encryption: I: WordArray -> O: -> Base64 encoded string (OpenSSL-format)
               var fileEnc = new Blob([encrypted]); // Create blob from string
 
-              var a = document.createElement('a');
-              var url = window.URL.createObjectURL(fileEnc);
-              var filename = file.name;
-              a.href = url;
-              a.download = filename;
-              a.click();
-              window.URL.revokeObjectURL(url);
+              // var a = document.createElement('a');
+              // var url = window.URL.createObjectURL(fileEnc);
+              // var filename = file.name;
+              // a.href = url;
+              // a.download = filename;
+              // a.click();
+              // window.URL.revokeObjectURL(url);
             }
           };
           reader.readAsArrayBuffer(file);
@@ -225,7 +232,7 @@ export default (props: any) => {
             <Icon url={attachment} />
             <span>Upload</span>
           </div>
-          <span className={styles.tip}>（Single file up to 1g）</span>
+          <span className={styles.tip}>（Single file up to 1GB）</span>
         </div>
       </Upload>
 
@@ -254,3 +261,9 @@ export default (props: any) => {
     </div>
   );
 };
+
+const mapStateToProps = (state: any) => {
+  return state.user ?? {};
+};
+
+export default connect(mapStateToProps)(NewMail);
