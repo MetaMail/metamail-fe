@@ -7,7 +7,7 @@ import {
   spam,
   trash,
   unread,
-} from '@/assets';
+} from '@/assets/icons';
 import { FilterTypeEn } from '../../pages/home/interfaces';
 
 export const SiderFilterMap = {

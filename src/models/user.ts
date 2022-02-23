@@ -12,7 +12,7 @@ export interface IUserStateProps {
   accountStatus?: number;
   unreadCount?: IUnreadCount;
   publicKey?: string;
-  encryptedKey?: string;
+  randomBits?: string; // 256位随机数作为对称密钥
 }
 
 export default {
@@ -46,13 +46,13 @@ export default {
         publicKey,
       };
     },
-    saveEncryptedKey(
+    saveRandomBits(
       state: IUserStateProps,
-      { payload: publicKey }: { payload: string },
+      { payload: randomBits }: { payload: string },
     ) {
       return {
         ...state,
-        publicKey,
+        randomBits,
       };
     },
   },
@@ -76,9 +76,9 @@ export default {
         payload,
       });
     },
-    *setEncryptedKey({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
+    *setRandomBits({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
-        type: 'saveEncryptedKey',
+        type: 'saveRandomBits',
         payload,
       });
     },

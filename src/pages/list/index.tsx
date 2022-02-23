@@ -20,7 +20,7 @@ import {
   read,
   leftArrow,
   rightArrow,
-} from '@/assets';
+} from '@/assets/icons';
 import { connect } from 'umi';
 
 function MailList(props: any) {

@@ -5,8 +5,7 @@ const APIs = {
   createDraft: '/mails/draft', // 新建草稿
   updateMail: '/mails/{mail_id}', // patch方法，更新邮件内容
   sendMail: '/mails/{mail_id}/send', // 发送邮件
-  getAttachmentSlots: '/mails/{mail_id}/attachment_slots', //
-  uploadAttachment: '/mail/{mail_id}/attachments/{attachment_id}', //上传附件
+  uploadAttachment: '/mails/{mail_id}/attachments', //上传附件
 };
 
 export function createDraft(type: MetaMailTypeEn, key?: string) {
@@ -37,4 +36,10 @@ export function sendMail(mailId: string) {
   return request(
     APIs.sendMail.replace('{mail_id}', window.btoa(mailId)),
   ).post();
+}
+
+export function uploadAttachment(mailId: string, data: FormData) {
+  return request(
+    APIs.uploadAttachment.replace('{mail_id}', window.btoa(mailId)),
+  ).post(data);
 }

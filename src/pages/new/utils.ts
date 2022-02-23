@@ -43,3 +43,8 @@ export const metaPack = (data: {
   }
   return parts.join('\n');
 };
+
+export enum AttachmentRelatedTypeEn {
+  Embedded = '1',
+  Outside = '0',
+}

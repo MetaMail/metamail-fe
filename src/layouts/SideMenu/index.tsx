@@ -9,7 +9,7 @@ import { Layout, Menu, notification } from 'antd';
 import { MailOutlined, SettingOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
 import styles from './index.less';
-import { contacts, write } from '@/assets';
+import { contacts, write } from '@/assets/icons';
 import cn from 'classnames';
 import { useRef, useState } from 'react';
 import { createDraft } from '@/services';
@@ -31,11 +31,7 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({
-  unreadCount,
-  publicKey,
-  setEncryptedKey,
-}: ISiderMenuProps) {
+function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
@@ -44,8 +40,11 @@ function SideMenu({
     try {
       let key;
       if (type === MetaMailTypeEn.Encrypted) {
-        key = generateRandom256Bits(publicKey);
-        setEncryptedKey(key);
+        const { random, encrypted } = generateRandom256Bits(publicKey) ?? {};
+        key = encrypted;
+        setRandomBits(random);
+      } else {
+        setRandomBits(undefined);
       }
 
       const { data } = await createDraft(type, key);
@@ -56,6 +55,7 @@ function SideMenu({
           pathname: '/home/new',
           query: {
             id: data.message_id,
+            type: type + '',
           },
         });
       }
@@ -179,9 +179,9 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
-  setEncryptedKey: (data: any) =>
+  setRandomBits: (data: any) =>
     dispatch({
-      type: 'user/setEncryptedKey',
+      type: 'user/setRandomBits',
       payload: data,
     }),
 });

@@ -7,10 +7,11 @@ export function generateRandom256Bits(key: string) {
       message: 'Failed',
       description: "We did'nt get your public key, please try login again.",
     });
-    return;
+    return ;
   }
   let res = '';
-  const temp = new Uint32Array(64);
+
+  const temp = new Uint32Array(8);
 
   crypto.getRandomValues(temp);
 
@@ -18,5 +19,8 @@ export function generateRandom256Bits(key: string) {
     res += `${item}`;
   });
 
-  return CryptoJS.AES.encrypt(res, key).toString();
+  return {
+    random: res,
+    encrypted: CryptoJS.AES.encrypt(res, key).toString(),
+  };
 }

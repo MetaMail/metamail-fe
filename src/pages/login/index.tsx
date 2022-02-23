@@ -10,8 +10,27 @@ import LinkElement from '@/components/LinkElement';
 import { getCookieByName, TokenCookieName } from '@/utils/cookie';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { FilterTypeEn } from '../home/interfaces';
+import { address, encrypted, sign } from '@/assets';
 
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
+
+const BlockInfos = [
+  {
+    imgSrc: address,
+    title: 'Use your wallet and ens as email address',
+    desc: 'Use the wallet to log in our mailbox directly, send and receive mails with users of our mailbox and other common mainstream mailboxes. Totally free!',
+  },
+  {
+    imgSrc: encrypted,
+    title: 'Protect mail with p2p encryption',
+    desc: 'Mails sent and received by Metamail users could be optionally encrypted, and only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
+  },
+  {
+    imgSrc: sign,
+    title: 'Sign every mail you send',
+    desc: 'Sign every mail digitally with your wallet. No forged mails anymore!',
+  },
+];
 
 function Login({ address, setUserAddress, setPublicKey }) {
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
@@ -177,25 +196,19 @@ function Login({ address, setUserAddress, setPublicKey }) {
         )}
 
         <div className={styles.showSection}>
-          <ShowBlock
-            imgSrc=""
-            title="Easy-use"
-            desc="Use your address and ens as email address"
-          />
-          <ShowBlock
-            imgSrc=""
-            title="Encrypt"
-            desc="Protect your mail with p2p encrypt"
-          />
-          <ShowBlock imgSrc="" title="Sign" desc="Sign every mail you send." />
+          {BlockInfos?.map((block) => (
+            <ShowBlock {...block} />
+          ))}
         </div>
       </div>
 
       <footer className={styles.footer}>
         <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
+        <LinkElement name="Facebook" link="https://discord.gg/URYGebMHye" />
+        <LinkElement name="Github" link="https://discord.gg/URYGebMHye" />
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
         <LinkElement name="Blog" link="" />
-        <LinkElement name=" About Us" link="https://metamail.ink" />
+        <LinkElement name="About Us" link="https://metamail.ink" />
       </footer>
 
       <Modal
