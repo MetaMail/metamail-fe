@@ -22,7 +22,8 @@ export const getPersonalSign = async (
       ],
     });
 
-    return sign;
+    console.log(sign, '----sign');
+    return Promise.resolve(sign);
   } catch (err) {
     console.error(err);
   }

@@ -32,10 +32,10 @@ export function updateMail(mailId: string, params: IMailUpdateParams) {
   ).patch(params);
 }
 
-export function sendMail(mailId: string) {
-  return request(
-    APIs.sendMail.replace('{mail_id}', window.btoa(mailId)),
-  ).post();
+export function sendMail(mailId: string, props: Record<string, any>) {
+  return request(APIs.sendMail.replace('{mail_id}', window.btoa(mailId))).post(
+    props,
+  );
 }
 
 export function uploadAttachment(mailId: string, data: FormData) {

@@ -196,8 +196,8 @@ function Login({ address, setUserAddress, setPublicKey }) {
         )}
 
         <div className={styles.showSection}>
-          {BlockInfos?.map((block) => (
-            <ShowBlock {...block} />
+          {BlockInfos?.map((block, idx) => (
+            <ShowBlock {...block} key={idx} />
           ))}
         </div>
       </div>

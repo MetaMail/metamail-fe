@@ -10,6 +10,8 @@ import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
 import { connect, history } from 'umi';
 import { AttachmentRelatedTypeEn, metaPack } from './utils';
+import { getPersonalSign } from '@/utils/sign';
+import useInterval from '@/utils/hooks';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -31,6 +33,7 @@ const NewMail = (props: any) => {
 
   const reactQuillRef = useRef<ReactQuill>();
   const quillRef = useRef<any>();
+  const dateRef = useRef<string>();
 
   useEffect(() => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
@@ -41,32 +44,6 @@ const NewMail = (props: any) => {
   }, [reactQuillRef]);
 
   const handleSend = async () => {
-    if (!draftID) return;
-
-    try {
-      handleSave();
-
-      const { data } = (await sendMail(draftID)) ?? {};
-
-      if (data) {
-        notification.success({
-          message: 'Sent',
-          description: 'Your message has been sent successfully.',
-        });
-
-        history.push({
-          pathname: '/home/list',
-        });
-      }
-    } catch (error) {
-      notification.error({
-        message: 'Failed Send',
-        description: '' + error,
-      });
-    }
-  };
-
-  const handleSave = async () => {
     if (!draftID) return;
 
     if (receiver?.length < 1) {
@@ -92,6 +69,55 @@ const NewMail = (props: any) => {
     }
 
     try {
+      handleSave();
+
+      const html = quillRef.current.getHTML(),
+        text = quillRef.current.getText();
+
+      metaPack({
+        from: props.address,
+        to: receiver,
+        date: new Date(),
+        subject,
+        text_hash: CryptoJS.SHA256(text).toString(),
+        html_hash: CryptoJS.SHA256(html).toString(),
+      }).then(async (res) => {
+        const { packedResult, keys } = res ?? {};
+
+        console.log('res', res);
+        getPersonalSign(props.address, packedResult).then(async (signature) => {
+          const { data } =
+            (await sendMail(draftID, {
+              date: dateRef.current,
+              signature: signature,
+              keys,
+              data: packedResult,
+            })) ?? {};
+
+          if (data) {
+            notification.success({
+              message: 'Sent',
+              description: 'Your message has been sent successfully.',
+            });
+
+            history.push({
+              pathname: '/home/list',
+            });
+          }
+        });
+      });
+    } catch (error) {
+      notification.error({
+        message: 'Failed Send',
+        description: '' + error,
+      });
+    }
+  };
+
+  const handleSave = async () => {
+    if (!draftID) return;
+
+    try {
       const { data } =
         (await updateMail(draftID, {
           subject: subject ?? '(No Subject)',
@@ -109,6 +135,8 @@ const NewMail = (props: any) => {
       if (data?.message_id !== draftID) {
         console.warn('DANGER: wrong updating source');
       }
+
+      dateRef.current = data?.mail_date;
     } catch (error) {
       notification.error({
         message: 'Invalid mail content',
@@ -166,6 +194,30 @@ const NewMail = (props: any) => {
     }
   };
 
+  const handleFinalFileUpload = (file: File) => {
+    const reader = new FileReader();
+
+    let res;
+    reader.onload = () => {
+      if (reader?.result) {
+        const input = reader.result;
+
+        const wordArray = CryptoJS.lib.WordArray.create(input as any);
+
+        const sha256 = CryptoJS.SHA256(wordArray).toString();
+
+        handleUploadAttachment(file, sha256, AttachmentRelatedTypeEn.Outside);
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+    return res;
+  };
+
+  // useInterval(() => {
+  //   handleSave();
+  // }, 5000);
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -213,28 +265,27 @@ const NewMail = (props: any) => {
       />
 
       <Upload
+        maxCount={5}
         beforeUpload={(file) => {
           const reader = new FileReader();
+
+          reader.readAsArrayBuffer(file);
+
           reader.onload = () => {
             if (reader?.result) {
+              const input = reader.result;
               const fileProps = {
                 type: file.type,
                 lastModified: file.lastModified,
               };
-              let finalFile = new File(
-                [new Blob([reader?.result])],
-                file.name,
-                { ...fileProps },
-              );
 
-              const wordArray = CryptoJS.lib.WordArray.create(
-                reader.result as any,
-              );
-              const sha256 = CryptoJS.SHA256(wordArray).toString();
+              let finalFile = new File([new Blob([input])], file.name, {
+                ...fileProps,
+              });
 
               if (type === MetaMailTypeEn.Encrypted) {
                 const encrypted = CryptoJS.AES.encrypt(
-                  wordArray,
+                  CryptoJS.lib.WordArray.create(input as any),
                   randomBits,
                 ).toString();
 
@@ -245,14 +296,9 @@ const NewMail = (props: any) => {
                 });
               }
 
-              handleUploadAttachment(
-                finalFile,
-                sha256,
-                AttachmentRelatedTypeEn.Outside,
-              );
+              handleFinalFileUpload(finalFile);
             }
           };
-          reader.readAsArrayBuffer(file);
         }}
       >
         <div className={styles.uploadBar}>
