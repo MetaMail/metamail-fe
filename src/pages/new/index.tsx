@@ -1,10 +1,15 @@
-import { Button, Input, notification, Upload } from 'antd';
+import { Button, Input, Modal, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
-import { sendMail, updateMail, uploadAttachment } from '@/services';
-import { IPersonItem, MetaMailTypeEn } from '../home/interfaces';
+import {
+  changeMailStatus,
+  sendMail,
+  updateMail,
+  uploadAttachment,
+} from '@/services';
+import { IPersonItem, MarkTypeEn, MetaMailTypeEn } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
@@ -43,7 +48,39 @@ const NewMail = (props: any) => {
     );
   }, [reactQuillRef]);
 
-  const handleSend = async () => {
+  const handleSend = async (
+    keys: string[],
+    packedResult: string,
+    signature?: string,
+  ) => {
+    try {
+      const { data } =
+        (await sendMail(draftID, {
+          date: dateRef.current,
+          signature: signature,
+          keys,
+          data: packedResult,
+        })) ?? {};
+
+      if (data) {
+        notification.success({
+          message: 'Sent',
+          description: 'Your message has been sent successfully.',
+        });
+
+        history.push({
+          pathname: '/home/list',
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Failed Send',
+        description: '' + error,
+      });
+    }
+  };
+
+  const handleClickSend = async () => {
     if (!draftID) return;
 
     if (receiver?.length < 1) {
@@ -84,29 +121,22 @@ const NewMail = (props: any) => {
       }).then(async (res) => {
         const { packedResult, keys } = res ?? {};
 
-        console.log('res', res);
         getPersonalSign(props.address, packedResult).then(async (signature) => {
-          const { data } =
-            (await sendMail(draftID, {
-              date: dateRef.current,
-              signature: signature,
-              keys,
-              data: packedResult,
-            })) ?? {};
-
-          if (data) {
-            notification.success({
-              message: 'Sent',
-              description: 'Your message has been sent successfully.',
-            });
-
-            history.push({
-              pathname: '/home/list',
+          if (signature === false) {
+            Modal.confirm({
+              title: 'Failed to get your personal',
+              content:
+                'Would you like to send an ordinary e-mail without signature?',
+              okText: 'Yes, Send it',
+              onOk: () => {
+                handleSend(keys, packedResult);
+              },
+              cancelText: 'No, I will try send it later',
             });
           }
         });
       });
-    } catch (error) {
+    } catch (error: any) {
       notification.error({
         message: 'Failed Send',
         description: '' + error,
@@ -118,18 +148,21 @@ const NewMail = (props: any) => {
     if (!draftID) return;
 
     try {
+      let html = quillRef.current.getHTML(),
+        text = quillRef.current.getText();
+
+      // 加密邮件
+      if (type === MetaMailTypeEn.Encrypted) {
+        html = CryptoJS.AES.encrypt(html, props.publicKey).toString();
+        text = CryptoJS.AES.encrypt(text, props.publicKey).toString();
+      }
+
       const { data } =
         (await updateMail(draftID, {
           subject: subject ?? '(No Subject)',
           mail_to: receiver,
-          part_html: CryptoJS.AES.encrypt(
-            quillRef.current.getHTML(),
-            props.publicKey,
-          ).toString(),
-          part_text: CryptoJS.AES.encrypt(
-            quillRef.current.getText(),
-            props.publicKey,
-          ).toString(),
+          part_html: html,
+          part_text: text,
         })) ?? {};
 
       if (data?.message_id !== draftID) {
@@ -185,7 +218,7 @@ const NewMail = (props: any) => {
       form.append('related', related);
       cid && form.append('cid', cid);
 
-      const { data } = await uploadAttachment(draftID, form);
+      await uploadAttachment(draftID, form);
     } catch {
       notification.error({
         message: 'Failed Upload',
@@ -216,7 +249,7 @@ const NewMail = (props: any) => {
 
   // useInterval(() => {
   //   handleSave();
-  // }, 5000);
+  // }, 10000);
 
   return (
     <div className={styles.container}>
@@ -283,6 +316,7 @@ const NewMail = (props: any) => {
                 ...fileProps,
               });
 
+              // 加密邮件才需要对附件进行加密
               if (type === MetaMailTypeEn.Encrypted) {
                 const encrypted = CryptoJS.AES.encrypt(
                   CryptoJS.lib.WordArray.create(input as any),
@@ -327,7 +361,7 @@ const NewMail = (props: any) => {
         <Button
           type="primary"
           style={{ borderRadius: '6px', width: '100px' }}
-          onClick={handleSend}
+          onClick={handleClickSend}
         >
           Send
         </Button>

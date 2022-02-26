@@ -98,7 +98,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
               ? styles.on
               : mailType !== undefined && styles.off,
           )}
-          onClick={() => handleClickNewMail(MetaMailTypeEn.Plain)}
+          onClick={() => handleClickNewMail(MetaMailTypeEn.Signed)}
         >
           Plain Mail
         </div>

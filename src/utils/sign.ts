@@ -18,14 +18,13 @@ export const getPersonalSign = async (
       params: [
         `0x${Buffer.from(msg, 'utf8').toString('hex')}`,
         account,
-        password,
+        password ?? '',
       ],
     });
 
-    console.log(sign, '----sign');
     return Promise.resolve(sign);
   } catch (err) {
-    console.error(err);
+    return Promise.resolve(false);
   }
 };
 
