@@ -31,5 +31,5 @@ export const mergeUrlWithParams = (
   }
   const { uri, params: _params } = separateUrl(url);
   const query = qs.stringify(deleteEmpty({ ..._params, ...params }));
-  return `${uri}?${query}`;
+  return `${uri}${query ? '?' + query : ''}`;
 };

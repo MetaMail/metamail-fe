@@ -32,7 +32,8 @@ const BlockInfos = [
   },
 ];
 
-function Login({ address, setUserAddress, setPublicKey }) {
+function Login(props: any) {
+  const { address, setUserAddress, setPublicKey } = props;
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
   // const [address, setUserAddress] = useState<string>();
   const [hasMetaMask, setHasMetaMask] = useState(false);
@@ -106,33 +107,35 @@ function Login({ address, setUserAddress, setPublicKey }) {
   };
 
   const getRandomAuth = async () => {
-    const { data } = (await getRandomStrToSign(address!)) ?? {};
+    try {
+      const { data } = await getRandomStrToSign(address!);
 
-    if (data) {
-      const { randomStr, signMethod, tokenForRandom } = data;
+      if (data) {
+        const { randomStr, signMethod, tokenForRandom } = data;
 
-      // TODO: signMethod 最好以1/2/3的形式进行枚举，而非string
-      const signedMessage = await handleSign(randomStr, address!);
+        // TODO: signMethod 最好以1/2/3的形式进行枚举，而非string
+        const signedMessage = await handleSign(randomStr, address!);
 
-      const res = await getJwtToken({
-        tokenForRandom,
-        signedMessage,
-      });
+        const res = await getJwtToken({
+          tokenForRandom,
+          signedMessage,
+        });
 
-      const { data: user } = res ?? {};
+        const { data: user } = res ?? {};
 
-      setPublicKey(user.user.public_key);
+        setPublicKey(user?.user?.public_key);
 
-      history.push({
-        pathname: '/home/list',
-        query: {
-          filter: FilterTypeEn.Inbox + '',
-        },
-      });
-    } else {
+        history.push({
+          pathname: '/home/list',
+          query: {
+            filter: FilterTypeEn.Inbox + '',
+          },
+        });
+      }
+    } catch (err) {
       notification.error({
         message: 'Failed',
-        description: 'It seems like we have a network problem.',
+        description: 'Looks like we have a network problem.',
       });
     }
   };

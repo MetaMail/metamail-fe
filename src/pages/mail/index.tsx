@@ -2,7 +2,7 @@ import { notification, PageHeader } from 'antd';
 import { IMailContentItem } from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getMailDetailByID } from '@/services';
 
 export default function Mail(props: any) {
@@ -11,9 +11,13 @@ export default function Mail(props: any) {
     location: { query },
     history,
   } = props;
-  const handleClickMail = async (id: string) => {
+
+  const handleLoad = async () => {
     try {
-      const { data } = await getMailDetailByID(query?.id);
+      if (!query?.id && query.id.length === 0) {
+        throw new Error();
+      }
+      const { data } = await getMailDetailByID(window.btoa(query.id));
 
       if (data) {
         setMail(data);
@@ -26,6 +30,10 @@ export default function Mail(props: any) {
       setMail(undefined);
     }
   };
+
+  useEffect(() => {
+    handleLoad();
+  }, [query]);
 
   return (
     <div className={styles.container}>

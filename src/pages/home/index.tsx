@@ -11,6 +11,7 @@ import { Button, Layout } from 'antd';
 import styles from './index.less';
 import logo from '@/assets/logo/logo.svg';
 import SideMenu from '@/layouts/SideMenu';
+import { default as MailList } from '../list';
 
 const { Header, Content } = Layout;
 
@@ -39,7 +40,7 @@ export default function Home(props: {
           <SideMenu />
 
           <Content style={{ backgroundColor: '#fff' }}>
-            {props.children}
+            {props.children ?? <MailList />}
           </Content>
         </Layout>
       </Layout>

@@ -54,13 +54,12 @@ const NewMail = (props: any) => {
     signature?: string,
   ) => {
     try {
-      const { data } =
-        (await sendMail(draftID, {
-          date: dateRef.current,
-          signature: signature,
-          keys,
-          data: packedResult,
-        })) ?? {};
+      const { data } = await sendMail(draftID, {
+        date: dateRef.current,
+        signature: signature,
+        keys,
+        data: packedResult,
+      });
 
       if (data) {
         notification.success({
@@ -75,7 +74,7 @@ const NewMail = (props: any) => {
     } catch (error) {
       notification.error({
         message: 'Failed Send',
-        description: '' + error,
+        description: 'Looks like we have a network problem.',
       });
     }
   };
@@ -124,7 +123,7 @@ const NewMail = (props: any) => {
         getPersonalSign(props.address, packedResult).then(async (signature) => {
           if (signature === false) {
             Modal.confirm({
-              title: 'Failed to get your personal',
+              title: 'Failed to get your personal signature',
               content:
                 'Would you like to send an ordinary e-mail without signature?',
               okText: 'Yes, Send it',
@@ -133,6 +132,8 @@ const NewMail = (props: any) => {
               },
               cancelText: 'No, I will try send it later',
             });
+          } else {
+            handleSend(keys, packedResult, signature);
           }
         });
       });
@@ -157,13 +158,12 @@ const NewMail = (props: any) => {
         text = CryptoJS.AES.encrypt(text, props.publicKey).toString();
       }
 
-      const { data } =
-        (await updateMail(draftID, {
-          subject: subject ?? '(No Subject)',
-          mail_to: receiver,
-          part_html: html,
-          part_text: text,
-        })) ?? {};
+      const { data } = await updateMail(draftID, {
+        subject: subject ?? '(No Subject)',
+        mail_to: receiver,
+        part_html: html,
+        part_text: text,
+      });
 
       if (data?.message_id !== draftID) {
         console.warn('DANGER: wrong updating source');
@@ -172,8 +172,8 @@ const NewMail = (props: any) => {
       dateRef.current = data?.mail_date;
     } catch (error) {
       notification.error({
-        message: 'Invalid mail content',
-        description: '' + error,
+        message: 'Failed to save mail',
+        description: 'Looks like we have a network problem' + error,
       });
     }
   };

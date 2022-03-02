@@ -17,12 +17,7 @@ export interface IUserStateProps {
 
 export default {
   namespace: 'user',
-  state: {
-    publicKey:
-      '0xb38c15782b05b56c5c12ca391cab534dfe0beca3a54248e763be436308fd075ba571080d4b8163e9cf58cab939a7a66889d6d250cd242e46bb62ab5a0edef736',
-
-    address: '0x51AE47d66E1434574632403a2EdE8E2d7CEE70b9',
-  },
+  state: {},
   reducers: {
     saveUnreadCount(
       state: IUserStateProps,

@@ -24,13 +24,11 @@ import {
 import { connect } from 'umi';
 
 function MailList(props: any) {
-  const {
-    location: { query },
-    history,
-  } = props;
+  const { location, history } = props;
 
-  const filter = query?.filter ? Number(query.filter) : 0;
-  const mailBox = getMailBoxType(filter);
+  const queryRef = useRef(0);
+
+  const mailBox = getMailBoxType(queryRef.current);
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>();
@@ -57,7 +55,7 @@ function MailList(props: any) {
     setLoading(true);
     try {
       const { data } = await getMailList({
-        filter,
+        filter: queryRef.current,
         page_index: pageIdx,
       });
 
@@ -80,7 +78,10 @@ function MailList(props: any) {
 
   useEffect(() => {
     fetchMailList();
-  }, [query]);
+    queryRef.current = location?.query?.filter
+      ? Number(location?.query?.filter)
+      : 0;
+  }, [pageIdx, location?.query]);
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -201,8 +202,11 @@ function MailList(props: any) {
             date={item.mail_date}
             isRead={item.read === ReadStatusTypeEn.read}
             onClick={() => {
-              history.push('/home/mail', {
-                id: item?.message_id,
+              history.push({
+                pathname: '/home/mail',
+                query: {
+                  id: item?.message_id,
+                },
               });
             }}
             select={selectList.has(item.message_id)}
