@@ -151,7 +151,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
             </Menu.Item>
           );
         })}
-
+        {/*
         <SubMenu
           key={MenuItems.contacts.key}
           icon={<Icon url={contacts} />}
@@ -166,7 +166,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
         </SubMenu>
         <Menu.Item key={MenuItems.settings.key} icon={<SettingOutlined />}>
           {MenuItems.settings.title}
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </Sider>
   );

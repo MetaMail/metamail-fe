@@ -21,10 +21,10 @@ import {
   leftArrow,
   rightArrow,
 } from '@/assets/icons';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 
 function MailList(props: any) {
-  const { location, history } = props;
+  const { location } = props;
 
   const queryRef = useRef(0);
 

@@ -1,9 +1,13 @@
 import { notification, PageHeader } from 'antd';
-import { IMailContentItem } from '../home/interfaces';
+import {
+  IMailContentItem,
+  MarkTypeEn,
+  ReadStatusTypeEn,
+} from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
 import { useState, useEffect } from 'react';
-import { getMailDetailByID } from '@/services';
+import { changeMailStatus, getMailDetailByID } from '@/services';
 
 export default function Mail(props: any) {
   const [mail, setMail] = useState<IMailContentItem>();
@@ -31,7 +35,12 @@ export default function Mail(props: any) {
     }
   };
 
+  const handleMarkRead = async () => {
+    const mails = query?.id && query.id.length > 0 ? [query.id] : [];
+    await changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
+  };
   useEffect(() => {
+    handleMarkRead();
     handleLoad();
   }, [query]);
 

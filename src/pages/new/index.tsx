@@ -3,12 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
-import {
-  changeMailStatus,
-  sendMail,
-  updateMail,
-  uploadAttachment,
-} from '@/services';
+import { sendMail, updateMail, uploadAttachment } from '@/services';
 import { IPersonItem, MarkTypeEn, MetaMailTypeEn } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
@@ -251,6 +246,35 @@ const NewMail = (props: any) => {
   //   handleSave();
   // }, 10000);
 
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+  ];
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -354,6 +378,8 @@ const NewMail = (props: any) => {
           }}
           theme="snow"
           placeholder={'Writing your message here...'}
+          modules={modules}
+          formats={formats}
         />
       </div>
 
