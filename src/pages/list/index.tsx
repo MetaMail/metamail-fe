@@ -77,10 +77,10 @@ function MailList(props: any) {
   };
 
   useEffect(() => {
-    fetchMailList();
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
+    fetchMailList();
   }, [pageIdx, location?.query]);
 
   const handleChangeMailStatus = async (

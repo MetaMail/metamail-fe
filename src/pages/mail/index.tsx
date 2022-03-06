@@ -1,6 +1,7 @@
 import { notification, PageHeader } from 'antd';
 import {
   IMailContentItem,
+  MailBoxTypeEn,
   MarkTypeEn,
   ReadStatusTypeEn,
 } from '../home/interfaces';
@@ -36,7 +37,10 @@ export default function Mail(props: any) {
   };
 
   const handleMarkRead = async () => {
-    const mails = query?.id && query.id.length > 0 ? [query.id] : [];
+    const mails =
+      query?.id && query.id.length > 0
+        ? [{ message_id: query.id, mailbox: MailBoxTypeEn.Inbox }]
+        : [];
     await changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
   };
   useEffect(() => {
