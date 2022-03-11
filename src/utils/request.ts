@@ -6,7 +6,7 @@ const BASE_URL = 'https://api.metamail.ink/';
 
 const ajax = axios.create({
   baseURL: BASE_URL,
-  withCredentials: false,
+  withCredentials: true,
   timeout: 5000,
 });
 
