@@ -39,7 +39,7 @@ export default function Mail(props: any) {
   const handleMarkRead = async () => {
     const mails =
       query?.id && query.id.length > 0
-        ? [{ message_id: query.id, mailbox: MailBoxTypeEn.Inbox }]
+        ? [{ message_id: query.id, mailbox: query.type }]
         : [];
     await changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
   };

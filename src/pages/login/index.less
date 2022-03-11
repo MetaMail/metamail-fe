@@ -22,14 +22,30 @@
         height: 48px;
         width: 48px;
       }
+      font-family: 'Poppins';
 
-      .brand {
-        font-family: 'Rowdies', cursive;
-        font-size: 20px;
-        line-height: 25px;
-        margin-left: 8px;
-        font-weight: 700px;
-        color: #000000;
+      .brandBar {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        font-family: 'Poppins';
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        .brand {
+          margin-left: 8px;
+          font-weight: 500;
+          font-size: 32px;
+          line-height: 27px;
+          color: #000000;
+        }
+
+        .version {
+          margin-left: 8px;
+          font-size: 20px;
+          line-height: 20px;
+          vertical-align: bottom;
+          color: #575757;
+        }
       }
     }
 
@@ -38,10 +54,18 @@
     }
 
     .connectBtn {
-      border-radius: 8px;
-      background-color: #1890ff;
-      border-color: #1890ff;
-      color: #fff;
+      background-color: #2e82e5;
+      border-color: #2e82e5;
+      width: 199px;
+      height: 50px;
+      background: #2e82e5;
+      border-radius: 24px;
+
+      font-family: 'Poppins';
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 30px;
+      color: #ffffff;
     }
   }
 
@@ -62,7 +86,7 @@
       color: #1890ff;
       margin-bottom: 0;
 
-      font-family: 'Rowdies', cursive;
+      font-family: 'Rowdies';
       font-style: normal;
       font-weight: 300;
       font-size: 40px;

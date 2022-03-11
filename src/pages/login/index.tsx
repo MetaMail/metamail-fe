@@ -163,7 +163,10 @@ function Login(props: any) {
       <header className={styles.header}>
         <div className={styles.left}>
           <img src={logo} className={styles.logo} />
-          <span className={styles.brand}>MetaMail</span>
+          <div className={styles.brandBar}>
+            <div className={styles.brand}>MetaMail</div>
+            <div className={styles.version}>Beta</div>
+          </div>
         </div>
         <div className={styles.right}>
           <Button

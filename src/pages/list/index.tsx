@@ -190,6 +190,7 @@ function MailList(props: any) {
         </div>
       </div>
       <List
+        className={styles.list}
         size="large"
         bordered
         dataSource={list}
@@ -206,6 +207,7 @@ function MailList(props: any) {
                 pathname: '/home/mail',
                 query: {
                   id: item?.message_id,
+                  type: item?.mailbox + '',
                 },
               });
             }}
@@ -215,7 +217,7 @@ function MailList(props: any) {
                 [
                   {
                     message_id: item?.message_id,
-                    mailbox: mailBox,
+                    mailbox: item?.mailbox,
                   },
                 ],
                 isSelect ? MarkTypeEn.Starred : MarkTypeEn.Normal,
@@ -239,6 +241,10 @@ function MailList(props: any) {
   );
 }
 
+const mapStateToProps = (state: any) => {
+  return state.user ?? {};
+};
+
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
@@ -249,4 +255,4 @@ const mapDispatchToProps = (
     }),
 });
 
-export default connect(undefined, mapDispatchToProps)(MailList);
+export default connect(mapStateToProps, mapDispatchToProps)(MailList);

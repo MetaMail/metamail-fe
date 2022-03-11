@@ -38,9 +38,9 @@ function IndexPage(props: any) {
   return !isLogin ? <Login /> : <Home />;
 }
 
-// const mapStateToProps = (state: any) => {
-//   return state.user ?? {};
-// };
+const mapStateToProps = (state: any) => {
+  return state.user ?? {};
+};
 
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
@@ -57,4 +57,4 @@ const mapDispatchToProps = (
     }),
 });
 
-export default connect(() => {}, mapDispatchToProps)(IndexPage);
+export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);
