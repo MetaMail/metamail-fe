@@ -3,7 +3,6 @@
 .itemWrapper {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   padding: 20px;
   cursor: pointer;
@@ -17,62 +16,70 @@
   font-family: 'Rowdies';
   font-weight: 300;
 
-  .left {
+  .markBar {
     display: flex;
     flex-direction: row;
-    max-width: 700px;
-    color: #575757;
+    column-gap: 8px;
+    margin-right: 12px;
+  }
 
-    .markBar {
+  .detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+
+    .left {
       display: flex;
       flex-direction: row;
-      column-gap: 8px;
-      margin-right: 12px;
+      max-width: 700px;
+      color: #575757;
+
+      .infoBar {
+        display: flex;
+        flex-direction: row;
+        span {
+          display: block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .from {
+          width: 150px;
+          margin-right: 20px;
+          max-width: 200px;
+        }
+
+        .subject {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          max-width: 200px;
+        }
+      }
     }
 
-    .infoBar {
-      display: flex;
-      flex-direction: row;
-      span {
-        display: block;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
+    .right {
+      .date {
+        font-size: 12px;
 
-      .from {
-        width: 150px;
-        margin-right: 20px;
-        max-width: 200px;
-      }
+        width: 70px;
+        height: 16px;
 
-      .subject {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        font-family: 'Rowdies';
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 15px;
 
-        max-width: 200px;
+        color: #c4c4c4;
       }
     }
   }
 
-  .right {
-    .date {
-      font-size: 12px;
-
-      width: 70px;
-      height: 16px;
-
-      font-family: 'Rowdies';
-      font-weight: 300;
-      font-size: 12px;
-      line-height: 15px;
-
-      color: #c4c4c4;
-    }
-  }
-
-  .read {
+  .unread {
     font-weight: 700;
   }
 }

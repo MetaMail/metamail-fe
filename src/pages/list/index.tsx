@@ -162,7 +162,7 @@ function MailList(props: any) {
               {pageIdx ?? '-'} /{pageNum ?? '-'}
             </span>
 
-            <span style={{ marginLeft: '8px' }}>Go</span>
+            {/* <span style={{ marginLeft: '8px' }}>Go</span> */}
           </div>
           <div className={styles.pageController}>
             <Icon
@@ -201,7 +201,7 @@ function MailList(props: any) {
             from={item.mail_from}
             subject={item.subject}
             date={item.mail_date}
-            isRead={item.read === ReadStatusTypeEn.read}
+            isRead={item.read == ReadStatusTypeEn.read}
             onClick={() => {
               history.push({
                 pathname: '/home/mail',
