@@ -6,6 +6,7 @@ const APIs = {
   updateMail: '/mails/{mail_id}', // patch方法，更新邮件内容
   sendMail: '/mails/{mail_id}/send', // 发送邮件
   uploadAttachment: '/mails/{mail_id}/attachments', //上传附件
+  deleteAttachment: '/mails/{mail_id}/attachments/{attachment_id} ',
 };
 
 export function createDraft(type: MetaMailTypeEn, key?: string) {
@@ -41,5 +42,15 @@ export function sendMail(mailId: string, props: Record<string, any>) {
 export function uploadAttachment(mailId: string, data: FormData) {
   return request(
     APIs.uploadAttachment.replace('{mail_id}', window.btoa(mailId)),
-  ).post(data);
+  ).post(data, {
+    timeout: 60000,
+  });
+}
+
+export function deleteAttachment(mailId: string, attachmentId: string) {
+  return request(
+    APIs.deleteAttachment
+      .replace('{mail_id}', window.btoa(mailId))
+      .replace('{attachment_id}', attachmentId),
+  ).delete();
 }

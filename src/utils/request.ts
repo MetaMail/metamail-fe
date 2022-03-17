@@ -57,6 +57,19 @@ const request = (url: string, config?: Record<string, string>) => {
 
       if (res && (res.status === 200 || res.status === 304)) return res.data;
     },
+
+    delete: async (config: requestParams = {}) => {
+      let res;
+      try {
+        res = await ajax.delete(url, {
+          ...(config ? { ...config } : {}),
+        });
+      } catch (e) {
+        console.error('Network went wrong, ', e);
+      }
+
+      if (res && (res.status === 200 || res.status === 304)) return res.data;
+    },
   };
 };
 

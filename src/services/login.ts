@@ -14,3 +14,7 @@ export function getRandomStrToSign(addr: string) {
 export function getJwtToken(params: Record<string, any>) {
   return request(APIs.getAuthToken).post(params);
 }
+
+export function getLogout() {
+  return request(APIs.getAuthToken).delete();
+}

@@ -5,7 +5,9 @@ import {
   FilterTypeEn,
   getMailBoxType,
   IMailItem,
+  MailTypeIconMap,
   MarkTypeEn,
+  MetaMailTypeEn,
   ReadStatusTypeEn,
 } from '../home/interfaces';
 import { changeMailStatus, getMailList, IMailChangeParams } from '@/services';
@@ -201,7 +203,9 @@ function MailList(props: any) {
             from={item.mail_from}
             subject={item.subject}
             date={item.mail_date}
+            typeIcon={MailTypeIconMap?.[item.meta_type as MetaMailTypeEn]}
             isRead={item.read == ReadStatusTypeEn.read}
+            abstract={item?.digest}
             onClick={() => {
               history.push({
                 pathname: '/home/mail',

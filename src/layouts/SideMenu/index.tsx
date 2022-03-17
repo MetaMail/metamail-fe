@@ -100,7 +100,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
           )}
           onClick={() => handleClickNewMail(MetaMailTypeEn.Signed)}
         >
-          Plain Mail
+          Plain
         </div>
         <div
           className={cn(
@@ -112,7 +112,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
           )}
           onClick={() => handleClickNewMail(MetaMailTypeEn.Encrypted)}
         >
-          Encrypted Mail
+          Encrypted
         </div>
         <img
           src={write}

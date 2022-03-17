@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  src: url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500;1,600&family=Rowdies:wght@300;400;700&display=swap');
+}
+
 .container {
   position: relative;
 
@@ -12,7 +19,7 @@
     width: 60px;
     height: 60px;
     border-radius: 30px;
-    background-color: #1890ff;
+    background-color: #2e82e5;
     color: #fff;
   }
 
@@ -60,7 +67,43 @@
     }
 
     .right {
-      color: #fff;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .addressBar {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 15px;
+        color: #575757;
+
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+.dropMenu {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  padding: 8px 0px;
+  background-color: #fff;
+
+  .item {
+    min-width: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 12px;
+    &:hover {
+      background-color: #ccc;
     }
   }
 }

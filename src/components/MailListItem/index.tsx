@@ -3,8 +3,10 @@ import React from 'react';
 import cn from 'classnames';
 import moment, { Moment } from 'moment';
 import {
+  MailTypeIconMap,
   IPersonItem,
   MarkTypeEn,
+  MetaMailTypeEn,
   ReadStatusTypeEn,
 } from '@/pages/home/interfaces';
 import { Popover } from 'antd';
@@ -18,6 +20,8 @@ interface IMailItemProps {
   isRead: boolean;
   select?: boolean;
   mark?: MarkTypeEn;
+  typeIcon?: string;
+  abstract?: string;
   onClick: () => void;
   onSelect: (isSelected: boolean) => void;
   onFavorite: (isSelected: boolean) => void;
@@ -33,6 +37,8 @@ export default function MailListItem({
   onFavorite,
   select,
   mark,
+  typeIcon,
+  abstract,
 }: IMailItemProps) {
   return (
     <div className={styles.itemWrapper}>
@@ -49,7 +55,7 @@ export default function MailListItem({
           onClick={onFavorite}
           select={mark === MarkTypeEn.Starred}
         />
-        {/* <Icon url={meta} /> */}
+        {typeIcon && <Icon url={typeIcon} />}
       </div>
       <div className={styles.detail} onClick={onClick}>
         <div className={cn(styles.left, isRead ? null : styles.unread)}>
@@ -66,7 +72,8 @@ export default function MailListItem({
                 {from?.name && from.name.length > 0 ? from.name : from.address}
               </span>
             </Popover>
-            <span className={styles.subject}>{subject}</span>
+            <div className={styles.subject}>{subject}</div>
+            <div className={styles.abstract}>{abstract}</div>
           </div>
         </div>
         <div className={styles.right}>

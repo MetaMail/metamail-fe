@@ -1,3 +1,5 @@
+import { encryptedMail, signedMail } from '@/assets';
+
 export enum AccountStatusTypeEn {
   Normal = 0,
   Locked,
@@ -27,6 +29,12 @@ export enum MetaMailTypeEn {
   Signed = 1,
   Encrypted = 2,
 }
+
+export const MailTypeIconMap = {
+  [MetaMailTypeEn.Signed]: signedMail,
+  [MetaMailTypeEn.Encrypted]: encryptedMail,
+  [MetaMailTypeEn.Plain]: undefined,
+};
 
 export const getMailBoxType = (filter: FilterTypeEn) => {
   switch (filter) {

@@ -37,6 +37,15 @@ export default {
         address,
       };
     },
+    saveUserEnsName(
+      state: IUserStateProps,
+      { payload: ensName }: { payload: string },
+    ) {
+      return {
+        ...state,
+        ensName,
+      };
+    },
     savePublicKey(
       state: IUserStateProps,
       { payload: publicKey }: { payload: string },
@@ -67,6 +76,12 @@ export default {
     *setUserAddress({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
         type: 'saveUserAddress',
+        payload,
+      });
+    },
+    *setUserEnsName({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
+      yield put({
+        type: 'saveUserEnsName',
         payload,
       });
     },

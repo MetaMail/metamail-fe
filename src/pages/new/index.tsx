@@ -3,7 +3,12 @@ import { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
-import { sendMail, updateMail, uploadAttachment } from '@/services';
+import {
+  deleteAttachment,
+  sendMail,
+  updateMail,
+  uploadAttachment,
+} from '@/services';
 import { IPersonItem, MarkTypeEn, MetaMailTypeEn } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
@@ -174,7 +179,7 @@ const NewMail = (props: any) => {
   };
 
   const handleFormatReceivers = () => {
-    const values = toStr?.split(';');
+    const values = toStr?.trim().split(';');
     const res: IPersonItem[] = [];
 
     values?.forEach((item) => {
@@ -200,6 +205,7 @@ const NewMail = (props: any) => {
   };
 
   const handleUploadAttachment = async (
+    file: any,
     attachment: Blob,
     sha256: string,
     related: AttachmentRelatedTypeEn,
@@ -213,7 +219,9 @@ const NewMail = (props: any) => {
       form.append('related', related);
       cid && form.append('cid', cid);
 
-      await uploadAttachment(draftID, form);
+      const { data } = await uploadAttachment(draftID, form);
+
+      file.sid = data?.attachment_id;
     } catch {
       notification.error({
         message: 'Failed Upload',
@@ -222,7 +230,7 @@ const NewMail = (props: any) => {
     }
   };
 
-  const handleFinalFileUpload = (file: File) => {
+  const handleFinalFileUpload = (file: File, originFile: any) => {
     const reader = new FileReader();
 
     let res;
@@ -234,7 +242,12 @@ const NewMail = (props: any) => {
 
         const sha256 = CryptoJS.SHA256(wordArray).toString();
 
-        handleUploadAttachment(file, sha256, AttachmentRelatedTypeEn.Outside);
+        handleUploadAttachment(
+          originFile,
+          file,
+          sha256,
+          AttachmentRelatedTypeEn.Outside,
+        );
       }
     };
 
@@ -242,9 +255,9 @@ const NewMail = (props: any) => {
     return res;
   };
 
-  // useInterval(() => {
-  //   handleSave();
-  // }, 10000);
+  useInterval(() => {
+    handleSave();
+  }, 30000);
 
   const modules = {
     toolbar: [
@@ -323,6 +336,18 @@ const NewMail = (props: any) => {
 
       <Upload
         maxCount={5}
+        onRemove={async (file) => {
+          if ((file?.originFileObj as any).sid) {
+            const { data } = await deleteAttachment(
+              draftID,
+              (file?.originFileObj as any).sid,
+            );
+
+            if (data) return true;
+
+            return false;
+          }
+        }}
         beforeUpload={(file) => {
           const reader = new FileReader();
 
@@ -354,7 +379,7 @@ const NewMail = (props: any) => {
                 });
               }
 
-              handleFinalFileUpload(finalFile);
+              handleFinalFileUpload(finalFile, file);
             }
           };
         }}
@@ -364,7 +389,7 @@ const NewMail = (props: any) => {
             <Icon url={attachment} />
             <span>Upload</span>
           </div>
-          <span className={styles.tip}>（Single file up to 1GB）</span>
+          <span className={styles.tip}>（Single file 20MB）</span>
         </div>
       </Upload>
 

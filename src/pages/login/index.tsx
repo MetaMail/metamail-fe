@@ -21,19 +21,42 @@ const BlockInfos = [
     desc: 'Use the wallet to log in our mailbox directly, send and receive mails with users of our mailbox and other common mainstream mailboxes. Totally free!',
   },
   {
-    imgSrc: encrypted,
-    title: 'Protect mail with p2p encryption',
-    desc: 'Mails sent and received by Metamail users could be optionally encrypted, and only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
-  },
-  {
     imgSrc: sign,
     title: 'Sign every mail you send',
     desc: 'Sign every mail digitally with your wallet. No forged mails anymore!',
   },
+  {
+    imgSrc: encrypted,
+    title: 'Protect mail with p2p encryption*',
+    desc: 'Mails sent and received by Metamail users could be optionally encrypted, and only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
+    extra: (
+      <div
+        style={{
+          marginTop: '15px',
+          fontFamily: 'Poppins',
+          fontWeight: 400,
+          fontSize: '16px',
+          lineHeight: '24px',
+          textAlign: 'center',
+          color: '#575757',
+        }}
+      >
+        <span>*Under developing. </span>
+        <span
+          style={{
+            color: '#2E82E5',
+            fontWeight: 700,
+          }}
+        >
+          Coming Soon!
+        </span>
+      </div>
+    ),
+  },
 ];
 
 function Login(props: any) {
-  const { address, setUserAddress, setPublicKey } = props;
+  const { address, setUserAddress, setPublicKey, setUserEnsName } = props;
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
   // const [address, setUserAddress] = useState<string>();
   const [hasMetaMask, setHasMetaMask] = useState(false);
@@ -124,6 +147,7 @@ function Login(props: any) {
         const { data: user } = res ?? {};
 
         setPublicKey(user?.user?.public_key);
+        setUserEnsName(user?.user?.ens);
 
         history.push({
           pathname: '/home/list',
@@ -180,26 +204,21 @@ function Login(props: any) {
         </div>
       </header>
       <div className={styles.detailBox}>
-        {/* <img src={logo} className={styles.logo}></img> */}
+        <img src={logo} className={styles.logo}></img>
 
         <div className={styles.title}>
           Your web3.0 email <br /> Create and use your encrypted email
         </div>
         <div className={styles.divider}></div>
-        <p className={styles.desc}>
-          Connect the email with your wallet, and send your encrypted or regular
-          email <br /> by your choice, to another metamail or common mail
-          product user.
-        </p>
-        {address ?? (
-          <Button
-            type="primary"
-            className={styles.tryBtn}
-            onClick={handleOpenConnectModal}
-          >
-            Try It Now!
-          </Button>
-        )}
+        <p className={styles.desc}>All functions are free.</p>
+
+        <Button
+          type="primary"
+          className={styles.tryBtn}
+          onClick={handleOpenConnectModal}
+        >
+          Try It Now!
+        </Button>
 
         <div className={styles.showSection}>
           {BlockInfos?.map((block, idx) => (
@@ -252,6 +271,11 @@ const mapDispatchToProps = (
   setPublicKey: (data: any) =>
     dispatch({
       type: 'user/setPublicKey',
+      payload: data,
+    }),
+  setUserEnsName: (data: any) =>
+    dispatch({
+      type: 'user/setUserEnsName',
       payload: data,
     }),
 });

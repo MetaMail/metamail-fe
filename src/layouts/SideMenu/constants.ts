@@ -15,7 +15,7 @@ export const SiderFilterMap = {
   [FilterTypeEn.Encrypted]: { title: 'Encrypted Inbox', logo: encryptedInbox },
   [FilterTypeEn.Draft]: { title: 'Draft', logo: draft },
   [FilterTypeEn.Sent]: { title: 'Sent', logo: sent },
-  [FilterTypeEn.Read]: { title: 'Read', logo: read },
+  // [FilterTypeEn.Read]: { title: 'Read', logo: read },
   [FilterTypeEn.Unread]: { title: 'Unread', logo: unread },
   // [FilterTypeEn.Starred]: 'Starred',
   [FilterTypeEn.Trash]: { title: 'Trash', logo: trash },

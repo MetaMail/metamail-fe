@@ -24,6 +24,8 @@ import markFavorite from './markFavorite.svg';
 import leftArrow from './leftArrow.svg';
 import rightArrow from './rightArrow.svg';
 import attachment from './attachment.svg';
+import clipboard from './clipboard.svg';
+import logout from './logout.svg';
 
 export {
   draft,
@@ -52,4 +54,6 @@ export {
   leftArrow,
   rightArrow,
   attachment,
+  clipboard,
+  logout,
 };
