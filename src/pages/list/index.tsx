@@ -53,8 +53,10 @@ function MailList(props: any) {
     return res;
   };
 
-  const fetchMailList = async () => {
-    setLoading(true);
+  const fetchMailList = async (showLoading = true) => {
+    if (showLoading) {
+      setLoading(true);
+    }
     try {
       const { data } = await getMailList({
         filter: queryRef.current,
@@ -74,7 +76,9 @@ function MailList(props: any) {
         description: 'Can not fetch mail list for now.',
       });
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   };
 
@@ -99,7 +103,7 @@ function MailList(props: any) {
         description: 'Sorry, network problem.',
       });
     } finally {
-      fetchMailList();
+      fetchMailList(false);
     }
   };
   return (

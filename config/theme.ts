@@ -1,7 +1,7 @@
 export default {
   'primary-color': '#2E82E5',
-  'body-background': '#575757',
-  // 'primary-color-hover':'',
+  // 'body-background': '#575757',
+  'primary-color-hover': '#6FB1FF',
   // Sider背景色
   'layout-sider-background': '#fff',
   // Header

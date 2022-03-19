@@ -123,9 +123,8 @@ const NewMail = (props: any) => {
         getPersonalSign(props.address, packedResult).then(async (signature) => {
           if (signature === false) {
             Modal.confirm({
-              title: 'Failed to get your personal signature',
-              content:
-                'Would you like to send an ordinary e-mail without signature?',
+              title: 'Failed to sign this mail',
+              content: 'Would you like to send without signature?',
               okText: 'Yes, Send it',
               onOk: () => {
                 handleSend(keys, packedResult);
@@ -411,10 +410,10 @@ const NewMail = (props: any) => {
       <div className={styles.footer}>
         <Button
           type="primary"
-          style={{ borderRadius: '6px', width: '100px' }}
+          style={{ borderRadius: '6px' }}
           onClick={handleClickSend}
         >
-          Send
+          Sign & Send
         </Button>
       </div>
     </div>

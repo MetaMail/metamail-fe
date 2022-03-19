@@ -94,7 +94,7 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
           className={cn(
             styles.btn,
             styles.plain,
-            mailType === MetaMailTypeEn.Plain
+            mailType === MetaMailTypeEn.Signed
               ? styles.on
               : mailType !== undefined && styles.off,
           )}
@@ -114,13 +114,13 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
         >
           Encrypted
         </div>
-        <img
+        {/* <img
           src={write}
           className={cn(
             styles.icon,
             mailType !== undefined ? styles.onIcon : null,
           )}
-        />
+        /> */}
       </div>
       <Menu
         style={{ width: SiderWidth }}
@@ -132,7 +132,11 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
       >
         {MailMenuItems.map((item) => {
           return (
-            <Menu.Item key={Number(item.key)} icon={<Icon url={item.logo} />}>
+            <Menu.Item
+              className={styles.menuItem}
+              key={Number(item.key)}
+              icon={<Icon url={item.logo} />}
+            >
               <div
                 className={styles.menuItemWrapper}
                 style={{

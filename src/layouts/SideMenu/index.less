@@ -1,10 +1,19 @@
 :global(.ant-menu-item-active) {
-  background-color: #e5e5e5;
+  background-color: #efefef;
 }
 
 .sider {
   display: flex;
   flex-direction: column;
+
+  .menuItem {
+    margin: 0 !important;
+    height: 40px;
+  }
+
+  .menuItem::after {
+    border-right: 4px solid #2e82e5;
+  }
 
   .createWrapper {
     padding: 10px 20px;
@@ -23,25 +32,25 @@
       text-align: center;
       height: 40px;
       width: 80px;
-      font-weight: 600;
-      font-size: 12px;
+      font-weight: 500;
+      font-size: 15px;
       line-height: 14px;
       color: #fff;
       cursor: pointer;
     }
 
     .plain {
-      border-top-left-radius: 2px;
-      border-bottom-left-radius: 2px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
       background: #575757;
       align-items: center;
       word-wrap: break-word;
     }
 
     .encrypted {
-      background: #6fb1ff;
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
+      background: #2e82e5;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
     }
 
     .on {
@@ -74,16 +83,16 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  font-family: Raleway;
-  color: #575757;
+  font-family: Poppins, Helvetica, Arial, sans-serif;
+  color: #373737;
 
   .title {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 19px;
   }
 
   .unreadBubble {
-    font-weight: 300;
+    // font-weight: 300;
     font-size: 12px;
     line-height: 10px;
   }

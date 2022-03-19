@@ -52,13 +52,15 @@ function Home(props: any) {
     <div className={styles.container}>
       <Layout>
         <Header className={styles.header}>
-          <div className={styles.left}>
-            <img src={logo} className={styles.logo} />
-            <div className={styles.brandBar}>
-              <div className={styles.brand}>MetaMail</div>
-              <div className={styles.version}>Beta</div>
+          <a href="/">
+            <div className={styles.left}>
+              <img src={logo} className={styles.logo} />
+              <div className={styles.brandBar}>
+                <div className={styles.brand}>MetaMail</div>
+                <div className={styles.version}>Beta</div>
+              </div>
             </div>
-          </div>
+          </a>
           <div className={styles.right}>
             <Dropdown
               overlay={
@@ -93,7 +95,7 @@ function Home(props: any) {
                         minWidth: '200px',
                         marginRight: '8px',
                         textAlign: 'center',
-                        fontWeight: 500,
+                        // fontWeight: 500,
                       }}
                     >
                       Logout

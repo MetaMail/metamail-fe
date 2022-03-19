@@ -17,7 +17,7 @@ const { isMetaMaskInstalled } = MetaMaskOnboarding;
 const BlockInfos = [
   {
     imgSrc: address,
-    title: 'Use your wallet and ens as email address',
+    title: 'Use wallet and ens as email address',
     desc: 'Use the wallet to log in our mailbox directly, send and receive mails with users of our mailbox and other common mainstream mailboxes. Totally free!',
   },
   {
@@ -33,9 +33,9 @@ const BlockInfos = [
       <div
         style={{
           marginTop: '15px',
-          fontFamily: 'Poppins',
+          fontFamily: 'Poppins, Helvetica, Arial, sans-serif',
           fontWeight: 400,
-          fontSize: '16px',
+          fontSize: '14px',
           lineHeight: '24px',
           textAlign: 'center',
           color: '#575757',
@@ -185,17 +185,19 @@ function Login(props: any) {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div className={styles.left}>
-          <img src={logo} className={styles.logo} />
-          <div className={styles.brandBar}>
-            <div className={styles.brand}>MetaMail</div>
-            <div className={styles.version}>Beta</div>
+        <a href="/">
+          <div className={styles.left}>
+            <img src={logo} className={styles.logo} />
+            <div className={styles.brandBar}>
+              <div className={styles.brand}>MetaMail</div>
+              <div className={styles.version}>Beta</div>
+            </div>
           </div>
-        </div>
+        </a>
         <div className={styles.right}>
           <Button
             type="primary"
-            ghost
+            // ghost
             onClick={handleOpenConnectModal}
             className={styles.connectBtn}
           >
@@ -207,10 +209,10 @@ function Login(props: any) {
         <img src={logo} className={styles.logo}></img>
 
         <div className={styles.title}>
-          Your web3.0 email <br /> Create and use your encrypted email
+          Your web3 email <br /> Create and use the encrypted email
         </div>
-        <div className={styles.divider}></div>
-        <p className={styles.desc}>All functions are free.</p>
+        {/* <div className={styles.divider}></div> */}
+        <p className={styles.desc}>All features are free</p>
 
         <Button
           type="primary"
@@ -229,10 +231,10 @@ function Login(props: any) {
 
       <footer className={styles.footer}>
         <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
-        <LinkElement name="Facebook" link="https://discord.gg/URYGebMHye" />
-        <LinkElement name="Github" link="https://discord.gg/URYGebMHye" />
+        {/* <LinkElement name="Facebook" link="https://discord.gg/URYGebMHye" /> */}
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
-        <LinkElement name="Blog" link="" />
+        <LinkElement name="Github" link="https://github.com/MetaMail" />
+        {/* <LinkElement name="Blog" link="" /> */}
         <LinkElement name="About Us" link="https://metamail.ink" />
       </footer>
 
