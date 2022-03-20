@@ -17,6 +17,7 @@ import { connect, history } from 'umi';
 import { AttachmentRelatedTypeEn, metaPack } from './utils';
 import { getPersonalSign } from '@/utils/sign';
 import useInterval from '@/utils/hooks';
+import { PostfixOfAddress } from '@/utils/constants';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -169,6 +170,9 @@ const NewMail = (props: any) => {
         mail_to: receiver,
         part_html: html,
         part_text: text,
+        mail_from: {
+          address: props.showName + PostfixOfAddress,
+        },
       });
 
       if (data?.message_id !== draftID) {
