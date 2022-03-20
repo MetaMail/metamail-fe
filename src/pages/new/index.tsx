@@ -119,6 +119,7 @@ const NewMail = (props: any) => {
           text_hash: CryptoJS.SHA256(text).toString(),
           html_hash: CryptoJS.SHA256(html).toString(),
           attachments_hash: shaListRef.current,
+          name: props.ensName,
         }).then(async (res) => {
           // const { packedResult, keys } = res ?? {};
           const { packedResult } = res ?? {};
@@ -172,6 +173,7 @@ const NewMail = (props: any) => {
         part_text: text,
         mail_from: {
           address: props.showName + PostfixOfAddress,
+          name: props.ensName ?? '',
         },
       });
 

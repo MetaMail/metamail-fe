@@ -24,6 +24,7 @@ export const metaPack = async (data: {
   text_hash: string;
   html_hash: string;
   attachments_hash?: string[];
+  name?: string;
 }) => {
   const {
     from,
@@ -34,12 +35,14 @@ export const metaPack = async (data: {
     text_hash,
     html_hash,
     attachments_hash,
+    name,
   } = data;
 
   let parts = [
     'From: ' +
       concatAddress({
         address: from + PostfixOfAddress,
+        name: name ?? '',
       }),
     'To: ' + to.map(concatAddress).join(', '),
   ];
