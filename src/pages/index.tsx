@@ -7,7 +7,7 @@ import Home from './home';
 import { connect } from 'umi';
 
 function IndexPage(props: any) {
-  const { setPublicKey, setUserAddress } = props;
+  const { setPublicKey, setUserAddress, setUserEnsName, setShowName } = props;
   const [isLogin, setIsLogin] = useState(false);
   /**
  *{
@@ -27,6 +27,12 @@ function IndexPage(props: any) {
 
       setPublicKey(data.public_key);
       setUserAddress(data.addr);
+      setShowName(data.addr);
+
+      if (data.ens && data.ens.length > 0) {
+        setUserEnsName(data.ens);
+        setShowName(data.ens);
+      }
     }
   };
 
@@ -53,6 +59,16 @@ const mapDispatchToProps = (
   setPublicKey: (data: any) =>
     dispatch({
       type: 'user/setPublicKey',
+      payload: data,
+    }),
+  setUserEnsName: (data: any) =>
+    dispatch({
+      type: 'user/setUserEnsName',
+      payload: data,
+    }),
+  setShowName: (data: any) =>
+    dispatch({
+      type: 'user/setShowName',
       payload: data,
     }),
 });

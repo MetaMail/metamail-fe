@@ -13,6 +13,7 @@ export interface IUserStateProps {
   unreadCount?: IUnreadCount;
   publicKey?: string;
   randomBits?: string; // 256位随机数作为对称密钥
+  showName?: string;
 }
 
 export default {
@@ -44,6 +45,15 @@ export default {
       return {
         ...state,
         ensName,
+      };
+    },
+    saveShowName(
+      state: IUserStateProps,
+      { payload: showName }: { payload: string },
+    ) {
+      return {
+        ...state,
+        showName,
       };
     },
     savePublicKey(
@@ -82,6 +92,12 @@ export default {
     *setUserEnsName({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
         type: 'saveUserEnsName',
+        payload,
+      });
+    },
+    *setShowName({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
+      yield put({
+        type: 'saveShowName',
         payload,
       });
     },

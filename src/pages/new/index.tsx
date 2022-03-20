@@ -39,6 +39,7 @@ const NewMail = (props: any) => {
   const reactQuillRef = useRef<ReactQuill>();
   const quillRef = useRef<any>();
   const dateRef = useRef<string>();
+  const shaListRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
@@ -49,7 +50,7 @@ const NewMail = (props: any) => {
   }, [reactQuillRef]);
 
   const handleSend = async (
-    keys: string[],
+    // keys: string[],
     packedResult: string,
     signature?: string,
   ) => {
@@ -57,7 +58,7 @@ const NewMail = (props: any) => {
       const { data } = await sendMail(draftID, {
         date: dateRef.current,
         signature: signature,
-        keys,
+        // keys,
         data: packedResult,
       });
 
@@ -111,14 +112,16 @@ const NewMail = (props: any) => {
         text = quillRef.current.getText();
 
       metaPack({
-        from: props.address,
+        from: props.ensName ?? props.address,
         to: receiver,
-        date: new Date(),
+        date: dateRef.current,
         subject,
         text_hash: CryptoJS.SHA256(text).toString(),
         html_hash: CryptoJS.SHA256(html).toString(),
+        attachments_hash: shaListRef.current,
       }).then(async (res) => {
-        const { packedResult, keys } = res ?? {};
+        // const { packedResult, keys } = res ?? {};
+        const { packedResult } = res ?? {};
 
         getPersonalSign(props.address, packedResult).then(async (signature) => {
           if (signature === false) {
@@ -127,12 +130,14 @@ const NewMail = (props: any) => {
               content: 'Would you like to send without signature?',
               okText: 'Yes, Send it',
               onOk: () => {
-                handleSend(keys, packedResult);
+                // handleSend(keys, packedResult);
+                handleSend(packedResult);
               },
               cancelText: 'No, I will try send it later',
             });
           } else {
-            handleSend(keys, packedResult, signature);
+            // handleSend(keys, packedResult, signature);
+            handleSend(packedResult, signature);
           }
         });
       });
@@ -220,7 +225,11 @@ const NewMail = (props: any) => {
 
       const { data } = await uploadAttachment(draftID, form);
 
-      file.sid = data?.attachment_id;
+      if (data) {
+        shaListRef.current.push(sha256);
+        file.sid = data?.attachment_id;
+        file.sha = sha256;
+      }
     } catch {
       notification.error({
         message: 'Failed Upload',
@@ -342,7 +351,16 @@ const NewMail = (props: any) => {
               (file?.originFileObj as any).sid,
             );
 
-            if (data) return true;
+            if (data) {
+              const idx = shaListRef.current.findIndex((sha) => {
+                return (file?.originFileObj as any)?.sha === sha;
+              });
+
+              if (idx > -1) {
+                shaListRef.current.splice(idx, 1);
+              }
+              return true;
+            }
 
             return false;
           }

@@ -56,7 +56,8 @@ const BlockInfos = [
 ];
 
 function Login(props: any) {
-  const { address, setUserAddress, setPublicKey, setUserEnsName } = props;
+  const { address, setUserAddress, setPublicKey, setUserEnsName, setShowName } =
+    props;
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
   // const [address, setUserAddress] = useState<string>();
   const [hasMetaMask, setHasMetaMask] = useState(false);
@@ -100,7 +101,9 @@ function Login(props: any) {
       const newAccounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
-      setUserAddress(Array.isArray(newAccounts) ? newAccounts[0] : newAccounts);
+      const newAddr = Array.isArray(newAccounts) ? newAccounts[0] : newAccounts;
+      setUserAddress(newAddr);
+      setShowName(newAddr);
     } catch (error: any) {
       notification.error({
         message: 'Failed connect to MetaMask',
@@ -147,7 +150,10 @@ function Login(props: any) {
         const { data: user } = res ?? {};
 
         setPublicKey(user?.user?.public_key);
-        setUserEnsName(user?.user?.ens);
+        if (user?.user?.ens?.length > 0) {
+          setUserEnsName(user.user.ens);
+          setShowName(user.user.ens);
+        }
 
         history.push({
           pathname: '/home/list',
@@ -285,6 +291,11 @@ const mapDispatchToProps = (
   setUserEnsName: (data: any) =>
     dispatch({
       type: 'user/setUserEnsName',
+      payload: data,
+    }),
+  setShowName: (data: any) =>
+    dispatch({
+      type: 'user/setShowName',
       payload: data,
     }),
 });

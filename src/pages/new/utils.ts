@@ -1,4 +1,5 @@
 import { getUserInfos } from '@/services/user';
+import { PostfixOfAddress } from '@/utils/constants';
 import { IPersonItem } from '../home/interfaces';
 
 const concatAddress = (item: IPersonItem) =>
@@ -18,7 +19,7 @@ export const metaPack = async (data: {
   from: string;
   to: IPersonItem[];
   cc?: IPersonItem[];
-  date: Date;
+  date?: string;
   subject?: string;
   text_hash: string;
   html_hash: string;
@@ -38,7 +39,7 @@ export const metaPack = async (data: {
   let parts = [
     'From: ' +
       concatAddress({
-        address: from,
+        address: from + PostfixOfAddress,
       }),
     'To: ' + to.map(concatAddress).join(', '),
   ];
@@ -46,28 +47,32 @@ export const metaPack = async (data: {
     parts.push('Cc: ' + cc?.map(concatAddress).join(', '));
   }
   parts = parts.concat([
-    'Date: ' + date.toISOString(),
+    'Date: ' + date,
     'Subject: ' + subject,
     'Content-Hash: ' + text_hash + ' ' + html_hash,
     'Attachments-Hash: ' + attachments_hash?.join(' '),
   ]);
 
-  let keys: string[];
+  // let keys: string[];
 
-  return await handleGetReceiversInfos(to).then((res) => {
-    if (res && Object.keys(res).length > 0) {
-      keys = [];
-      Object.keys(res).forEach((key) => {
-        keys.push(res[key].public_key);
-      });
+  // return await handleGetReceiversInfos(to).then((res) => {
+  //   if (res && Object.keys(res).length > 0) {
+  //     keys = [];
+  //     Object.keys(res).forEach((key) => {
+  //       keys.push(res[key].public_key);
+  //     });
 
-      parts.push('Keys: ' + keys.join(' '));
-    }
+  //     parts.push('Keys: ' + keys.join(' '));
+  //   }
 
-    return Promise.resolve({
-      packedResult: parts.join('\n'),
-      keys,
-    });
+  //   return Promise.resolve({
+  //     packedResult: parts.join('\n'),
+  //     keys,
+  //   });
+  // });
+
+  return Promise.resolve({
+    packedResult: parts.join('\n'),
   });
 };
 

@@ -16,13 +16,13 @@ function Home(props: any) {
   const {
     address,
     ensName,
+    showName,
     children,
     setPublicKey,
     setUserAddress,
     setUserEnsName,
+    setShowName,
   } = props;
-
-  const [showName, setShowName] = useState(address ?? ensName);
 
   const DropItem = ({ name }: { name: string }) => {
     return name ? (
@@ -77,6 +77,7 @@ function Home(props: any) {
                         setPublicKey();
                         setUserAddress();
                         setUserEnsName();
+                        setShowName();
 
                         history.push({
                           pathname: '/login',
@@ -95,7 +96,6 @@ function Home(props: any) {
                         minWidth: '200px',
                         marginRight: '8px',
                         textAlign: 'center',
-                        // fontWeight: 500,
                       }}
                     >
                       Logout
@@ -106,7 +106,7 @@ function Home(props: any) {
               }
             >
               <div className={styles.addressBar}>
-                {showName + PostfixOfAddress}
+                {showName ? showName + PostfixOfAddress : ''}
               </div>
             </Dropdown>
           </div>
@@ -143,6 +143,11 @@ const mapDispatchToProps = (
   setUserEnsName: (data: any) =>
     dispatch({
       type: 'user/setUserEnsName',
+      payload: data,
+    }),
+  setShowName: (data: any) =>
+    dispatch({
+      type: 'user/setShowName',
       payload: data,
     }),
 });
