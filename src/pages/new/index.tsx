@@ -106,39 +106,41 @@ const NewMail = (props: any) => {
     }
 
     try {
-      handleSave();
+      handleSave().then(() => {
+        const html = quillRef.current.getHTML(),
+          text = quillRef.current.getText();
 
-      const html = quillRef.current.getHTML(),
-        text = quillRef.current.getText();
+        metaPack({
+          from: props.showName,
+          to: receiver,
+          date: dateRef.current,
+          subject,
+          text_hash: CryptoJS.SHA256(text).toString(),
+          html_hash: CryptoJS.SHA256(html).toString(),
+          attachments_hash: shaListRef.current,
+        }).then(async (res) => {
+          // const { packedResult, keys } = res ?? {};
+          const { packedResult } = res ?? {};
 
-      metaPack({
-        from: props.ensName ?? props.address,
-        to: receiver,
-        date: dateRef.current,
-        subject,
-        text_hash: CryptoJS.SHA256(text).toString(),
-        html_hash: CryptoJS.SHA256(html).toString(),
-        attachments_hash: shaListRef.current,
-      }).then(async (res) => {
-        // const { packedResult, keys } = res ?? {};
-        const { packedResult } = res ?? {};
-
-        getPersonalSign(props.address, packedResult).then(async (signature) => {
-          if (signature === false) {
-            Modal.confirm({
-              title: 'Failed to sign this mail',
-              content: 'Would you like to send without signature?',
-              okText: 'Yes, Send it',
-              onOk: () => {
-                // handleSend(keys, packedResult);
-                handleSend(packedResult);
-              },
-              cancelText: 'No, I will try send it later',
-            });
-          } else {
-            // handleSend(keys, packedResult, signature);
-            handleSend(packedResult, signature);
-          }
+          getPersonalSign(props.address, packedResult).then(
+            async (signature) => {
+              if (signature === false) {
+                Modal.confirm({
+                  title: 'Failed to sign this mail',
+                  content: 'Would you like to send without signature?',
+                  okText: 'Yes, Send it',
+                  onOk: () => {
+                    // handleSend(keys, packedResult);
+                    handleSend(packedResult);
+                  },
+                  cancelText: 'No, I will try send it later',
+                });
+              } else {
+                // handleSend(keys, packedResult, signature);
+                handleSend(packedResult, signature);
+              }
+            },
+          );
         });
       });
     } catch (error: any) {
