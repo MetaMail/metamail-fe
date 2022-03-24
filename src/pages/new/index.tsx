@@ -53,6 +53,7 @@ const NewMail = (props: any) => {
   const handleSend = async (
     // keys: string[],
     packedResult: string,
+    date: string,
     signature?: string,
   ) => {
     try {
@@ -110,7 +111,7 @@ const NewMail = (props: any) => {
       handleSave().then(() => {
         const html = quillRef.current.getHTML(),
           text = quillRef.current.getText();
-
+        const date = dateRef.current;
         metaPack({
           from: props.showName,
           to: receiver,
@@ -133,13 +134,13 @@ const NewMail = (props: any) => {
                   okText: 'Yes, Send it',
                   onOk: () => {
                     // handleSend(keys, packedResult);
-                    handleSend(packedResult);
+                    handleSend(packedResult, date);
                   },
                   cancelText: 'No, I will try send it later',
                 });
               } else {
                 // handleSend(keys, packedResult, signature);
-                handleSend(packedResult, signature);
+                handleSend(packedResult, date, signature);
               }
             },
           );
