@@ -5,11 +5,12 @@ import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
 import {
   deleteAttachment,
+  getMailDetailByID,
   sendMail,
   updateMail,
   uploadAttachment,
 } from '@/services';
-import { IPersonItem, MarkTypeEn, MetaMailTypeEn } from '../home/interfaces';
+import { IPersonItem, MetaMailTypeEn } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
@@ -18,6 +19,7 @@ import { AttachmentRelatedTypeEn, metaPack } from './utils';
 import { getPersonalSign } from '@/utils/sign';
 import useInterval from '@/utils/hooks';
 import { PostfixOfAddress } from '@/utils/constants';
+import { EditorFormats, EditorModules } from './constants';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -33,6 +35,7 @@ const NewMail = (props: any) => {
   const [subject, setSubject] = useState<string>();
   const [receiver, setReceiver] = useState<IPersonItem[]>([]);
   const [toStr, setToStr] = useState<string>('');
+  const [content, setContent] = useState<string>();
 
   const draftID = query?.id;
   const type: MetaMailTypeEn = Number(query?.type);
@@ -48,7 +51,29 @@ const NewMail = (props: any) => {
     quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
       reactQuillRef.current.getEditor(),
     );
+
+    handleLoad();
   }, [reactQuillRef]);
+
+  const handleLoad = async () => {
+    try {
+      if (!query?.id && query.id.length === 0) {
+        throw new Error();
+      }
+      const { data } = await getMailDetailByID(window.btoa(query.id));
+
+      if (data) {
+        setSubject(data?.subject);
+        setToStr(data?.mail_to?.map((to: any) => to.address)?.join(';'));
+        setContent(data?.part_html ?? data?.part_text);
+      }
+    } catch {
+      notification.error({
+        message: 'Network Error',
+        description: 'Can not fetch detail info of this e-mail for now.',
+      });
+    }
+  };
 
   const handleSend = async (
     // keys: string[],
@@ -276,35 +301,6 @@ const NewMail = (props: any) => {
     handleSave();
   }, 30000);
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { indent: '-1' },
-        { indent: '+1' },
-      ],
-      ['link', 'image'],
-      ['clean'],
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-  ];
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -326,6 +322,7 @@ const NewMail = (props: any) => {
         style={{
           borderColor: '#ccc',
         }}
+        value={subject}
         onChange={(e) => {
           e.preventDefault();
           setSubject(e.target.value);
@@ -429,8 +426,12 @@ const NewMail = (props: any) => {
           }}
           theme="snow"
           placeholder={'Writing your message here...'}
-          modules={modules}
-          formats={formats}
+          modules={EditorModules}
+          formats={EditorFormats}
+          value={content}
+          onChange={(val) => {
+            setContent(val);
+          }}
         />
       </div>
 

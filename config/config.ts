@@ -3,6 +3,7 @@ import routes from './routes';
 import theme from './theme';
 
 export default defineConfig({
+  title: 'MetaMail',
   theme,
   routes,
   nodeModulesTransform: {

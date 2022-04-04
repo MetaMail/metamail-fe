@@ -2,13 +2,7 @@ import styles from './index.less';
 import React from 'react';
 import cn from 'classnames';
 import moment, { Moment } from 'moment';
-import {
-  MailTypeIconMap,
-  IPersonItem,
-  MarkTypeEn,
-  MetaMailTypeEn,
-  ReadStatusTypeEn,
-} from '@/pages/home/interfaces';
+import { IPersonItem, MarkTypeEn } from '@/pages/home/interfaces';
 import { Popover } from 'antd';
 import Icon from '../Icon';
 import { checkbox, favorite, markFavorite, selected } from '@/assets/icons';

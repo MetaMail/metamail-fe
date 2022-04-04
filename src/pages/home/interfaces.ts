@@ -102,11 +102,14 @@ export interface IMailContentItem {
   part_text: string;
   part_html?: string;
   attachments: {
-    part_id_0: {
-      size: number;
-      sha256: string;
-      file_name: string;
-      content_type: string;
+    attachment_id: string;
+    size: number;
+    sha256: string;
+    filename: string;
+    content_type: string;
+    download: {
+      expire_at: string;
+      url: string;
     };
-  };
+  }[];
 }

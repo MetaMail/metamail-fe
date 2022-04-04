@@ -1,14 +1,10 @@
 import { notification, PageHeader } from 'antd';
-import {
-  IMailContentItem,
-  MailBoxTypeEn,
-  MarkTypeEn,
-  ReadStatusTypeEn,
-} from '../home/interfaces';
+import { IMailContentItem, ReadStatusTypeEn } from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
 import { useState, useEffect } from 'react';
 import { changeMailStatus, getMailDetailByID } from '@/services';
+import AttachmentItem from './AttachmentItem';
 
 export default function Mail(props: any) {
   const [mail, setMail] = useState<IMailContentItem>();
@@ -74,6 +70,19 @@ export default function Mail(props: any) {
               ? '<' + mail?.mail_from.address + '>'
               : null}
           </span>
+        </div>
+
+        <div className={styles.attachments}>
+          <div className={styles.label}> Attachments: </div>
+          <div className={styles.container}>
+            {mail?.attachments?.map((item, idx) => (
+              <AttachmentItem
+                idx={idx}
+                url={item?.download?.url}
+                name={item?.filename}
+              />
+            ))}
+          </div>
         </div>
 
         <div className={styles.content}>

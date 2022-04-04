@@ -10,14 +10,17 @@ export default [
       {
         path: '/home/list',
         component: '@/pages/list',
+        title: 'Home - MetaMail',
       },
       {
         path: '/home/mail',
         component: '@/pages/mail',
+        title: 'Mail - MetaMail',
       },
       {
         path: '/home/new',
         component: '@/pages/new',
+        title: 'Edit - MetaMail',
       },
     ],
   },

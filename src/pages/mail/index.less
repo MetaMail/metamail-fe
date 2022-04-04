@@ -36,6 +36,46 @@
       }
     }
 
+    .attachments {
+      display: flex;
+      flex-wrap: wrap;
+      flex: 1;
+      font-size: 16px;
+      border-bottom: 1px solid #585858;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      font-family: Poppins, Helvetica, Arial, sans-serif;
+      .label {
+        color: #585858;
+        margin-right: 12px;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        .item {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          .name {
+            font-size: 16px;
+            margin-right: 8px;
+            color: #585858;
+          }
+
+          &:hover {
+            border-bottom: 1px solid #2e82e5;
+          }
+
+          &:not(:first-child) {
+            margin-left: 12px;
+          }
+        }
+      }
+    }
+
     .content {
       display: flex;
       flex: 1;
