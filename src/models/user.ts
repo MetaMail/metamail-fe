@@ -69,6 +69,7 @@ export default {
       state: IUserStateProps,
       { payload: randomBits }: { payload: string },
     ) {
+      console.log('randomBits', '----', randomBits);
       return {
         ...state,
         randomBits,

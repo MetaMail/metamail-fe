@@ -58,7 +58,9 @@ function SideMenu({
       } else {
         setRandomBits(undefined);
       }
-      if (!key || key?.length === 0) return;
+      if (type === MetaMailTypeEn.Encrypted && (!key || key?.length === 0)) {
+        return;
+      }
       const { data } = await createDraft(type, key);
 
       if (data && data?.message_id) {

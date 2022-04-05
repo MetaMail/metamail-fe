@@ -3,6 +3,7 @@ import { getPublicKey, pkPack } from '@/utils/publicKey';
 import { getPersonalSign } from '@/utils/sign';
 import { notification } from 'antd';
 import CryptoJS from 'crypto-js';
+export const ETHVersion = 'x25519-xsalsa20-poly1305';
 
 export const updatePublicKey = async (address: string) => {
   try {
@@ -12,7 +13,7 @@ export const updatePublicKey = async (address: string) => {
       const data = {
         addr: address,
         date: new Date().toISOString(), //当前的时间
-        version: 'x25519-xsalsa20-poly1305', //metamask默认支持的KEY格式
+        version: ETHVersion, //metamask默认支持的KEY格式
         public_key: key,
       };
 

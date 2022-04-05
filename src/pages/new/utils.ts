@@ -1,22 +1,27 @@
+import { ETHVersion } from '@/layouts/SideMenu/utils';
 import { getUserInfos } from '@/services/user';
 import { PostfixOfAddress } from '@/utils/constants';
+import { encrypt } from 'eth-sig-util';
 import { IPersonItem } from '../home/interfaces';
 
 const concatAddress = (item: IPersonItem) =>
   (item?.name ?? '') + ' ' + '<' + item.address + '>';
 
 const handleGetReceiversInfos = async (to: IPersonItem[]) => {
-  try {
-    const { data } = await getUserInfos(
-      to?.map((item) => item.address.split('@')[0]),
-    );
+  const { data } = await getUserInfos(
+    to?.map((item) => item.address.split('@')[0]),
+  );
 
-    return data;
-  } catch (err) {}
+  return data;
+};
+
+const encryptByRandoms = (str: string, key: string) => {
+  return encrypt(str, { data: key }, ETHVersion).toString();
 };
 
 export const metaPack = async (data: {
   from: string;
+  myKey: string;
   to: IPersonItem[];
   cc?: IPersonItem[];
   date?: string;
@@ -25,6 +30,7 @@ export const metaPack = async (data: {
   html_hash: string;
   attachments_hash?: string[];
   name?: string;
+  randoms?: string;
 }) => {
   const {
     from,
@@ -36,6 +42,8 @@ export const metaPack = async (data: {
     html_hash,
     attachments_hash,
     name,
+    myKey,
+    randoms,
   } = data;
 
   let parts = [
@@ -56,27 +64,30 @@ export const metaPack = async (data: {
     'Attachments-Hash: ' + attachments_hash?.join(' '),
   ]);
 
-  // let keys: string[];
+  let keys: string[];
 
-  // return await handleGetReceiversInfos(to).then((res) => {
-  //   if (res && Object.keys(res).length > 0) {
-  //     keys = [];
-  //     Object.keys(res).forEach((key) => {
-  //       keys.push(res[key].public_key.public_key);
-  //     });
+  return await handleGetReceiversInfos(to).then((res) => {
+    if (res && Object.keys(res).length > 0) {
+      keys = [encryptByRandoms(myKey, randoms)];
+      Object.keys(res).forEach((key) => {
+        // keys.push(res?.[key]?.public_key?.public_key);
+        keys.push(
+          encryptByRandoms(res?.[key]?.public_key?.public_key, randoms),
+        );
+      });
 
-  //     parts.push('Keys: ' + keys.join(' '));
-  //   }
+      parts.push('Keys: ' + keys.join(' '));
+    }
 
-  //   return Promise.resolve({
-  //     packedResult: parts.join('\n'),
-  //     keys,
-  //   });
-  // });
-
-  return Promise.resolve({
-    packedResult: parts.join('\n'),
+    return Promise.resolve({
+      packedResult: parts.join('\n'),
+      keys,
+    });
   });
+
+  // return Promise.resolve({
+  //   packedResult: parts.join('\n'),
+  // });
 };
 
 export enum AttachmentRelatedTypeEn {

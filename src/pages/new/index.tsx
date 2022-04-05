@@ -76,16 +76,15 @@ const NewMail = (props: any) => {
   };
 
   const handleSend = async (
-    // keys: string[],
+    keys: string[],
     packedResult: string,
-    date: string,
     signature?: string,
   ) => {
     try {
       const { data } = await sendMail(draftID, {
         date: dateRef.current,
         signature: signature,
-        // keys,
+        keys,
         data: packedResult,
       });
 
@@ -132,23 +131,35 @@ const NewMail = (props: any) => {
       return;
     }
 
+    let encryptedText, encryptedHTML;
+
     try {
       handleSave().then(() => {
         const html = quillRef.current.getHTML(),
           text = quillRef.current.getText();
-        const date = dateRef.current;
+
+        if (type === MetaMailTypeEn.Encrypted) {
+          // 加密邮件
+          encryptedHTML = CryptoJS.AES.encrypt(html, randomBits).toString();
+          encryptedText = CryptoJS.AES.encrypt(text, randomBits).toString();
+        } else {
+          encryptedHTML = CryptoJS.SHA256(html).toString();
+          encryptedText = CryptoJS.SHA256(text).toString();
+        }
         metaPack({
           from: props.showName,
           to: receiver,
           date: dateRef.current,
           subject,
-          text_hash: CryptoJS.SHA256(text).toString(),
-          html_hash: CryptoJS.SHA256(html).toString(),
+          text_hash: encryptedText,
+          html_hash: encryptedHTML,
           attachments_hash: shaListRef.current,
           name: props.ensName,
+          myKey: props.publicKey,
+          randoms: props.randomBits,
         }).then(async (res) => {
-          // const { packedResult, keys } = res ?? {};
-          const { packedResult } = res ?? {};
+          const { packedResult, keys } = res ?? {};
+          // const { packedResult } = res ?? {};
 
           getPersonalSign(props.address, packedResult).then(
             async (signature) => {
@@ -158,14 +169,14 @@ const NewMail = (props: any) => {
                   content: 'Would you like to send without signature?',
                   okText: 'Yes, Send it',
                   onOk: () => {
-                    // handleSend(keys, packedResult);
-                    handleSend(packedResult, date);
+                    handleSend(keys, packedResult);
+                    // handleSend(packedResult, date);
                   },
                   cancelText: 'No, I will try send it later',
                 });
               } else {
-                // handleSend(keys, packedResult, signature);
-                handleSend(packedResult, date, signature);
+                handleSend(keys, packedResult, signature);
+                // handleSend(packedResult, date, signature);
               }
             },
           );
@@ -188,8 +199,8 @@ const NewMail = (props: any) => {
 
       // 加密邮件
       if (type === MetaMailTypeEn.Encrypted) {
-        html = CryptoJS.AES.encrypt(html, props.publicKey).toString();
-        text = CryptoJS.AES.encrypt(text, props.publicKey).toString();
+        html = CryptoJS.AES.encrypt(html, randomBits).toString();
+        text = CryptoJS.AES.encrypt(text, randomBits).toString();
       }
 
       const { data } = await updateMail(draftID, {
