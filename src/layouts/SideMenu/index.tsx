@@ -14,7 +14,7 @@ import cn from 'classnames';
 import { useRef, useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
-import { generateRandom256Bits, updatePublicKey } from './utils';
+import { generateRandom256Bits, updatePublicKey, pkEncrypt } from './utils';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -51,10 +51,9 @@ function SideMenu({
           pKey = await updatePublicKey(address);
           setPublicKey(pKey);
         }
-
-        const { random, encrypted } = generateRandom256Bits(pKey) ?? {};
-        key = encrypted;
-        setRandomBits(random);
+        const randomBits = generateRandom256Bits();
+        key = pkEncrypt(pKey, randomBits);
+        setRandomBits(randomBits);
       } else {
         setRandomBits(undefined);
       }

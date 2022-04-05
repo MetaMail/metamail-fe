@@ -3,7 +3,20 @@ import { getPublicKey, pkPack } from '@/utils/publicKey';
 import { getPersonalSign } from '@/utils/sign';
 import { notification } from 'antd';
 import CryptoJS from 'crypto-js';
+import { encrypt } from '@metamask/eth-sig-util';
 export const ETHVersion = 'x25519-xsalsa20-poly1305';
+
+export const pkEncrypt = (pk: string, data: string) => {
+  return Buffer.from(
+    JSON.stringify(
+      encrypt({
+        publicKey: pk,
+        data: data,
+        version: ETHVersion,
+      }),
+    ),
+  ).toString('base64');
+};
 
 export const updatePublicKey = async (address: string) => {
   try {
@@ -38,19 +51,16 @@ export const updatePublicKey = async (address: string) => {
   }
 };
 
-export function generateRandom256Bits(key: string) {
+export function generateRandom256Bits() {
   let res = '';
 
   const temp = new Uint32Array(8);
 
   crypto.getRandomValues(temp);
-
+  return Buffer.from(temp).toString('hex');
   temp.forEach((item) => {
     res += `${item}`;
   });
 
-  return {
-    random: res,
-    encrypted: CryptoJS.AES.encrypt(res, key).toString(),
-  };
+  return res;
 }

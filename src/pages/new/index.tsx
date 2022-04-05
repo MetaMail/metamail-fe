@@ -14,12 +14,19 @@ import { IPersonItem, MetaMailTypeEn } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
-import { connect, history } from 'umi';
-import { AttachmentRelatedTypeEn, metaPack } from './utils';
+import { connect, history, utils } from 'umi';
+import {
+  AttachmentRelatedTypeEn,
+  metaPack,
+  handleGetReceiversInfos,
+} from './utils';
 import { getPersonalSign } from '@/utils/sign';
 import useInterval from '@/utils/hooks';
 import { PostfixOfAddress } from '@/utils/constants';
 import { EditorFormats, EditorModules } from './constants';
+import { assert } from 'umi/node_modules/@umijs/runtime/dist/utils';
+import { getUserInfos } from '@/services/user';
+import { pkEncrypt } from '@/layouts/SideMenu/utils';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -30,6 +37,7 @@ const NewMail = (props: any) => {
   const {
     location: { query },
     randomBits,
+    publicKey,
   } = props;
 
   const [subject, setSubject] = useState<string>();
@@ -134,31 +142,42 @@ const NewMail = (props: any) => {
     let encryptedText, encryptedHTML;
 
     try {
-      handleSave().then(() => {
-        const html = quillRef.current.getHTML(),
-          text = quillRef.current.getText();
-
-        if (type === MetaMailTypeEn.Encrypted) {
-          // 加密邮件
-          encryptedHTML = CryptoJS.AES.encrypt(html, randomBits).toString();
-          encryptedText = CryptoJS.AES.encrypt(text, randomBits).toString();
-        } else {
-          encryptedHTML = CryptoJS.SHA256(html).toString();
-          encryptedText = CryptoJS.SHA256(text).toString();
+      handleSave().then(async (obj) => {
+        if (!obj) {
+          return;
         }
-        metaPack({
+        const { html, text } = obj;
+
+        let keys: string[] = [];
+        if (type === MetaMailTypeEn.Encrypted) {
+          let pks: string[] = [publicKey];
+          const receiverInfos = await handleGetReceiversInfos(receiver);
+          receiver.forEach((receiverItem) => {
+            const receiverPrefix = receiverItem.address.split('@')[0];
+            let rpk = receiverInfos?.[receiverPrefix].public_key?.public_key;
+            if (!rpk) {
+              throw Error('Can not find public key of ' + receiverItem.address);
+            }
+            pks.push(rpk);
+          });
+
+          keys = pks.map((pk) => pkEncrypt(pk, randomBits));
+        }
+
+        let packData = {
           from: props.showName,
           to: receiver,
           date: dateRef.current,
           subject,
-          text_hash: encryptedText,
-          html_hash: encryptedHTML,
+          text_hash: CryptoJS.SHA256(text).toString(),
+          html_hash: CryptoJS.SHA256(html).toString(),
           attachments_hash: shaListRef.current,
           name: props.ensName,
-          myKey: props.publicKey,
-          randoms: props.randomBits,
-        }).then(async (res) => {
-          const { packedResult, keys } = res ?? {};
+          keys: keys,
+        };
+
+        metaPack(packData).then(async (res) => {
+          const { packedResult } = res ?? {};
           // const { packedResult } = res ?? {};
 
           getPersonalSign(props.address, packedResult).then(
@@ -193,38 +212,32 @@ const NewMail = (props: any) => {
   const handleSave = async () => {
     if (!draftID) return;
 
-    try {
-      let html = quillRef.current.getHTML(),
-        text = quillRef.current.getText();
+    let html = quillRef.current.getHTML(),
+      text = quillRef.current.getText();
 
-      // 加密邮件
-      if (type === MetaMailTypeEn.Encrypted) {
-        html = CryptoJS.AES.encrypt(html, randomBits).toString();
-        text = CryptoJS.AES.encrypt(text, randomBits).toString();
-      }
-
-      const { data } = await updateMail(draftID, {
-        subject: subject ?? '(No Subject)',
-        mail_to: receiver,
-        part_html: html,
-        part_text: text,
-        mail_from: {
-          address: props.showName + PostfixOfAddress,
-          name: props.ensName ?? '',
-        },
-      });
-
-      if (data?.message_id !== draftID) {
-        console.warn('DANGER: wrong updating source');
-      }
-
-      dateRef.current = data?.mail_date;
-    } catch (error) {
-      notification.error({
-        message: 'Failed to save mail',
-        description: 'Looks like we have a network problem' + error,
-      });
+    // 加密邮件
+    if (type === MetaMailTypeEn.Encrypted) {
+      html = CryptoJS.AES.encrypt(html, randomBits).toString();
+      text = CryptoJS.AES.encrypt(text, randomBits).toString();
     }
+
+    const { data } = await updateMail(draftID, {
+      subject: subject ?? '(No Subject)',
+      mail_to: receiver,
+      part_html: html,
+      part_text: text,
+      mail_from: {
+        address: props.showName + PostfixOfAddress,
+        name: props.ensName ?? '',
+      },
+    });
+
+    if (data?.message_id !== draftID) {
+      console.warn('DANGER: wrong updating source');
+    }
+
+    dateRef.current = data?.mail_date;
+    return { html, text };
   };
 
   const handleFormatReceivers = () => {
@@ -309,7 +322,11 @@ const NewMail = (props: any) => {
   };
 
   useInterval(() => {
-    handleSave();
+    try {
+      handleSave();
+    } catch (err) {
+      console.log('faile to auto save mail');
+    }
   }, 30000);
 
   return (

@@ -25,7 +25,9 @@ function IndexPage(props: any) {
     if (data) {
       setIsLogin(true);
 
-      setPublicKey(data.public_key);
+      if (data?.public_key?.public_key) {
+        setPublicKey(data.public_key.public_key);
+      }
       setUserAddress(data.addr);
       setShowName(data.addr);
 

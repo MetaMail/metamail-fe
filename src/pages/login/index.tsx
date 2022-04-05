@@ -148,8 +148,9 @@ function Login(props: any) {
         });
 
         const { data: user } = res ?? {};
-
-        setPublicKey(user?.user?.public_key);
+        if (user?.user?.public_key.public_key) {
+          setPublicKey(user?.user?.public_key.public_key);
+        }
         if (user?.user?.ens?.length > 0) {
           setUserEnsName(user.user.ens);
           setShowName(user.user.ens);
