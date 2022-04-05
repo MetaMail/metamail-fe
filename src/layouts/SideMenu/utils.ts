@@ -38,8 +38,6 @@ export const updatePublicKey = async (address: string) => {
 };
 
 export function generateRandom256Bits(key: string) {
-  // profile没有public key，单独获取上传
-
   let res = '';
 
   const temp = new Uint32Array(8);
