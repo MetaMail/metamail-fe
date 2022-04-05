@@ -14,7 +14,7 @@ import cn from 'classnames';
 import { useRef, useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
-import { generateRandom256Bits } from './utils';
+import { generateRandom256Bits, updatePublicKey } from './utils';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -31,7 +31,13 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
+function SideMenu({
+  unreadCount,
+  publicKey,
+  setRandomBits,
+  address,
+  setPublicKey,
+}: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
@@ -40,7 +46,13 @@ function SideMenu({ unreadCount, publicKey, setRandomBits }: ISiderMenuProps) {
     try {
       let key;
       if (type === MetaMailTypeEn.Encrypted) {
-        const { random, encrypted } = generateRandom256Bits(publicKey) ?? {};
+        let pKey = publicKey;
+        if (!pKey || pKey?.length === 0) {
+          pKey = await updatePublicKey(address);
+          setPublicKey(pKey);
+        }
+
+        const { random, encrypted } = generateRandom256Bits(pKey) ?? {};
         key = encrypted;
         setRandomBits(random);
       } else {
@@ -186,6 +198,12 @@ const mapDispatchToProps = (
   setRandomBits: (data: any) =>
     dispatch({
       type: 'user/setRandomBits',
+      payload: data,
+    }),
+
+  setPublicKey: (data: any) =>
+    dispatch({
+      type: 'user/setPublicKey',
       payload: data,
     }),
 });

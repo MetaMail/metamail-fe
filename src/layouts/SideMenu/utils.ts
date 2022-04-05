@@ -1,14 +1,45 @@
+import { postPublicKey } from '@/services/user';
+import { getPublicKey, pkPack } from '@/utils/publicKey';
+import { getPersonalSign } from '@/utils/sign';
 import { notification } from 'antd';
 import CryptoJS from 'crypto-js';
 
-export function generateRandom256Bits(key: string) {
-  if (!key || key.length === 0) {
-    notification.error({
-      message: 'Failed',
-      description: "We did'nt get your public key, please try login again.",
-    });
-    return ;
+export const updatePublicKey = async (address: string) => {
+  try {
+    // @ts-ignore
+    const key = await getPublicKey(address);
+    if (key && key?.length > 0) {
+      const data = {
+        addr: address,
+        date: new Date().toISOString(), //当前的时间
+        version: 'x25519-xsalsa20-poly1305', //metamask默认支持的KEY格式
+        public_key: key,
+      };
+
+      getPersonalSign(address, pkPack(data)).then((signature) => {
+        postPublicKey({
+          ...data,
+          signature,
+        });
+      });
+    }
+
+    return key;
+  } catch (error: any) {
+    if (error?.code === 4001) {
+      // EIP-1193 userRejectedRequest error
+      console.warn("We can't encrypt anything without the key.");
+    } else {
+      console.error(error);
+    }
+
+    return null;
   }
+};
+
+export function generateRandom256Bits(key: string) {
+  // profile没有public key，单独获取上传
+
   let res = '';
 
   const temp = new Uint32Array(8);

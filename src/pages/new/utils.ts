@@ -62,7 +62,7 @@ export const metaPack = async (data: {
   //   if (res && Object.keys(res).length > 0) {
   //     keys = [];
   //     Object.keys(res).forEach((key) => {
-  //       keys.push(res[key].public_key);
+  //       keys.push(res[key].public_key.public_key);
   //     });
 
   //     parts.push('Keys: ' + keys.join(' '));
