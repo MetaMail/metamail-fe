@@ -52,15 +52,6 @@ export const updatePublicKey = async (address: string) => {
 };
 
 export function generateRandom256Bits() {
-  let res = '';
-
-  const temp = new Uint32Array(8);
-
-  crypto.getRandomValues(temp);
-  return Buffer.from(temp).toString('hex');
-  temp.forEach((item) => {
-    res += `${item}`;
-  });
-
-  return res;
+  const rb = CryptoJS.lib.WordArray.random(256 / 8);
+  return rb.toString(CryptoJS.enc.Base64);
 }

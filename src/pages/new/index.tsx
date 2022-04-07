@@ -40,7 +40,7 @@ const NewMail = (props: any) => {
     publicKey,
   } = props;
 
-  const [subject, setSubject] = useState<string>();
+  const [subject, setSubject] = useState<string>('');
   const [receiver, setReceiver] = useState<IPersonItem[]>([]);
   const [toStr, setToStr] = useState<string>('');
   const [content, setContent] = useState<string>();
@@ -222,7 +222,7 @@ const NewMail = (props: any) => {
     }
 
     const { data } = await updateMail(draftID, {
-      subject: subject ?? '(No Subject)',
+      subject: subject,
       mail_to: receiver,
       part_html: html,
       part_text: text,
