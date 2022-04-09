@@ -139,8 +139,6 @@ const NewMail = (props: any) => {
       return;
     }
 
-    let encryptedText, encryptedHTML;
-
     try {
       handleSave().then(async (obj) => {
         if (!obj) {
@@ -150,6 +148,7 @@ const NewMail = (props: any) => {
 
         let keys: string[] = [];
         if (type === MetaMailTypeEn.Encrypted) {
+          // TODO: 最好用户填一个收件人的时候，就获取这个收件人的public_key，如果没有pk，就标出来
           let pks: string[] = [publicKey];
           const receiverInfos = await handleGetReceiversInfos(receiver);
           receiver.forEach((receiverItem) => {

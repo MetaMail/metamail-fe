@@ -51,7 +51,8 @@ function SideMenu({
           pKey = await updatePublicKey(address);
           setPublicKey(pKey);
         }
-        const randomBits = generateRandom256Bits();
+        const randomBits = generateRandom256Bits(address);
+        console.log(randomBits);
         key = pkEncrypt(pKey, randomBits);
         setRandomBits(randomBits);
       } else {
@@ -113,7 +114,7 @@ function SideMenu({
           )}
           onClick={() => handleClickNewMail(MetaMailTypeEn.Signed)}
         >
-          Plain
+          Signed
         </div>
         <div
           className={cn(

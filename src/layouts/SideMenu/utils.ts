@@ -51,7 +51,12 @@ export const updatePublicKey = async (address: string) => {
   }
 };
 
-export function generateRandom256Bits() {
+export function generateRandom256Bits(address: string) {
   const rb = CryptoJS.lib.WordArray.random(256 / 8);
-  return rb.toString(CryptoJS.enc.Base64);
+  return (
+    'Encryption key of this mail from ' +
+    address +
+    ': ' +
+    rb.toString(CryptoJS.enc.Base64)
+  );
 }
