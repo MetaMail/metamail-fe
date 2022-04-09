@@ -208,7 +208,8 @@ function Login(props: any) {
             onClick={handleOpenConnectModal}
             className={styles.connectBtn}
           >
-            {address ?? 'Connect Wallet'}
+            Connect Wallet
+            {/* {address ?? 'Connect Wallet'} */}
           </Button>
         </div>
       </header>

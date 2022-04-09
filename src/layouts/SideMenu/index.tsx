@@ -112,7 +112,9 @@ function SideMenu({
               ? styles.on
               : mailType !== undefined && styles.off,
           )}
-          onClick={() => handleClickNewMail(MetaMailTypeEn.Signed)}
+          onClick={() => {
+            if (!mailType) handleClickNewMail(MetaMailTypeEn.Signed);
+          }}
         >
           Signed
         </div>
@@ -124,7 +126,9 @@ function SideMenu({
               ? styles.on
               : mailType !== undefined && styles.off,
           )}
-          onClick={() => handleClickNewMail(MetaMailTypeEn.Encrypted)}
+          onClick={() => {
+            if (!mailType) handleClickNewMail(MetaMailTypeEn.Encrypted);
+          }}
         >
           Encrypted
         </div>

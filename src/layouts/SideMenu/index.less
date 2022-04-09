@@ -16,12 +16,13 @@
   }
 
   .createWrapper {
-    padding: 10px 20px;
+    margin: 10px 10px;
     display: flex;
     flex-direction: row;
     align-self: center;
     justify-self: center;
     position: relative;
+    border-radius: 5px;
 
     .btn {
       display: flex;
@@ -31,30 +32,42 @@
       padding-bottom: 8px;
       text-align: center;
       height: 40px;
-      width: 80px;
+      width: 50%;
       font-weight: 500;
       font-size: 15px;
       line-height: 14px;
       color: #fff;
       cursor: pointer;
+      transition: 0.3s;
+      padding: 2px;
     }
 
     .plain {
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
       background: #575757;
       align-items: center;
       word-wrap: break-word;
     }
 
+    .plain:hover {
+      width: 100%;
+    }
+
     .encrypted {
       background: #2e82e5;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      align-items: center;
+      word-wrap: break-word;
+    }
+
+    .encrypted:hover {
+      width: 100%;
     }
 
     .on {
-      width: 160px;
+      width: 100%;
     }
 
     .off {

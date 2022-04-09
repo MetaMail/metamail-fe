@@ -468,7 +468,9 @@ const NewMail = (props: any) => {
           style={{ borderRadius: '6px' }}
           onClick={handleClickSend}
         >
-          Sign & Send
+          {type === Number(MetaMailTypeEn.Encrypted)
+            ? 'Encrypt & Send'
+            : 'Sign & Send'}
         </Button>
       </div>
     </div>
