@@ -8,7 +8,7 @@ export const EditorModules = {
       { indent: '-1' },
       { indent: '+1' },
     ],
-    ['link', 'image'],
+    ['link'],
     ['clean'],
   ],
 };
@@ -24,5 +24,4 @@ export const EditorFormats = [
   'bullet',
   'indent',
   'link',
-  'image',
 ];

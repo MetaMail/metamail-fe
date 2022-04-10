@@ -376,7 +376,7 @@ const NewMail = (props: any) => {
       />
 
       <Upload
-        maxCount={5}
+        maxCount={10}
         onRemove={async (file) => {
           if ((file?.originFileObj as any).sid) {
             const { data } = await deleteAttachment(
@@ -439,7 +439,7 @@ const NewMail = (props: any) => {
             <Icon url={attachment} />
             <span>Upload</span>
           </div>
-          <span className={styles.tip}>（Single file 20MB）</span>
+          <span className={styles.tip}>(Max 15MB)</span>
         </div>
       </Upload>
 
@@ -452,7 +452,7 @@ const NewMail = (props: any) => {
             height: '100%',
           }}
           theme="snow"
-          placeholder={'Writing your message here...'}
+          placeholder={''}
           modules={EditorModules}
           formats={EditorFormats}
           value={content}
