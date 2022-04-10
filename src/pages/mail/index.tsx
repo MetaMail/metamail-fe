@@ -1,4 +1,4 @@
-import { notification, PageHeader } from 'antd';
+import { Button, Divider, notification, PageHeader } from 'antd';
 import {
   IMailContentItem,
   ReadStatusTypeEn,
@@ -6,17 +6,23 @@ import {
 } from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { changeMailStatus, getMailDetailByID } from '@/services';
 import AttachmentItem from './AttachmentItem';
 import CryptoJS from 'crypto-js';
+import { connect } from 'umi';
+import locked from '@/assets/images/locked.svg';
 
-export default function Mail(props: any) {
+function Mail(props: any) {
   const [mail, setMail] = useState<IMailContentItem>();
   const {
     location: { query },
     history,
+    address,
   } = props;
+
+  const [readable, setReadable] = useState(true);
+  const randomBitsRef = useRef();
 
   const handleLoad = async () => {
     try {
@@ -24,36 +30,8 @@ export default function Mail(props: any) {
         throw new Error();
       }
       const { data } = await getMailDetailByID(window.btoa(query.id));
-      console.log(data);
-      if (data) {
-        // 用户点进来的时候就解密，还是先显示一个锁，等用户点击？
-        if ((data.meta_type as MetaMailTypeEn) === MetaMailTypeEn.Encrypted) {
-          console.log(data);
-          // 获取解密的key
-          let keys = data?.meta_header?.keys;
-          let key = keys[1]; //TODO: 应该看自己是在收件人还是发件人，获得key
-          // @ts-ignore
-          let randimBits = await ethereum.request({
-            method: 'eth_decrypt',
-            params: [
-              Buffer.from(key, 'base64').toString(),
-              '0x045ff23cF3413f6A355F0ACc6eC6cB2721B95D99',
-            ],
-          }); // TODO: 替换为用户的地址
-          // console.log(randimBits);
-          // TODO：存储randomBits，解密附件的时候需要
-          data.part_html = CryptoJS.AES.decrypt(
-            data.part_html,
-            randimBits,
-          ).toString(CryptoJS.enc.Utf8);
-          // console.log(data.part_html)
-          data.part_text = CryptoJS.AES.decrypt(
-            data.part_text,
-            randimBits,
-          ).toString(CryptoJS.enc.Utf8);
-        }
-        setMail(data);
-      }
+
+      setMail(data);
     } catch (e) {
       console.log(e);
       notification.error({
@@ -64,6 +42,42 @@ export default function Mail(props: any) {
     }
   };
 
+  const handleDecrypted = async () => {
+    let keys = mail?.meta_header?.keys;
+
+    if (keys && keys?.length > 0 && address) {
+      let key = keys[1]; //TODO: 应该看自己是在收件人还是发件人，获得key
+      // @ts-ignore
+      let randomBits = await ethereum.request({
+        method: 'eth_decrypt',
+        params: [Buffer.from(key, 'base64').toString(), address],
+      });
+
+      if (randomBits) {
+        randomBitsRef.current = randomBits;
+
+        const res = { ...mail };
+
+        if (res?.part_html) {
+          res.part_html = CryptoJS.AES.decrypt(
+            res.part_html,
+            randomBits,
+          ).toString(CryptoJS.enc.Utf8);
+        }
+
+        if (res?.part_text) {
+          res.part_text = CryptoJS.AES.decrypt(
+            res.part_text,
+            randomBits,
+          ).toString(CryptoJS.enc.Utf8);
+        }
+
+        setReadable(true);
+        setMail(res as IMailContentItem);
+      }
+    }
+  };
+
   const handleMarkRead = async () => {
     const mails =
       query?.id && query.id.length > 0
@@ -71,7 +85,11 @@ export default function Mail(props: any) {
         : [];
     await changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
   };
+
   useEffect(() => {
+    if (query?.type === MetaMailTypeEn.Encrypted + '') {
+      setReadable(false);
+    }
     handleMarkRead();
     handleLoad();
   }, [query]);
@@ -89,6 +107,7 @@ export default function Mail(props: any) {
         }}
         title="Back"
       />
+
       <div className={styles.mail}>
         <div className={styles.subject}>
           <span className={styles.label}>Subject: </span>
@@ -104,23 +123,38 @@ export default function Mail(props: any) {
           </span>
         </div>
 
-        <div className={styles.attachments}>
-          <div className={styles.label}> Attachments: </div>
-          <div className={styles.container}>
-            {mail?.attachments?.map((item, idx) => (
-              <AttachmentItem
-                idx={idx}
-                url={item?.download?.url}
-                name={item?.filename}
-              />
-            ))}
-          </div>
-        </div>
+        {readable === true ? (
+          <>
+            <div className={styles.attachments}>
+              <div className={styles.label}> Attachments: </div>
+              <div className={styles.container}>
+                {mail?.attachments?.map((item, idx) => (
+                  <AttachmentItem
+                    idx={idx}
+                    url={item?.download?.url}
+                    name={item?.filename}
+                  />
+                ))}
+              </div>
+            </div>
 
-        <div className={styles.content}>
-          {mail?.part_html ? parse(mail?.part_html) : mail?.part_text}
-        </div>
+            <div className={styles.content}>
+              {mail?.part_html ? parse(mail?.part_html) : mail?.part_text}
+            </div>
+          </>
+        ) : (
+          <div className={styles.locked}>
+            <img src={locked} className={styles.icon} />
+            <div onClick={handleDecrypted}>Decrypt It</div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
+const mapStateToProps = (state: any) => {
+  return state.user ?? {};
+};
+
+export default connect(mapStateToProps)(Mail);

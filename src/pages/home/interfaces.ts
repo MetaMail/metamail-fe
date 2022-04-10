@@ -112,4 +112,11 @@ export interface IMailContentItem {
       url: string;
     };
   }[];
+  meta_header: {
+    addr: string;
+    date: string;
+    data: string;
+    keys: string[];
+    signature: string;
+  };
 }

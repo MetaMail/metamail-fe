@@ -106,6 +106,19 @@ function MailList(props: any) {
       fetchMailList(false);
     }
   };
+
+  const handleClickMail = (id: string, type: MetaMailTypeEn) => {
+    const pathname =
+      queryRef.current === FilterTypeEn.Draft ? '/home/new' : '/home/mail';
+
+    history.push({
+      pathname,
+      query: {
+        id,
+        type: type + '',
+      },
+    });
+  };
   return (
     <div className={styles.listWrapper}>
       <div className={styles.header}>
@@ -211,23 +224,7 @@ function MailList(props: any) {
             isRead={item.read == ReadStatusTypeEn.read}
             abstract={item?.digest}
             onClick={() => {
-              if (queryRef.current === FilterTypeEn.Draft) {
-                history.push({
-                  pathname: '/home/new',
-                  query: {
-                    id: item.message_id,
-                    type: item.meta_type + '',
-                  },
-                });
-              } else {
-                history.push({
-                  pathname: '/home/mail',
-                  query: {
-                    id: item?.message_id,
-                    type: item?.mailbox + '',
-                  },
-                });
-              }
+              handleClickMail(item.message_id, item.meta_type);
             }}
             select={selectList.has(item.message_id)}
             onFavorite={(isSelect: boolean) => {
