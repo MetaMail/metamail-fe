@@ -122,6 +122,20 @@ function Mail(props: any) {
               : null}
           </span>
         </div>
+        <div className={styles.to}>
+          <span className={styles.label}> To: </span>
+          <span className={styles.info}>
+            {mail?.mail_to
+              ? mail?.mail_to
+                  .map((item) =>
+                    item.name
+                      ? item.name + ' <' + item.address + '>'
+                      : item.address,
+                  )
+                  .join('; ')
+              : ''}
+          </span>
+        </div>
 
         {readable === true ? (
           <>

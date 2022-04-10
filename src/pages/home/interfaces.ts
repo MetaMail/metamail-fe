@@ -91,7 +91,7 @@ export interface IMailContentItem {
   metamail_headers: any;
   subject: string;
   mail_from: IPersonItem;
-  mail_to: IPersonItem;
+  mail_to: IPersonItem[];
   mail_cc: IPersonItem[];
   mail_bcc: IPersonItem[];
   mail_date: string;
