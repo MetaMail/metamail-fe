@@ -12,6 +12,7 @@ import AttachmentItem from './AttachmentItem';
 import CryptoJS from 'crypto-js';
 import { connect } from 'umi';
 import locked from '@/assets/images/locked.svg';
+import DOMPurify from 'dompurify';
 
 function Mail(props: any) {
   const [mail, setMail] = useState<IMailContentItem>();
@@ -139,21 +140,25 @@ function Mail(props: any) {
 
         {readable === true ? (
           <>
-            <div className={styles.attachments}>
-              <div className={styles.label}> Attachments: </div>
-              <div className={styles.container}>
-                {mail?.attachments?.map((item, idx) => (
-                  <AttachmentItem
-                    idx={idx}
-                    url={item?.download?.url}
-                    name={item?.filename}
-                  />
-                ))}
+            {mail?.attachments && mail.attachments.length > 0 ? (
+              <div className={styles.attachments}>
+                <div className={styles.label}> Attachments: </div>
+                <div className={styles.container}>
+                  {mail?.attachments?.map((item, idx) => (
+                    <AttachmentItem
+                      idx={idx}
+                      key={idx}
+                      url={item?.download?.url}
+                      name={item?.filename}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-
+            ) : null}
             <div className={styles.content}>
-              {mail?.part_html ? parse(mail?.part_html) : mail?.part_text}
+              {mail?.part_html
+                ? parse(DOMPurify.sanitize(mail?.part_html))
+                : mail?.part_text}
             </div>
           </>
         ) : (

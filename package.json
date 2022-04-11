@@ -28,6 +28,7 @@
     "axios": "^0.25.0",
     "classnames": "^2.3.1",
     "crypto-js": "^4.1.1",
+    "dompurify": "^2.3.6",
     "ethers": "^5.5.4",
     "html-react-parser": "^1.4.8",
     "moment": "^2.29.1",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
+    "@types/dompurify": "^2.3.3",
     "@types/eth-sig-util": "^2.1.1",
     "@types/qs": "^6.9.0",
     "@types/react": "^17.0.0",
