@@ -31,7 +31,7 @@ function Mail(props: any) {
   } = props;
 
   const [readable, setReadable] = useState(true);
-  const randomBitsRef = useRef();
+  const randomBitsRef = useRef('');
 
   const handleLoad = async () => {
     try {
@@ -158,6 +158,7 @@ function Mail(props: any) {
                       key={idx}
                       url={item?.download?.url}
                       name={item?.filename}
+                      randomBits={randomBitsRef.current}
                     />
                   ))}
                 </div>
@@ -170,9 +171,9 @@ function Mail(props: any) {
             </div>
           </>
         ) : (
-          <div className={styles.locked}>
+          <div onClick={handleDecrypted} className={styles.locked}>
             <img src={locked} className={styles.icon} />
-            <div onClick={handleDecrypted}>Decrypt It</div>
+            <div>Click to decrypt this mail.</div>
           </div>
         )}
       </div>
