@@ -14,6 +14,14 @@ import { connect } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
 
+DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+  // set all elements owning target to target=_blank
+  if ('target' in node) {
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener');
+  }
+});
+
 function Mail(props: any) {
   const [mail, setMail] = useState<IMailContentItem>();
   const {
@@ -140,7 +148,7 @@ function Mail(props: any) {
 
         {readable === true ? (
           <>
-            {mail?.attachments && mail.attachments.length > 0 ? (
+            {mail?.attachments && mail.attachments.length > 0 && (
               <div className={styles.attachments}>
                 <div className={styles.label}> Attachments: </div>
                 <div className={styles.container}>
@@ -154,7 +162,7 @@ function Mail(props: any) {
                   ))}
                 </div>
               </div>
-            ) : null}
+            )}
             <div className={styles.content}>
               {mail?.part_html
                 ? parse(DOMPurify.sanitize(mail?.part_html))

@@ -13,6 +13,6 @@ export default {
   'menu-inline-submenu-bg': '#fff', // 子菜单背景色
   'menu-item-active-bg': '#e5e5e5', // 二级菜单项激活背景色
   'menu-item-active-border-width': '1px', // 激活菜单项右侧indicator宽度
-  'font-family': 'Arial',
+  'font-family': 'Poppins, Helvetica, Arial, sans-serif',
   'border-color-base': '#fff',
 };

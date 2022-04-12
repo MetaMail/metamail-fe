@@ -41,6 +41,7 @@ function SideMenu({
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
+  const [hover, setHover] = useState<MetaMailTypeEn | undefined>(undefined);
 
   const handleClickNewMail = async (type: MetaMailTypeEn) => {
     try {
@@ -110,11 +111,17 @@ function SideMenu({
             styles.plain,
             mailType === MetaMailTypeEn.Signed
               ? styles.on
-              : mailType !== undefined && styles.off,
+              : mailType === MetaMailTypeEn.Encrypted
+              ? styles.off
+              : hover === MetaMailTypeEn.Signed
+              ? styles.on
+              : hover === MetaMailTypeEn.Encrypted && styles.off,
           )}
           onClick={() => {
             if (!mailType) handleClickNewMail(MetaMailTypeEn.Signed);
           }}
+          onMouseEnter={() => setHover(MetaMailTypeEn.Signed)}
+          onMouseLeave={() => setHover(undefined)}
         >
           Signed
         </div>
@@ -124,11 +131,17 @@ function SideMenu({
             styles.encrypted,
             mailType === MetaMailTypeEn.Encrypted
               ? styles.on
-              : mailType !== undefined && styles.off,
+              : mailType === MetaMailTypeEn.Signed
+              ? styles.off
+              : hover === MetaMailTypeEn.Encrypted
+              ? styles.on
+              : hover === MetaMailTypeEn.Signed && styles.off,
           )}
           onClick={() => {
             if (!mailType) handleClickNewMail(MetaMailTypeEn.Encrypted);
           }}
+          onMouseEnter={() => setHover(MetaMailTypeEn.Encrypted)}
+          onMouseLeave={() => setHover(undefined)}
         >
           Encrypted
         </div>

@@ -38,8 +38,7 @@
       line-height: 14px;
       color: #fff;
       cursor: pointer;
-      transition: 0.3s;
-      padding: 2px;
+      transition: 0.25s;
     }
 
     .plain {
@@ -50,10 +49,6 @@
       word-wrap: break-word;
     }
 
-    .plain:hover {
-      width: 100%;
-    }
-
     .encrypted {
       background: #2e82e5;
       border-top-right-radius: 5px;
@@ -62,16 +57,14 @@
       word-wrap: break-word;
     }
 
-    .encrypted:hover {
-      width: 100%;
-    }
-
     .on {
       width: 100%;
+      border-radius: 5px;
     }
 
     .off {
       width: 0;
+      overflow: hidden;
       visibility: hidden;
     }
 
