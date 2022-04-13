@@ -71,7 +71,14 @@ export default function MailListItem({
           </div>
         </div>
         <div className={styles.right}>
-          <div className={styles.date}>{moment(date).format('YYYY/MM/DD')}</div>
+          <div className={styles.date}>
+            {moment(date).calendar(null, {
+              sameDay: 'LT',
+              lastDay: '[Yesterday] LT',
+              lastWeek: 'LL',
+              sameElse: 'LL',
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ import CryptoJS from 'crypto-js';
 import { connect } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
+import moment, { Moment } from 'moment';
 
 DOMPurify.addHook('afterSanitizeAttributes', function (node) {
   // set all elements owning target to target=_blank
@@ -99,7 +100,7 @@ function Mail(props: any) {
     if (query?.type === MetaMailTypeEn.Encrypted + '') {
       setReadable(false);
     }
-    handleMarkRead();
+    // handleMarkRead();
     handleLoad();
   }, [query]);
 
@@ -143,6 +144,12 @@ function Mail(props: any) {
                   )
                   .join('; ')
               : ''}
+          </span>
+        </div>
+        <div className={styles.date}>
+          <span className={styles.label}>Date: </span>
+          <span className={styles.info}>
+            {mail?.mail_date ? moment(mail?.mail_date).format('llll') : ''}
           </span>
         </div>
 

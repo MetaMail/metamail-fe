@@ -5,6 +5,7 @@ import {
   FilterTypeEn,
   getMailBoxType,
   IMailItem,
+  MailBoxTypeEn,
   MailTypeIconMap,
   MarkTypeEn,
   MetaMailTypeEn,
@@ -107,9 +108,19 @@ function MailList(props: any) {
     }
   };
 
-  const handleClickMail = (id: string, type: MetaMailTypeEn) => {
+  const handleClickMail = (
+    id: string,
+    type: MetaMailTypeEn,
+    mailbox: MailBoxTypeEn,
+    read: number,
+  ) => {
     const pathname =
       queryRef.current === FilterTypeEn.Draft ? '/home/new' : '/home/mail';
+
+    if (!read) {
+      const mails = [{ message_id: id, mailbox: Number(mailbox) }];
+      changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
+    }
 
     history.push({
       pathname,
@@ -224,7 +235,12 @@ function MailList(props: any) {
             isRead={item.read == ReadStatusTypeEn.read}
             abstract={item?.digest}
             onClick={() => {
-              handleClickMail(item.message_id, item.meta_type);
+              handleClickMail(
+                item.message_id,
+                item.meta_type,
+                item.mailbox,
+                item.read,
+              );
             }}
             select={selectList.has(item.message_id)}
             onFavorite={(isSelect: boolean) => {
