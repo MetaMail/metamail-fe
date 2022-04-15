@@ -1,6 +1,8 @@
 import styles from './index.less';
 import { DownloadOutlined } from '@ant-design/icons';
 import CryptoJS from 'crypto-js';
+import { message } from 'antd';
+import { useRef } from 'react';
 
 function convertWordArrayToUint8Array(wordArray: CryptoJS.lib.WordArray) {
   var arrayOfWords = wordArray.hasOwnProperty('words') ? wordArray.words : [];
@@ -32,6 +34,8 @@ export default function AttachmentItem({
   idx: number;
   randomBits: string;
 }) {
+  const key = url;
+  const decrypting = useRef(false);
   return (
     <div
       className={styles.item}
@@ -40,19 +44,27 @@ export default function AttachmentItem({
         if (!randomBits) {
           window.open(url);
         } else {
+          if (decrypting.current) return;
+          decrypting.current = true;
+          message.loading({ content: 'Decrypting...', key });
           fetch(url)
             .then((response) => response.text())
             .then((text) => {
-              var decrypted = CryptoJS.AES.decrypt(text, randomBits); // Decryption: I: Base64 encoded string (OpenSSL-format) -> O: WordArray
-              var typedArray = convertWordArrayToUint8Array(decrypted); // Convert: WordArray -> typed array
-              var fileDec = new Blob([typedArray]); // Create blob from typed array
-              var a = document.createElement('a');
-              var url = window.URL.createObjectURL(fileDec);
-              a.href = url;
+              const decrypted = CryptoJS.AES.decrypt(text, randomBits); // Decryption: I: Base64 encoded string (OpenSSL-format) -> O: WordArray
+              const typedArray = convertWordArrayToUint8Array(decrypted); // Convert: WordArray -> typed array
+              const fileDec = new Blob([typedArray]); // Create blob from typed array
+              const a = document.createElement('a');
+              const tmpUrl = window.URL.createObjectURL(fileDec);
+              a.href = tmpUrl;
               a.download = name;
               a.click();
-              window.URL.revokeObjectURL(url);
-            });
+              window.URL.revokeObjectURL(tmpUrl);
+              message.success({ content: 'Decrypted', key, duration: 2 });
+            })
+            .catch(() => {
+              message.error({ content: 'Decrypt failed', key, duration: 2 });
+            })
+            .finally(() => (decrypting.current = false));
         }
       }}
     >
