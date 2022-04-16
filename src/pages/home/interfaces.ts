@@ -16,7 +16,7 @@ export enum MarkTypeEn {
   Starred,
   Trash,
   Spam,
-  deleted,
+  Deleted,
 }
 
 export enum ReadStatusTypeEn {

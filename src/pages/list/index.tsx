@@ -169,7 +169,10 @@ function MailList(props: any) {
               marginRight: '8px',
             }}
             onClick={() => {
-              handleChangeMailStatus(undefined, MarkTypeEn.Trash);
+              handleChangeMailStatus(
+                undefined,
+                queryRef.current == 3 ? MarkTypeEn.Deleted : MarkTypeEn.Trash,
+              );
             }}
           />
           <Icon

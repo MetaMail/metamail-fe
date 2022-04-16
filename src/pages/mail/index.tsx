@@ -1,4 +1,4 @@
-import { Button, Divider, notification, PageHeader } from 'antd';
+import { Button, Divider, notification, PageHeader, Skeleton } from 'antd';
 import {
   IMailContentItem,
   ReadStatusTypeEn,

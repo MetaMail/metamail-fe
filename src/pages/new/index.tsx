@@ -1,4 +1,4 @@
-import { Button, Input, Modal, notification, Upload } from 'antd';
+import { Button, Input, Modal, message, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
@@ -44,6 +44,7 @@ const NewMail = (props: any) => {
   const [receiver, setReceiver] = useState<IPersonItem[]>([]);
   const [toStr, setToStr] = useState<string>('');
   const [content, setContent] = useState<string>();
+  const [attList, setAttList] = useState<any[]>([]);
 
   const draftID = query?.id;
   const type: MetaMailTypeEn = Number(query?.type);
@@ -51,7 +52,7 @@ const NewMail = (props: any) => {
   const reactQuillRef = useRef<ReactQuill>();
   const quillRef = useRef<any>();
   const dateRef = useRef<string>();
-  const shaListRef = useRef<string[]>([]);
+  // const shaListRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
@@ -74,6 +75,7 @@ const NewMail = (props: any) => {
         setSubject(data?.subject);
         setToStr(data?.mail_to?.map((to: any) => to.address)?.join(';'));
         setContent(data?.part_html ?? data?.part_text);
+        setAttList(data?.attachments);
       }
     } catch {
       notification.error({
@@ -163,6 +165,11 @@ const NewMail = (props: any) => {
           keys = pks.map((pk) => pkEncrypt(pk, randomBits));
         }
 
+        const orderedAtt = attList;
+        orderedAtt.sort((a, b) =>
+          a.attachment_id.localeCompare(b.attachment_id),
+        );
+
         let packData = {
           from: props.showName,
           to: receiver,
@@ -170,7 +177,7 @@ const NewMail = (props: any) => {
           subject,
           text_hash: CryptoJS.SHA256(text).toString(),
           html_hash: CryptoJS.SHA256(html).toString(),
-          attachments_hash: shaListRef.current,
+          attachments_hash: orderedAtt.map((att) => att.sha256),
           name: props.ensName,
           keys: keys,
         };
@@ -275,6 +282,11 @@ const NewMail = (props: any) => {
     cid?: string,
   ) => {
     try {
+      message.loading({
+        content: `uploading ${file.name}...`,
+        key: sha256,
+        duration: 0,
+      });
       const form = new FormData();
 
       form.append('attachment', attachment);
@@ -284,16 +296,16 @@ const NewMail = (props: any) => {
 
       const { data } = await uploadAttachment(draftID, form);
 
-      if (data) {
-        shaListRef.current.push(sha256);
-        file.sid = data?.attachment_id;
-        file.sha = sha256;
+      if (data?.attachment) {
+        setAttList([...attList, data.attachment]);
+        message.success({ content: 'upload success', key: sha256 });
       }
     } catch {
-      notification.error({
-        message: 'Failed Upload',
-        description: 'Sorry, attachment can not upload to the server.',
-      });
+      message.error({ content: 'upload failed', key: sha256 });
+      // notification.error({
+      //   message: 'Upload Failed',
+      //   description: 'Sorry, attachment can not upload to the server.',
+      // });
     }
   };
 
@@ -301,15 +313,12 @@ const NewMail = (props: any) => {
     const reader = new FileReader();
 
     let res;
-    reader.onload = () => {
+    reader.onload = async () => {
       if (reader?.result) {
         const input = reader.result;
-
         const wordArray = CryptoJS.lib.WordArray.create(input as any);
-
         const sha256 = CryptoJS.SHA256(wordArray).toString();
-
-        handleUploadAttachment(
+        await handleUploadAttachment(
           originFile,
           file,
           sha256,
@@ -336,9 +345,9 @@ const NewMail = (props: any) => {
         <Icon
           url={trash}
           onClick={() => {
-            notification.warn({
-              message: 'TODO: 删除草稿接口',
-            });
+            // notification.warn({
+            //   message: 'TODO: 删除草稿接口',
+            // });
           }}
           style={{ marginRight: '8px' }}
         />
@@ -379,26 +388,21 @@ const NewMail = (props: any) => {
 
       <Upload
         maxCount={10}
+        fileList={attList.map((att) => {
+          return {
+            name: att?.filename,
+            uid: att?.attachment_id,
+          };
+        })}
         onRemove={async (file) => {
-          if ((file?.originFileObj as any).sid) {
-            const { data } = await deleteAttachment(
-              draftID,
-              (file?.originFileObj as any).sid,
-            );
+          if (!file.uid) return false;
+          const data = await deleteAttachment(draftID, file.uid);
+          if (!data) return false;
 
-            if (data) {
-              const idx = shaListRef.current.findIndex((sha) => {
-                return (file?.originFileObj as any)?.sha === sha;
-              });
+          const l = attList.filter((att) => att.attachment_id !== file.uid);
+          setAttList(l);
 
-              if (idx > -1) {
-                shaListRef.current.splice(idx, 1);
-              }
-              return true;
-            }
-
-            return false;
-          }
+          return true;
         }}
         beforeUpload={(file) => {
           const reader = new FileReader();
