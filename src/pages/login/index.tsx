@@ -102,6 +102,8 @@ function Login(props: any) {
         method: 'eth_requestAccounts',
       });
       const newAddr = Array.isArray(newAccounts) ? newAccounts[0] : newAccounts;
+      console.log(newAddr);
+      if (!newAddr) return;
       setUserAddress(newAddr);
       setShowName(newAddr);
     } catch (error: any) {
@@ -141,6 +143,13 @@ function Login(props: any) {
 
         // TODO: signMethod 最好以1/2/3的形式进行枚举，而非string
         const signedMessage = await handleSign(randomStr, address!);
+        if (!signedMessage) {
+          notification.error({
+            message: 'Failed to sign',
+            description: 'Please try agin.',
+          });
+          return;
+        }
 
         const res = await getJwtToken({
           tokenForRandom,
@@ -220,7 +229,7 @@ function Login(props: any) {
           Your web3 email <br /> Create and use the encrypted email
         </div>
         {/* <div className={styles.divider}></div> */}
-        <p className={styles.desc}>All features are free</p>
+        <p className={styles.desc}>No gas fee at all.</p>
 
         <Button
           type="primary"
