@@ -22,22 +22,21 @@ export const updatePublicKey = async (address: string) => {
   try {
     // @ts-ignore
     const key = await getPublicKey(address);
-    if (key && key?.length > 0) {
-      const data = {
-        addr: address,
-        date: new Date().toISOString(), //当前的时间
-        version: ETHVersion, //metamask默认支持的KEY格式
-        public_key: key,
-      };
+    if (!key || key.length == 0) return null;
 
-      getPersonalSign(address, pkPack(data)).then((signature) => {
-        postPublicKey({
-          ...data,
-          signature,
-        });
-      });
-    }
-
+    const data = {
+      addr: address,
+      date: new Date().toISOString(), //当前的时间
+      version: ETHVersion, //metamask默认支持的KEY格式
+      public_key: key,
+    };
+    const signature = await getPersonalSign(address, pkPack(data));
+    if (!signature) return null;
+    const result = await postPublicKey({
+      ...data,
+      signature,
+    });
+    if (!result) return null;
     return key;
   } catch (error: any) {
     if (error?.code === 4001) {

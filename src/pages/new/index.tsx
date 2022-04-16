@@ -78,7 +78,7 @@ const NewMail = (props: any) => {
     } catch {
       notification.error({
         message: 'Network Error',
-        description: 'Can not fetch detail info of this e-mail for now.',
+        description: 'Can not fetch detail info of this email for now.',
       });
     }
   };
@@ -99,7 +99,7 @@ const NewMail = (props: any) => {
       if (data) {
         notification.success({
           message: 'Sent',
-          description: 'Your message has been sent successfully.',
+          description: 'Your email has been sent successfully.',
         });
 
         history.push({
@@ -177,21 +177,23 @@ const NewMail = (props: any) => {
 
         metaPack(packData).then(async (res) => {
           const { packedResult } = res ?? {};
-          // const { packedResult } = res ?? {};
-
           getPersonalSign(props.address, packedResult).then(
             async (signature) => {
               if (signature === false) {
-                Modal.confirm({
-                  title: 'Failed to sign this mail',
-                  content: 'Would you like to send without signature?',
-                  okText: 'Yes, Send it',
-                  onOk: () => {
-                    handleSend(keys, packedResult);
-                    // handleSend(packedResult, date);
-                  },
-                  cancelText: 'No, I will try send it later',
+                notification.error({
+                  message: 'Mail not send',
+                  description: 'Please sign this email to send, no gas fee.',
                 });
+                // Modal.confirm({
+                //   title: 'Failed to sign this mail',
+                //   content: 'Would you like to send without signature?',
+                //   okText: 'Yes, Send it',
+                //   onOk: () => {
+                //     handleSend(keys, packedResult);
+                //     // handleSend(packedResult, date);
+                //   },
+                //   cancelText: 'No, I will try send it later',
+                // });
               } else {
                 handleSend(keys, packedResult, signature);
                 // handleSend(packedResult, date, signature);
@@ -324,7 +326,7 @@ const NewMail = (props: any) => {
     try {
       handleSave();
     } catch (err) {
-      console.log('faile to auto save mail');
+      // console.log('faile to auto save mail');
     }
   }, 30000);
 

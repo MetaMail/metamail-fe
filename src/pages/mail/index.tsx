@@ -46,7 +46,7 @@ function Mail(props: any) {
       console.log(e);
       notification.error({
         message: 'Network Error',
-        description: 'Can not fetch detail info of this e-mail for now.',
+        description: 'Can not fetch detail info of this email for now.',
       });
       setMail(undefined);
     }

@@ -5,7 +5,7 @@ import {
   SiderFilterMap,
 } from '@/layouts/SideMenu/constants';
 import { FilterTypeEn, MetaMailTypeEn } from '@/pages/home/interfaces';
-import { Layout, Menu, notification } from 'antd';
+import { Layout, Menu, notification, Modal } from 'antd';
 import { MailOutlined, SettingOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
 import styles from './index.less';
@@ -49,11 +49,31 @@ function SideMenu({
       if (type === MetaMailTypeEn.Encrypted) {
         let pKey = publicKey;
         if (!pKey || pKey?.length === 0) {
-          pKey = await updatePublicKey(address);
-          setPublicKey(pKey);
+          Modal.confirm({
+            title: 'Get Public Key',
+            content:
+              'Get and Sign public key to enable enctypted mail. No gas fee.',
+            okText: 'Confirm',
+            cancelText: 'Not now',
+            onOk: async () => {
+              pKey = await updatePublicKey(address);
+              if (!pKey) {
+                notification.error({
+                  message: 'Permission denied',
+                  description: 'Failed to get your public key',
+                });
+                return;
+              }
+              setPublicKey(pKey);
+              notification.success({
+                message: 'Success',
+                description: 'You can send and receive enctypted mail now.',
+              });
+            },
+          });
+          return;
         }
         const randomBits = generateRandom256Bits(address);
-        console.log(randomBits);
         key = pkEncrypt(pKey, randomBits);
         setRandomBits(randomBits);
       } else {
