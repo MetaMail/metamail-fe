@@ -27,31 +27,31 @@ const BlockInfos = [
   },
   {
     imgSrc: encrypted,
-    title: 'Protect mail with p2p encryption*',
+    title: 'Protect mail with p2p encryption',
     desc: 'Mails sent and received by Metamail users could be optionally encrypted, and only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
-    extra: (
-      <div
-        style={{
-          marginTop: '15px',
-          fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-          fontWeight: 400,
-          fontSize: '14px',
-          lineHeight: '24px',
-          textAlign: 'center',
-          color: '#575757',
-        }}
-      >
-        <span>*Under developing. </span>
-        <span
-          style={{
-            color: '#2E82E5',
-            fontWeight: 700,
-          }}
-        >
-          Coming Soon!
-        </span>
-      </div>
-    ),
+    // extra: (
+    //   <div
+    //     style={{
+    //       marginTop: '15px',
+    //       fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    //       fontWeight: 400,
+    //       fontSize: '14px',
+    //       lineHeight: '24px',
+    //       textAlign: 'center',
+    //       color: '#575757',
+    //     }}
+    //   >
+    //     <span>*Under developing. </span>
+    //     <span
+    //       style={{
+    //         color: '#2E82E5',
+    //         fontWeight: 700,
+    //       }}
+    //     >
+    //       Coming Soon!
+    //     </span>
+    //   </div>
+    // ),
   },
 ];
 
