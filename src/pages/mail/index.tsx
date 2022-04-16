@@ -14,6 +14,7 @@ import { connect } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
 import moment, { Moment } from 'moment';
+import { assert } from 'umi/node_modules/@umijs/runtime/dist/utils';
 
 DOMPurify.addHook('afterSanitizeAttributes', function (node) {
   // set all elements owning target to target=_blank
@@ -29,6 +30,7 @@ function Mail(props: any) {
     location: { query },
     history,
     address,
+    ensName,
   } = props;
 
   const [readable, setReadable] = useState(true);
@@ -56,7 +58,20 @@ function Mail(props: any) {
     let keys = mail?.meta_header?.keys;
 
     if (keys && keys?.length > 0 && address) {
-      let key = keys[1]; //TODO: 应该看自己是在收件人还是发件人，获得key
+      const addrList = [
+        mail?.mail_from.address,
+        ...(mail?.mail_to.map((item) => item.address) || []),
+        ...(mail?.mail_cc.map((item) => item.address) || []),
+        ...(mail?.mail_bcc.map((item) => item.address) || []),
+      ];
+      const idx = addrList.findIndex((addr) => {
+        const prefix = addr?.split('@')[0].toLocaleLowerCase();
+        return prefix === address || prefix === ensName;
+      });
+      console.log(idx);
+      if (idx < 0 || idx > keys.length - 1) return;
+      let key = keys[idx];
+
       // @ts-ignore
       let randomBits = await ethereum.request({
         method: 'eth_decrypt',
