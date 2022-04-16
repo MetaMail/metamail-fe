@@ -83,6 +83,13 @@ export interface IMailItem {
   read: number;
   reply_to?: string;
   subject: string;
+  meta_header: {
+    addr: string;
+    date: string;
+    data: string;
+    keys: string[];
+    signature: string;
+  };
 }
 
 export interface IMailContentItem {

@@ -61,7 +61,8 @@ export default function AttachmentItem({
               window.URL.revokeObjectURL(tmpUrl);
               message.success({ content: 'Decrypted', key, duration: 2 });
             })
-            .catch(() => {
+            .catch((err) => {
+              console.log(err);
               message.error({ content: 'Decrypt failed', key, duration: 2 });
             })
             .finally(() => (decrypting.current = false));

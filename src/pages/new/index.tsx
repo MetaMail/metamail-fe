@@ -10,7 +10,11 @@ import {
   updateMail,
   uploadAttachment,
 } from '@/services';
-import { IPersonItem, MetaMailTypeEn } from '../home/interfaces';
+import {
+  IPersonItem,
+  MetaMailTypeEn,
+  IMailContentItem,
+} from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
@@ -27,6 +31,7 @@ import { EditorFormats, EditorModules } from './constants';
 import { assert } from 'umi/node_modules/@umijs/runtime/dist/utils';
 import { getUserInfos } from '@/services/user';
 import { pkEncrypt } from '@/layouts/SideMenu/utils';
+import locked from '@/assets/images/locked.svg';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -43,26 +48,23 @@ const NewMail = (props: any) => {
   const [subject, setSubject] = useState<string>('');
   const [receiver, setReceiver] = useState<IPersonItem[]>([]);
   const [toStr, setToStr] = useState<string>('');
-  const [content, setContent] = useState<string>();
+  const [content, setContent] = useState<string>('');
   const [attList, setAttList] = useState<any[]>([]);
+  const [editable, setEditable] = useState<boolean>();
+  // const [currRandomBits, setCurrRandomBits] = useState<string>(randomBits);
 
   const draftID = query?.id;
   const type: MetaMailTypeEn = Number(query?.type);
 
-  const reactQuillRef = useRef<ReactQuill>();
-  const quillRef = useRef<any>();
+  const myKeyRef = useRef<string>();
+  const currRandomBitsRef = useRef<string>(randomBits);
+  const quillText = useRef<string>('');
+  const quillHtml = useRef<string>('');
   const dateRef = useRef<string>();
-  // const shaListRef = useRef<string[]>([]);
 
   useEffect(() => {
-    if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
-
-    quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
-      reactQuillRef.current.getEditor(),
-    );
-
     handleLoad();
-  }, [reactQuillRef]);
+  }, [query]);
 
   const handleLoad = async () => {
     try {
@@ -70,12 +72,19 @@ const NewMail = (props: any) => {
         throw new Error();
       }
       const { data } = await getMailDetailByID(window.btoa(query.id));
-
-      if (data) {
-        setSubject(data?.subject);
-        setToStr(data?.mail_to?.map((to: any) => to.address)?.join(';'));
-        setContent(data?.part_html ?? data?.part_text);
-        setAttList(data?.attachments);
+      const mail = data as IMailContentItem;
+      if (mail) {
+        setSubject(mail?.subject);
+        setToStr(mail?.mail_to?.map((to: any) => to.address)?.join(';'));
+        setContent(mail?.part_html ?? mail?.part_text);
+        setAttList(mail?.attachments);
+        if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
+          setEditable(false);
+        } else {
+          setEditable(true);
+        }
+        if (mail?.meta_header?.keys)
+          myKeyRef.current = mail?.meta_header?.keys[0];
       }
     } catch {
       notification.error({
@@ -83,6 +92,28 @@ const NewMail = (props: any) => {
         description: 'Can not fetch detail info of this email for now.',
       });
     }
+  };
+
+  const handleDecrypted = async () => {
+    if (!myKeyRef.current) return;
+
+    // @ts-ignore
+    let randomBits = await ethereum.request({
+      method: 'eth_decrypt',
+      params: [
+        Buffer.from(myKeyRef.current, 'base64').toString(),
+        props.address,
+      ],
+    });
+    if (!randomBits) return;
+
+    currRandomBitsRef.current = randomBits;
+    const decryptedContent = CryptoJS.AES.decrypt(
+      content,
+      currRandomBitsRef.current,
+    ).toString(CryptoJS.enc.Utf8);
+    setContent(decryptedContent);
+    setEditable(true);
   };
 
   const handleSend = async (
@@ -128,18 +159,18 @@ const NewMail = (props: any) => {
       return;
     }
 
-    if (
-      !quillRef.current ||
-      !quillRef.current?.getHTML ||
-      !quillRef.current?.getText
-    ) {
-      notification.error({
-        message: 'ERROR',
-        description: 'Failed to get message content',
-      });
+    // if (
+    //   !quillRef.current ||
+    //   !quillRef.current?.getHTML ||
+    //   !quillRef.current?.getText
+    // ) {
+    //   notification.error({
+    //     message: 'ERROR',
+    //     description: 'Failed to get message content',
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     try {
       handleSave().then(async (obj) => {
@@ -162,7 +193,7 @@ const NewMail = (props: any) => {
             pks.push(rpk);
           });
 
-          keys = pks.map((pk) => pkEncrypt(pk, randomBits));
+          keys = pks.map((pk) => pkEncrypt(pk, currRandomBitsRef.current));
         }
 
         const orderedAtt = attList;
@@ -219,14 +250,15 @@ const NewMail = (props: any) => {
 
   const handleSave = async () => {
     if (!draftID) return;
+    if (!editable) return;
 
-    let html = quillRef.current.getHTML(),
-      text = quillRef.current.getText();
+    let html = quillHtml.current;
+    let text = quillText.current;
 
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {
-      html = CryptoJS.AES.encrypt(html, randomBits).toString();
-      text = CryptoJS.AES.encrypt(text, randomBits).toString();
+      html = CryptoJS.AES.encrypt(html, currRandomBitsRef.current).toString();
+      text = CryptoJS.AES.encrypt(text, currRandomBitsRef.current).toString();
     }
 
     const { data } = await updateMail(draftID, {
@@ -357,6 +389,7 @@ const NewMail = (props: any) => {
           <div style={{ width: '56px', textAlign: 'right' }}>Subject:</div>
         }
         bordered
+        disabled={!editable}
         style={{
           borderColor: '#ccc',
         }}
@@ -368,6 +401,7 @@ const NewMail = (props: any) => {
       />
       <Input
         checked
+        disabled={!editable}
         prefix={<div style={{ width: '56px', textAlign: 'right' }}>To:</div>}
         style={{
           borderColor: '#ccc',
@@ -386,99 +420,104 @@ const NewMail = (props: any) => {
         value={toStr}
       />
 
-      <Upload
-        maxCount={10}
-        fileList={attList.map((att) => {
-          return {
-            name: att?.filename,
-            uid: att?.attachment_id,
-          };
-        })}
-        onRemove={async (file) => {
-          if (!file.uid) return false;
-          const data = await deleteAttachment(draftID, file.uid);
-          if (!data) return false;
-
-          const l = attList.filter((att) => att.attachment_id !== file.uid);
-          setAttList(l);
-
-          return true;
-        }}
-        beforeUpload={(file) => {
-          const reader = new FileReader();
-
-          reader.readAsArrayBuffer(file);
-
-          reader.onload = () => {
-            if (reader?.result) {
-              const input = reader.result;
-              const fileProps = {
-                type: file.type,
-                lastModified: file.lastModified,
-              };
-
-              let finalFile = new File([new Blob([input])], file.name, {
-                ...fileProps,
-              });
-
-              // 加密邮件才需要对附件进行加密
-              if (type === MetaMailTypeEn.Encrypted) {
-                const encrypted = CryptoJS.AES.encrypt(
-                  CryptoJS.lib.WordArray.create(input as any),
-                  randomBits,
-                ).toString();
-
-                const fileEncBlob = new Blob([encrypted]);
-
-                finalFile = new File([fileEncBlob], file.name, {
-                  ...fileProps,
-                });
-              }
-
-              handleFinalFileUpload(finalFile, file);
-            }
-          };
-        }}
-      >
-        <div className={styles.uploadBar}>
-          <div className={styles.btn}>
-            <Icon url={attachment} />
-            <span>Upload</span>
-          </div>
-          <span className={styles.tip}>(Max 15MB)</span>
+      {type === MetaMailTypeEn.Encrypted && !editable ? (
+        <div onClick={handleDecrypted} className={styles.locked}>
+          <img src={locked} className={styles.icon} />
+          <div>Click to decrypt this draft.</div>
         </div>
-      </Upload>
+      ) : (
+        <>
+          <Upload
+            maxCount={10}
+            fileList={attList.map((att) => {
+              return {
+                name: att?.filename,
+                uid: att?.attachment_id,
+              };
+            })}
+            onRemove={async (file) => {
+              if (!file.uid) return false;
+              const data = await deleteAttachment(draftID, file.uid);
+              if (!data) return false;
 
-      <div className={styles.content}>
-        <ReactQuill
-          ref={(el) => {
-            el ? (reactQuillRef.current = el) : void 0;
-          }}
-          style={{
-            height: '100%',
-          }}
-          theme="snow"
-          placeholder={''}
-          modules={EditorModules}
-          formats={EditorFormats}
-          value={content}
-          onChange={(val) => {
-            setContent(val);
-          }}
-        />
-      </div>
+              const l = attList.filter((att) => att.attachment_id !== file.uid);
+              setAttList(l);
 
-      <div className={styles.footer}>
-        <Button
-          type="primary"
-          style={{ borderRadius: '6px' }}
-          onClick={handleClickSend}
-        >
-          {type === Number(MetaMailTypeEn.Encrypted)
-            ? 'Encrypt & Send'
-            : 'Sign & Send'}
-        </Button>
-      </div>
+              return true;
+            }}
+            beforeUpload={(file) => {
+              const reader = new FileReader();
+
+              reader.readAsArrayBuffer(file);
+
+              reader.onload = () => {
+                if (reader?.result) {
+                  const input = reader.result;
+                  const fileProps = {
+                    type: file.type,
+                    lastModified: file.lastModified,
+                  };
+
+                  let finalFile = new File([new Blob([input])], file.name, {
+                    ...fileProps,
+                  });
+
+                  // 加密邮件才需要对附件进行加密
+                  if (type === MetaMailTypeEn.Encrypted) {
+                    const encrypted = CryptoJS.AES.encrypt(
+                      CryptoJS.lib.WordArray.create(input as any),
+                      currRandomBitsRef.current,
+                    ).toString();
+
+                    const fileEncBlob = new Blob([encrypted]);
+
+                    finalFile = new File([fileEncBlob], file.name, {
+                      ...fileProps,
+                    });
+                  }
+
+                  handleFinalFileUpload(finalFile, file);
+                }
+              };
+            }}
+          >
+            <div className={styles.uploadBar}>
+              <div className={styles.btn}>
+                <Icon url={attachment} />
+                <span>Upload</span>
+              </div>
+              <span className={styles.tip}>(Max 15MB)</span>
+            </div>
+          </Upload>
+          <div className={styles.content}>
+            <ReactQuill
+              style={{
+                height: '100%',
+              }}
+              theme="snow"
+              placeholder={''}
+              modules={EditorModules}
+              formats={EditorFormats}
+              value={content}
+              onChange={(value, delta, source, editor) => {
+                quillText.current = editor.getText();
+                quillHtml.current = editor.getHTML();
+              }}
+            />
+          </div>
+          <div className={styles.footer}>
+            <Button
+              type="primary"
+              style={{ borderRadius: '6px' }}
+              onClick={handleClickSend}
+            >
+              {type === Number(MetaMailTypeEn.Encrypted)
+                ? 'Encrypt & Send'
+                : 'Sign & Send'}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

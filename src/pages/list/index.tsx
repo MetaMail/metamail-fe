@@ -34,10 +34,10 @@ function MailList(props: any) {
   const mailBox = getMailBoxType(queryRef.current);
 
   const [loading, setLoading] = useState(false);
-  const [list, setList] = useState<IMailItem[]>();
+  const [list, setList] = useState<IMailItem[]>([]);
   const [pageIdx, setPageIdx] = useState(1);
   const [pageNum, setPageNum] = useState(0);
-  const [selectList, setSelectList] = useState<Set<string>>(new Set());
+  const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
 
@@ -46,8 +46,8 @@ function MailList(props: any) {
 
     selectList?.forEach((item) => {
       res.push({
-        message_id: item,
-        mailbox: mailBox,
+        message_id: item.message_id,
+        mailbox: item.mailbox,
       });
     });
 
@@ -116,7 +116,7 @@ function MailList(props: any) {
   ) => {
     const pathname =
       queryRef.current === FilterTypeEn.Draft ? '/home/new' : '/home/mail';
-
+    props.setRandomBits(undefined); // clear random bits
     if (!read) {
       const mails = [{ message_id: id, mailbox: Number(mailbox) }];
       changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
@@ -138,9 +138,7 @@ function MailList(props: any) {
             url={checkbox}
             checkedUrl={selected}
             onClick={(res: boolean) => {
-              setSelectList(() => {
-                return new Set(res ? list?.map((item) => item.message_id) : []);
-              });
+              setSelectList(res ? list?.map((item) => item) : []);
               setIsAll(res);
             }}
             select={isAll}
@@ -245,7 +243,13 @@ function MailList(props: any) {
                 item.read,
               );
             }}
-            select={selectList.has(item.message_id)}
+            select={
+              selectList.findIndex(
+                (i) =>
+                  i.message_id === item.message_id &&
+                  i.mailbox === item.mailbox,
+              ) >= 0
+            }
             onFavorite={(isSelect: boolean) => {
               handleChangeMailStatus(
                 [
@@ -258,15 +262,17 @@ function MailList(props: any) {
               );
             }}
             onSelect={(isSelect) => {
-              setSelectList((prev) => {
-                if (isSelect) {
-                  prev.add(item?.message_id);
-                } else {
-                  prev.delete(item?.message_id);
-                }
-
-                return new Set(prev);
-              });
+              const nextList = selectList.slice();
+              if (isSelect) {
+                nextList.push(item);
+              } else {
+                nextList.filter(
+                  (i) =>
+                    i.message_id !== item.message_id &&
+                    i.mailbox !== item.mailbox,
+                );
+              }
+              setSelectList(nextList);
             }}
           />
         )}
@@ -282,6 +288,12 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
+  setRandomBits: (data: any) =>
+    dispatch({
+      type: 'user/setRandomBits',
+      payload: data,
+    }),
+
   setUnreadCount: (data: any) =>
     dispatch({
       type: 'user/setUnreadCount',

@@ -68,7 +68,6 @@ function Mail(props: any) {
         const prefix = addr?.split('@')[0].toLocaleLowerCase();
         return prefix === address || prefix === ensName;
       });
-      console.log(idx);
       if (idx < 0 || idx > keys.length - 1) return;
       let key = keys[idx];
 
@@ -80,7 +79,6 @@ function Mail(props: any) {
 
       if (randomBits) {
         randomBitsRef.current = randomBits;
-
         const res = { ...mail };
 
         if (res?.part_html) {
@@ -101,14 +99,6 @@ function Mail(props: any) {
         setMail(res as IMailContentItem);
       }
     }
-  };
-
-  const handleMarkRead = async () => {
-    const mails =
-      query?.id && query.id.length > 0
-        ? [{ message_id: query.id, mailbox: Number(query.type) }]
-        : [];
-    await changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
   };
 
   useEffect(() => {
