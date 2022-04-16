@@ -231,7 +231,7 @@ function MailList(props: any) {
             from={item.mail_from}
             subject={item.subject}
             date={item.mail_date}
-            typeIcon={MailTypeIconMap?.[item.meta_type as MetaMailTypeEn]}
+            metaType={item.meta_type as MetaMailTypeEn}
             isRead={item.read == ReadStatusTypeEn.read}
             abstract={item?.digest}
             onClick={() => {

@@ -33,7 +33,7 @@ const BlockInfos = [
       <div
         style={{
           marginTop: '15px',
-          fontFamily: 'Poppins, Helvetica, Arial, sans-serif',
+          fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
           fontWeight: 400,
           fontSize: '14px',
           lineHeight: '24px',

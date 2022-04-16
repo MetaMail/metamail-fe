@@ -90,16 +90,7 @@ function Home(props: any) {
                       }
                     }}
                   >
-                    <div
-                      id="name"
-                      style={{
-                        minWidth: '200px',
-                        marginRight: '8px',
-                        textAlign: 'center',
-                      }}
-                    >
-                      Logout
-                    </div>
+                    <div id="name">Logout</div>
                     <Icon url={logout} />
                   </div>
                 </div>
