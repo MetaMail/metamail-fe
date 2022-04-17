@@ -6,7 +6,6 @@ import {
 } from '@/layouts/SideMenu/constants';
 import { FilterTypeEn, MetaMailTypeEn } from '@/pages/home/interfaces';
 import { Layout, Menu, notification, Modal } from 'antd';
-import { MailOutlined, SettingOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
 import styles from './index.less';
 import { contacts, write } from '@/assets/icons';

@@ -1,4 +1,4 @@
-import { Button, Input, Modal, message, notification, Upload } from 'antd';
+import { Button, Input, message, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
@@ -18,7 +18,7 @@ import {
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
 import { attachment, trash } from '@/assets/icons';
-import { connect, history, utils } from 'umi';
+import { connect, history } from 'umi';
 import {
   AttachmentRelatedTypeEn,
   metaPack,
@@ -28,10 +28,9 @@ import { getPersonalSign } from '@/utils/sign';
 import useInterval from '@/utils/hooks';
 import { PostfixOfAddress } from '@/utils/constants';
 import { EditorFormats, EditorModules } from './constants';
-import { assert } from 'umi/node_modules/@umijs/runtime/dist/utils';
-import { getUserInfos } from '@/services/user';
 import { pkEncrypt } from '@/layouts/SideMenu/utils';
 import locked from '@/assets/images/locked.svg';
+import ReceiverGroup from './ReceiverGroup';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -46,12 +45,12 @@ const NewMail = (props: any) => {
   } = props;
 
   const [subject, setSubject] = useState<string>('');
-  const [receiver, setReceiver] = useState<IPersonItem[]>([]);
-  const [toStr, setToStr] = useState<string>('');
+
+  const [receivers, setReceivers] = useState<IPersonItem[]>([]);
+
   const [content, setContent] = useState<string>('');
   const [attList, setAttList] = useState<any[]>([]);
   const [editable, setEditable] = useState<boolean>();
-  // const [currRandomBits, setCurrRandomBits] = useState<string>(randomBits);
 
   const draftID = query?.id;
   const type: MetaMailTypeEn = Number(query?.type);
@@ -75,7 +74,7 @@ const NewMail = (props: any) => {
       const mail = data as IMailContentItem;
       if (mail) {
         setSubject(mail?.subject);
-        setToStr(mail?.mail_to?.map((to: any) => to.address)?.join(';'));
+        setReceivers(mail?.mail_to);
         setContent(mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
@@ -150,7 +149,7 @@ const NewMail = (props: any) => {
   const handleClickSend = async () => {
     if (!draftID) return;
 
-    if (receiver?.length < 1) {
+    if (receivers?.length < 1) {
       notification.error({
         message: 'No Receipt',
         description: 'At lease 1 receipt',
@@ -183,8 +182,8 @@ const NewMail = (props: any) => {
         if (type === MetaMailTypeEn.Encrypted) {
           // TODO: 最好用户填一个收件人的时候，就获取这个收件人的public_key，如果没有pk，就标出来
           let pks: string[] = [publicKey];
-          const receiverInfos = await handleGetReceiversInfos(receiver);
-          receiver.forEach((receiverItem) => {
+          const receiverInfos = await handleGetReceiversInfos(receivers);
+          receivers.forEach((receiverItem) => {
             const receiverPrefix = receiverItem.address.split('@')[0];
             let rpk = receiverInfos?.[receiverPrefix].public_key?.public_key;
             if (!rpk) {
@@ -203,7 +202,7 @@ const NewMail = (props: any) => {
 
         let packData = {
           from: props.showName,
-          to: receiver,
+          to: receivers,
           date: dateRef.current,
           subject,
           text_hash: CryptoJS.SHA256(text).toString(),
@@ -263,7 +262,7 @@ const NewMail = (props: any) => {
 
     const { data } = await updateMail(draftID, {
       subject: subject,
-      mail_to: receiver,
+      mail_to: receivers,
       part_html: html,
       part_text: text,
       mail_from: {
@@ -278,32 +277,6 @@ const NewMail = (props: any) => {
 
     dateRef.current = data?.mail_date;
     return { html, text };
-  };
-
-  const handleFormatReceivers = () => {
-    const values = toStr?.trim().split(';');
-    const res: IPersonItem[] = [];
-
-    values?.forEach((item) => {
-      if (
-        !new RegExp(
-          /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/g,
-        ).test(item)
-      ) {
-        notification.warn({
-          message: 'Invalid address',
-          description: `receipt\'s address ${item} is not a valid address, please check.`,
-        });
-      } else {
-        res.push({
-          address: item,
-          name: '',
-        });
-      }
-    });
-
-    setReceiver(res);
-    setToStr(res?.map((item) => item.address).join(';'));
   };
 
   const handleUploadAttachment = async (
@@ -371,6 +344,17 @@ const NewMail = (props: any) => {
     }
   }, 30000);
 
+  const onReceiversChange = (newReceivers: string[]) => {
+    setReceivers(
+      newReceivers.map((i) => {
+        return {
+          address: i,
+          name: '',
+        };
+      }),
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -399,26 +383,16 @@ const NewMail = (props: any) => {
           setSubject(e.target.value);
         }}
       />
-      <Input
-        checked
-        disabled={!editable}
-        prefix={<div style={{ width: '56px', textAlign: 'right' }}>To:</div>}
-        style={{
-          borderColor: '#ccc',
-          marginTop: '4px',
-        }}
-        onChange={(e) => {
-          e.preventDefault();
-          setToStr(e.target.value);
-        }}
-        onBlur={handleFormatReceivers}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleFormatReceivers();
-          }
-        }}
-        value={toStr}
-      />
+
+      <div className={styles.receiverBar}>
+        <div className={styles.title}>To:</div>
+        <div className={styles.content}>
+          <ReceiverGroup
+            receivers={receivers}
+            onReceiversChange={onReceiversChange}
+          />
+        </div>
+      </div>
 
       {type === MetaMailTypeEn.Encrypted && !editable ? (
         <div onClick={handleDecrypted} className={styles.locked}>
