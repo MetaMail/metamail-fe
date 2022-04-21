@@ -347,7 +347,7 @@ const NewMail = (props: any) => {
       newReceivers.map((i) => {
         return {
           address: i,
-          name: '',
+          name: i.split('@')[0],
         };
       }),
     );
