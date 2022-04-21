@@ -50,6 +50,7 @@ const NewMail = (props: any) => {
 
   const [content, setContent] = useState<string>('');
   const [attList, setAttList] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [editable, setEditable] = useState<boolean>();
 
   const draftID = query?.id;
@@ -82,6 +83,7 @@ const NewMail = (props: any) => {
         } else {
           setEditable(true);
         }
+        setLoaded(true);
         if (mail?.meta_header?.keys)
           myKeyRef.current = mail?.meta_header?.keys[0];
       }
@@ -213,9 +215,9 @@ const NewMail = (props: any) => {
             async (signature) => {
               if (signature === false) {
                 notification.error({
-                  message: 'Mail not send',
+                  message: 'Not Your Sign, Not your Mail',
                   description:
-                    'Not your sign, not your mail. Please sign this email to send, no gas fee.',
+                    "Please sign this email to send. It's totally free, no gas fee",
                 });
                 // Modal.confirm({
                 //   title: 'Failed to sign this mail',
@@ -383,10 +385,12 @@ const NewMail = (props: any) => {
       <div className={styles.receiverBar}>
         <div className={styles.title}>To:</div>
         <div className={styles.content}>
-          <ReceiverGroup
-            receivers={receivers}
-            onReceiversChange={onReceiversChange}
-          />
+          {
+            <ReceiverGroup
+              receivers={receivers}
+              onReceiversChange={onReceiversChange}
+            />
+          }
         </div>
       </div>
 

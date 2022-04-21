@@ -8,7 +8,7 @@ interface IReceiverGroupProps {
   onReceiversChange: (newAddress: string[]) => void;
 }
 
-export default class ReceiverGroup extends React.Component {
+export default class ReceiverGroup extends React.Component<IReceiverGroupProps> {
   input: any;
   editInput: any;
   onChange: (newAddress: string[]) => void;
@@ -27,9 +27,21 @@ export default class ReceiverGroup extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const tags = nextProps.receivers.map((item) => {
+      return item.address;
+    });
+
+    if (JSON.stringify(tags) !== JSON.stringify(prevState.tags)) {
+      return { tags };
+    }
+    return null;
+  }
+
   handleClose = (removedTag: string) => {
     const tags = this.state.tags.filter((tag) => tag !== removedTag);
-    this.setState({ tags });
+    // this.setState({ tags });
+    this.onChange(tags);
   };
 
   showInput = () => {
@@ -40,30 +52,31 @@ export default class ReceiverGroup extends React.Component {
     this.setState({ inputValue: e.target.value });
   };
 
+  validEmailAddress = (input: string) => {
+    return new RegExp(
+      /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/g,
+    ).test(input);
+  };
+
   handleInputConfirm = () => {
     const { inputValue } = this.state;
     let { tags } = this.state;
     if (inputValue && tags.indexOf(inputValue) === -1) {
-      if (
-        !new RegExp(
-          /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/g,
-        ).test(inputValue)
-      ) {
+      if (!this.validEmailAddress(inputValue)) {
         notification.warn({
           message: 'Invalid address',
-          description: ` ${inputValue} is not a valid address, please check.`,
+          description: ` ${inputValue} is not a valid address.`,
         });
       } else {
         tags = [...tags, inputValue];
+        this.onChange(tags);
       }
+      this.setState({
+        // tags,
+        inputVisible: false,
+        inputValue: '',
+      });
     }
-    this.setState({
-      tags,
-      inputVisible: false,
-      inputValue: '',
-    });
-
-    this.onChange(tags);
   };
 
   handleEditInputChange = (e: { target: { value: any } }) => {
@@ -71,15 +84,20 @@ export default class ReceiverGroup extends React.Component {
   };
 
   handleEditInputConfirm = () => {
-    this.setState(({ tags, editInputIndex, editInputValue }) => {
-      const newTags = [...tags];
-      newTags[editInputIndex] = editInputValue;
+    const { editInputValue, editInputIndex, tags } = this.state;
+    if (!this.validEmailAddress(editInputValue)) {
+      notification.warn({
+        message: 'Invalid address',
+        description: ` ${editInputValue} is not a valid address.`,
+      });
+    } else {
+      tags[editInputIndex] = editInputValue;
+      this.onChange(tags);
+    }
 
-      return {
-        tags: newTags,
-        editInputIndex: -1,
-        editInputValue: '',
-      };
+    this.setState({
+      editInputIndex: -1,
+      editInputValue: '',
     });
   };
 
@@ -118,15 +136,13 @@ export default class ReceiverGroup extends React.Component {
             <Tag key={tag} closable onClose={() => this.handleClose(tag)}>
               <span
                 onDoubleClick={(e) => {
-                  if (index !== 0) {
-                    this.setState(
-                      { editInputIndex: index, editInputValue: tag },
-                      () => {
-                        this.editInput.focus();
-                      },
-                    );
-                    e.preventDefault();
-                  }
+                  this.setState(
+                    { editInputIndex: index, editInputValue: tag },
+                    () => {
+                      this.editInput.focus();
+                    },
+                  );
+                  e.preventDefault();
                 }}
               >
                 {isLongTag ? `${tag.slice(0, 20)}...` : tag}
@@ -141,6 +157,7 @@ export default class ReceiverGroup extends React.Component {
             tagElem
           );
         })}
+
         {inputVisible && (
           <Input
             ref={this.saveInputRef}
