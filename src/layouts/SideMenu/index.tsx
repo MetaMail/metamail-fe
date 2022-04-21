@@ -142,7 +142,7 @@ function SideMenu({
           onMouseEnter={() => setHover(MetaMailTypeEn.Signed)}
           onMouseLeave={() => setHover(undefined)}
         >
-          Signed
+          New Mail
         </div>
         <div
           className={cn(

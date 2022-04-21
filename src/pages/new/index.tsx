@@ -158,19 +158,6 @@ const NewMail = (props: any) => {
       return;
     }
 
-    // if (
-    //   !quillRef.current ||
-    //   !quillRef.current?.getHTML ||
-    //   !quillRef.current?.getText
-    // ) {
-    //   notification.error({
-    //     message: 'ERROR',
-    //     description: 'Failed to get message content',
-    //   });
-
-    //   return;
-    // }
-
     try {
       handleSave().then(async (obj) => {
         if (!obj) {
@@ -183,14 +170,22 @@ const NewMail = (props: any) => {
           // TODO: 最好用户填一个收件人的时候，就获取这个收件人的public_key，如果没有pk，就标出来
           let pks: string[] = [publicKey];
           const receiverInfos = await handleGetReceiversInfos(receivers);
-          receivers.forEach((receiverItem) => {
+          for (var i = 0; i < receivers.length; i++) {
+            const receiverItem = receivers[i];
             const receiverPrefix = receiverItem.address.split('@')[0];
-            let rpk = receiverInfos?.[receiverPrefix].public_key?.public_key;
+            let rpk = receiverInfos?.[receiverPrefix]?.public_key?.public_key;
             if (!rpk) {
-              throw Error('Can not find public key of ' + receiverItem.address);
+              notification.error({
+                message: 'Failed Send',
+                description:
+                  'Can not find public key of ' +
+                  receiverItem.address +
+                  '. Please consider sending plain mail.',
+              });
+              return;
             }
             pks.push(rpk);
-          });
+          }
 
           keys = pks.map((pk) => pkEncrypt(pk, currRandomBitsRef.current));
         }
@@ -219,7 +214,8 @@ const NewMail = (props: any) => {
               if (signature === false) {
                 notification.error({
                   message: 'Mail not send',
-                  description: 'Please sign this email to send, no gas fee.',
+                  description:
+                    'Not your sign, not your mail. Please sign this email to send, no gas fee.',
                 });
                 // Modal.confirm({
                 //   title: 'Failed to sign this mail',
@@ -239,7 +235,7 @@ const NewMail = (props: any) => {
           );
         });
       });
-    } catch (error: any) {
+    } catch (error) {
       notification.error({
         message: 'Failed Send',
         description: '' + error,
