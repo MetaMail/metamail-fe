@@ -301,7 +301,7 @@ const NewMail = (props: any) => {
 
       if (data?.attachment) {
         setAttList([...attList, data.attachment]);
-        message.success({ content: 'upload success', key: sha256 });
+        message.success({ content: 'uploaded', key: sha256 });
       }
     } catch {
       message.error({ content: 'upload failed', key: sha256 });

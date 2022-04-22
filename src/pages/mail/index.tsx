@@ -1,4 +1,11 @@
-import { Button, Divider, notification, PageHeader, Skeleton } from 'antd';
+import {
+  Button,
+  Divider,
+  notification,
+  message,
+  PageHeader,
+  Skeleton,
+} from 'antd';
 import {
   IMailContentItem,
   ReadStatusTypeEn,
@@ -97,6 +104,7 @@ function Mail(props: any) {
 
         setReadable(true);
         setMail(res as IMailContentItem);
+        message.success({ content: 'Mail decrypted', duration: 2 });
       }
     }
   };

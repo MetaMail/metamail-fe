@@ -17,18 +17,18 @@ const { isMetaMaskInstalled } = MetaMaskOnboarding;
 const BlockInfos = [
   {
     imgSrc: address,
-    title: 'Use wallet and ens as email address',
-    desc: 'Use the wallet to log in our mailbox directly, send and receive mails with users of our mailbox and other common mainstream mailboxes. Totally free!',
+    title: 'Use eth address/ens as email address',
+    desc: 'Use wallet to log in your mailbox directly. Send and receive mails just like gmail or outlook. Totally free!',
   },
   {
     imgSrc: sign,
     title: 'Sign every mail you send',
-    desc: 'Sign every mail digitally with your wallet. No forged mails anymore!',
+    desc: 'Not your sign, not your mail. Sign every mail digitally with your wallet. No forged mails anymore!',
   },
   {
     imgSrc: encrypted,
     title: 'Protect mail with p2p encryption',
-    desc: 'Mails sent and received by Metamail users could be optionally encrypted, and only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
+    desc: 'Mails sent and received by Metamail users could be optionally encrypted. Only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
     // extra: (
     //   <div
     //     style={{
@@ -225,11 +225,16 @@ function Login(props: any) {
       <div className={styles.detailBox}>
         <img src={logo} className={styles.logo}></img>
 
-        <div className={styles.title}>
-          Your web3 email <br /> Create and use the encrypted email
+        <div className={styles.title}>Your web3 email</div>
+
+        <div className={styles.subtitle}>
+          Send, enctypt and receive emaill with wallet
         </div>
+
         {/* <div className={styles.divider}></div> */}
-        <p className={styles.desc}>No gas fee at all.</p>
+        <p className={styles.desc}>
+          Sending and receiving mails are totally free, no gas fee.
+        </p>
 
         <Button
           type="primary"

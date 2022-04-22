@@ -49,9 +49,9 @@ function SideMenu({
         let pKey = publicKey;
         if (!pKey || pKey?.length === 0) {
           Modal.confirm({
-            title: 'Get Public Key',
+            title: 'Enable Encrypted Mail',
             content:
-              'Get and Sign public key to enable enctypted mail. No gas fee.',
+              'You are creating encrypted for the first time. You need to provide your public key for p2p encryption—no gas fee.',
             okText: 'Confirm',
             cancelText: 'Not now',
             onOk: async () => {
