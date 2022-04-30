@@ -301,10 +301,10 @@ const NewMail = (props: any) => {
 
       if (data?.attachment) {
         setAttList([...attList, data.attachment]);
-        message.success({ content: 'uploaded', key: sha256 });
+        message.success({ content: 'Uploaded', key: sha256 });
       }
     } catch {
-      message.error({ content: 'upload failed', key: sha256 });
+      message.error({ content: 'Upload failed', key: sha256 });
       // notification.error({
       //   message: 'Upload Failed',
       //   description: 'Sorry, attachment can not upload to the server.',

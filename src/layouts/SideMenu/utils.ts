@@ -55,7 +55,7 @@ export function generateRandom256Bits(address: string) {
   return (
     'Encryption key of this mail from ' +
     address +
-    'is ' +
+    ' is ' +
     rb.toString(CryptoJS.enc.Base64)
   );
 }

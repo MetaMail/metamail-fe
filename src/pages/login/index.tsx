@@ -102,7 +102,6 @@ function Login(props: any) {
         method: 'eth_requestAccounts',
       });
       const newAddr = Array.isArray(newAccounts) ? newAccounts[0] : newAccounts;
-      console.log(newAddr);
       if (!newAddr) return;
       setUserAddress(newAddr);
       setShowName(newAddr);
@@ -155,8 +154,17 @@ function Login(props: any) {
           tokenForRandom,
           signedMessage,
         });
-
+        // console.log(res);
         const { data: user } = res ?? {};
+
+        if (!user?.user) {
+          notification.error({
+            message: 'Login Failed',
+            description: 'Please make sure you have a balance in your wallet.',
+          });
+          return;
+        }
+
         if (user?.user?.public_key.public_key) {
           setPublicKey(user?.user?.public_key.public_key);
         }
@@ -187,11 +195,12 @@ function Login(props: any) {
   }, [address]);
 
   const handleOpenConnectModal = () => {
-    if (!address) {
-      setIsConnectModalVisible(true);
-    } else {
-      history.push('/home/list');
-    }
+    setIsConnectModalVisible(true);
+    // if (!address) {
+    //   setIsConnectModalVisible(true);
+    // } else {
+    //   history.push('/home/list');
+    // }
   };
 
   const handleCloseModal = () => {
