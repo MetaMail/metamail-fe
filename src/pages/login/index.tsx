@@ -92,6 +92,7 @@ function Login(props: any) {
     }
 
     try {
+      setUserAddress(null);
       // @ts-ignore
       if (!ethereum) {
         throw new Error('Your client does not support Ethereum');
