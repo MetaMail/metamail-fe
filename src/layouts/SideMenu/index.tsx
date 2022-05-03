@@ -66,7 +66,7 @@ function SideMenu({
               setPublicKey(pKey);
               notification.success({
                 message: 'Success',
-                description: 'You can send and receive enctypted mail now.',
+                description: 'You can send and receive encrypted mail now.',
               });
             },
           });
