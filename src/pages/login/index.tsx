@@ -238,7 +238,7 @@ function Login(props: any) {
         <div className={styles.title}>Your web3 email</div>
 
         <div className={styles.subtitle}>
-          Send, encrypt and receive emaill with wallet
+          Send, encrypt and receive email with wallet
         </div>
 
         {/* <div className={styles.divider}></div> */}
