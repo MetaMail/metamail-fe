@@ -264,17 +264,20 @@ function Login(props: any) {
       <footer className={styles.footer}>
         <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
-        <LinkElement
+        {/* <LinkElement
           name="Facebook"
           link="https://www.facebook.com/MetaMail-102795932381536"
         />
         <LinkElement
           name="Youtube"
           link="https://www.youtube.com/channel/UCKudcBh-mKkPeuyLREgoClA"
-        />
+        /> */}
         <LinkElement name="Github" link="https://github.com/MetaMail" />
         {/* <LinkElement name="Blog" link="" /> */}
-        <LinkElement name="About Us" link="https://metamail.ink" />
+        <LinkElement
+          name="About"
+          link="https://mirror.xyz/suneal.eth/IWaw84vdezF_k7X1yweuVG7v-aH4TrlyvbBXisygNMw"
+        />
       </footer>
 
       <Modal
