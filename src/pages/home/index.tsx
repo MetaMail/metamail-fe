@@ -9,27 +9,22 @@ import { default as MailList } from '../list';
 import { PostfixOfAddress } from '@/utils/constants';
 import Icon from '@/components/Icon';
 import { getLogout } from '@/services';
+import { clearUserInfo, getUserInfo, saveShowName } from '@/store/user';
 
 const { Header, Content } = Layout;
 
 function Home(props: any) {
-  const {
-    address,
-    ensName,
-    showName,
-    children,
-    setPublicKey,
-    setUserAddress,
-    setUserEnsName,
-    setShowName,
-  } = props;
+  const { children } = props;
+  const { address, showName, ensName } = getUserInfo();
+  const [activeName, setActiveName] = useState(showName);
 
-  const DropItem = ({ name }: { name: string }) => {
+  const DropItem = ({ name }: { name?: string }) => {
     return name ? (
       <div
         className={styles.item}
         onClick={() => {
-          setShowName(name);
+          saveShowName(name);
+          setActiveName(name);
         }}
       >
         <div id="name" style={{ minWidth: '200px', marginRight: '8px' }}>
@@ -73,11 +68,7 @@ function Home(props: any) {
                     onClick={() => {
                       try {
                         getLogout();
-
-                        setPublicKey();
-                        setUserAddress();
-                        setUserEnsName();
-                        setShowName();
+                        clearUserInfo();
 
                         history.push({
                           pathname: '/login',
@@ -97,7 +88,7 @@ function Home(props: any) {
               }
             >
               <div className={styles.addressBar}>
-                {showName ? showName + PostfixOfAddress : ''}
+                {activeName ? activeName + PostfixOfAddress : ''}
               </div>
             </Dropdown>
           </div>
@@ -124,11 +115,6 @@ const mapDispatchToProps = (
   setUserAddress: (data: any) =>
     dispatch({
       type: 'user/setUserAddress',
-      payload: data,
-    }),
-  setPublicKey: (data: any) =>
-    dispatch({
-      type: 'user/setPublicKey',
       payload: data,
     }),
   setUserEnsName: (data: any) =>

@@ -7,10 +7,10 @@ import styles from './index.less';
 import ShowBlock from '@/components/ShowBlock';
 import { getJwtToken, getRandomStrToSign } from '@/services';
 import LinkElement from '@/components/LinkElement';
-import { getCookieByName, TokenCookieName } from '@/utils/cookie';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { FilterTypeEn } from '../home/interfaces';
 import { address, encrypted, sign } from '@/assets';
+import { getWalletAddress, saveUserInfo } from '@/store/user';
 
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
@@ -55,11 +55,10 @@ const BlockInfos = [
   },
 ];
 
-function Login(props: any) {
-  const { address, setUserAddress, setPublicKey, setUserEnsName, setShowName } =
-    props;
+function Login() {
+  const address = getWalletAddress();
+
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
-  // const [address, setUserAddress] = useState<string>();
   const [hasMetaMask, setHasMetaMask] = useState(false);
 
   const getMetaMask = async () => {
@@ -166,13 +165,11 @@ function Login(props: any) {
           return;
         }
 
-        if (user?.user?.public_key.public_key) {
-          setPublicKey(user?.user?.public_key.public_key);
-        }
-        if (user?.user?.ens?.length > 0) {
-          setUserEnsName(user.user.ens);
-          setShowName(user.user.ens);
-        }
+        saveUserInfo({
+          address,
+          ensName: user?.user?.ens,
+          publicKey: user?.user?.public_key.public_key,
+        });
 
         history.push({
           pathname: '/home/list',
@@ -300,33 +297,4 @@ function Login(props: any) {
   );
 }
 
-const mapStateToProps = (state: any) => {
-  return state.user ?? {};
-};
-
-const mapDispatchToProps = (
-  dispatch: (arg0: { type: string; payload: any }) => any,
-) => ({
-  setUserAddress: (data: any) =>
-    dispatch({
-      type: 'user/setUserAddress',
-      payload: data,
-    }),
-  setPublicKey: (data: any) =>
-    dispatch({
-      type: 'user/setPublicKey',
-      payload: data,
-    }),
-  setUserEnsName: (data: any) =>
-    dispatch({
-      type: 'user/setUserEnsName',
-      payload: data,
-    }),
-  setShowName: (data: any) =>
-    dispatch({
-      type: 'user/setShowName',
-      payload: data,
-    }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

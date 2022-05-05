@@ -1,22 +1,16 @@
-import {
-  ContactSubMenuItems,
-  MailMenuItems,
-  MenuItems,
-  SiderFilterMap,
-} from '@/layouts/SideMenu/constants';
+import { MailMenuItems } from '@/layouts/SideMenu/constants';
 import { FilterTypeEn, MetaMailTypeEn } from '@/pages/home/interfaces';
 import { Layout, Menu, notification, Modal } from 'antd';
 import Icon from '@/components/Icon';
 import styles from './index.less';
-import { contacts, write } from '@/assets/icons';
 import cn from 'classnames';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
 import { generateRandom256Bits, updatePublicKey, pkEncrypt } from './utils';
+import { getWalletAddress } from '@/store/user';
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 const SiderWidth = 200;
 
@@ -30,13 +24,7 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({
-  unreadCount,
-  publicKey,
-  setRandomBits,
-  address,
-  setPublicKey,
-}: ISiderMenuProps) {
+function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
@@ -46,7 +34,7 @@ function SideMenu({
     try {
       let key;
       if (type === MetaMailTypeEn.Encrypted) {
-        let pKey = publicKey;
+        let pKey = getWalletAddress();
         if (!pKey || pKey?.length === 0) {
           Modal.confirm({
             title: 'Enable Encrypted Mail',
@@ -55,7 +43,7 @@ function SideMenu({
             okText: 'Confirm',
             cancelText: 'Not now',
             onOk: async () => {
-              pKey = await updatePublicKey(address);
+              pKey = await updatePublicKey(getWalletAddress());
               if (!pKey) {
                 notification.error({
                   message: 'Permission denied',
@@ -63,7 +51,7 @@ function SideMenu({
                 });
                 return;
               }
-              setPublicKey(pKey);
+              updatePublicKey(pKey);
               notification.success({
                 message: 'Success',
                 description: 'You can send and receive encrypted mail now.',
@@ -72,7 +60,7 @@ function SideMenu({
           });
           return;
         }
-        const randomBits = generateRandom256Bits(address);
+        const randomBits = generateRandom256Bits(getWalletAddress());
         key = pkEncrypt(pKey, randomBits);
         setRandomBits(randomBits);
       } else {
@@ -236,12 +224,6 @@ const mapDispatchToProps = (
   setRandomBits: (data: any) =>
     dispatch({
       type: 'user/setRandomBits',
-      payload: data,
-    }),
-
-  setPublicKey: (data: any) =>
-    dispatch({
-      type: 'user/setPublicKey',
       payload: data,
     }),
 });

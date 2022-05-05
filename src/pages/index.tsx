@@ -5,9 +5,9 @@ import Login from './login';
 import { getMyProfile } from '@/services/user';
 import Home from './home';
 import { connect } from 'umi';
+import { saveUserInfo } from '@/store/user';
 
 function IndexPage(props: any) {
-  const { setPublicKey, setUserAddress, setUserEnsName, setShowName } = props;
   const [isLogin, setIsLogin] = useState(false);
   /**
  *{
@@ -25,16 +25,11 @@ function IndexPage(props: any) {
     if (data) {
       setIsLogin(true);
 
-      if (data?.public_key?.public_key) {
-        setPublicKey(data.public_key.public_key);
-      }
-      setUserAddress(data.addr);
-      setShowName(data.addr);
-
-      if (data.ens && data.ens.length > 0) {
-        setUserEnsName(data.ens);
-        setShowName(data.ens);
-      }
+      saveUserInfo({
+        address: data?.addr,
+        ensName: data?.ens,
+        publicKey: data?.public_key?.public_key,
+      });
     }
   };
 
@@ -50,29 +45,4 @@ const mapStateToProps = (state: any) => {
   return state.user ?? {};
 };
 
-const mapDispatchToProps = (
-  dispatch: (arg0: { type: string; payload: any }) => any,
-) => ({
-  setUserAddress: (data: any) =>
-    dispatch({
-      type: 'user/setUserAddress',
-      payload: data,
-    }),
-  setPublicKey: (data: any) =>
-    dispatch({
-      type: 'user/setPublicKey',
-      payload: data,
-    }),
-  setUserEnsName: (data: any) =>
-    dispatch({
-      type: 'user/setUserEnsName',
-      payload: data,
-    }),
-  setShowName: (data: any) =>
-    dispatch({
-      type: 'user/setShowName',
-      payload: data,
-    }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);
+export default connect(mapStateToProps)(IndexPage);

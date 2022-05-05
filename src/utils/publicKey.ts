@@ -1,5 +1,3 @@
-import { postPublicKey } from '@/services/user';
-import { getPersonalSign } from './sign';
 export const pkPack = (data: any) => {
   const { addr, date, version, public_key } = data;
   let parts = [
