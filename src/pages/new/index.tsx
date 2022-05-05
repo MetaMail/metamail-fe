@@ -56,15 +56,21 @@ const NewMail = (props: any) => {
   const draftID = query?.id;
   const type: MetaMailTypeEn = Number(query?.type);
 
+  const reactQuillRef = useRef<ReactQuill>();
+  const quillRef = useRef<any>();
   const myKeyRef = useRef<string>();
   const currRandomBitsRef = useRef<string>(randomBits);
-  const quillText = useRef<string>('');
-  const quillHtml = useRef<string>('');
   const dateRef = useRef<string>();
 
   useEffect(() => {
+    if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
+
+    quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
+      reactQuillRef.current.getEditor(),
+    );
+
     handleLoad();
-  }, [query]);
+  }, [reactQuillRef, query]);
 
   const handleLoad = async () => {
     try {
@@ -249,8 +255,8 @@ const NewMail = (props: any) => {
     if (!draftID) return;
     if (!editable) return;
 
-    let html = quillHtml.current;
-    let text = quillText.current;
+    let html = quillRef.current.getHTML(),
+      text = quillRef.current.getText();
 
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {
@@ -465,6 +471,9 @@ const NewMail = (props: any) => {
           </Upload>
           <div className={styles.content}>
             <ReactQuill
+              ref={(el) => {
+                el ? (reactQuillRef.current = el) : void 0;
+              }}
               style={{
                 height: '100%',
               }}
@@ -473,9 +482,8 @@ const NewMail = (props: any) => {
               modules={EditorModules}
               formats={EditorFormats}
               value={content}
-              onChange={(value, delta, source, editor) => {
-                quillText.current = editor.getText();
-                quillHtml.current = editor.getHTML();
+              onChange={(value) => {
+                setContent(value);
               }}
             />
           </div>
