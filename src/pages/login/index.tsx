@@ -91,7 +91,9 @@ function Login() {
     }
 
     try {
-      setUserAddress(null);
+      saveUserInfo({
+        address: undefined,
+      });
       // @ts-ignore
       if (!ethereum) {
         throw new Error('Your client does not support Ethereum');
@@ -103,8 +105,10 @@ function Login() {
       });
       const newAddr = Array.isArray(newAccounts) ? newAccounts[0] : newAccounts;
       if (!newAddr) return;
-      setUserAddress(newAddr);
-      setShowName(newAddr);
+
+      saveUserInfo({
+        address: newAddr,
+      });
     } catch (error: any) {
       notification.error({
         message: 'Failed connect to MetaMask',

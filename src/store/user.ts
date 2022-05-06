@@ -14,7 +14,10 @@ interface IAllUserInfo extends IUserInfo {
 }
 
 export const saveUserInfo = (value: IUserInfo) => {
-  updateStorage(UserInfoStoreKey, value);
+  updateStorage(UserInfoStoreKey, {
+    ...getUserInfo,
+    value,
+  });
 
   const { ensName, address } = value;
   updateStorage(ShowNameKey, ensName ?? address);
@@ -22,13 +25,6 @@ export const saveUserInfo = (value: IUserInfo) => {
 
 export const getPublicKeyFromLocal = () => {
   return getStorage(UserInfoStoreKey, null)?.publicKey;
-};
-
-export const updatePublicKey = (publicKey: string) => {
-  updateStorage(UserInfoStoreKey, {
-    ...getUserInfo(),
-    publicKey,
-  });
 };
 
 export const getWalletAddress = () => {

@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
 import { generateRandom256Bits, updatePublicKey, pkEncrypt } from './utils';
-import { getWalletAddress } from '@/store/user';
+import { getWalletAddress, saveUserInfo } from '@/store/user';
 
 const { Sider } = Layout;
 
@@ -43,7 +43,7 @@ function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
             okText: 'Confirm',
             cancelText: 'Not now',
             onOk: async () => {
-              pKey = await updatePublicKey(getWalletAddress());
+              pKey = saveUserInfo(getWalletAddress());
               if (!pKey) {
                 notification.error({
                   message: 'Permission denied',
