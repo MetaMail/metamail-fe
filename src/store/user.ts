@@ -15,8 +15,8 @@ interface IAllUserInfo extends IUserInfo {
 
 export const saveUserInfo = (value: IUserInfo) => {
   updateStorage(UserInfoStoreKey, {
-    ...getUserInfo,
-    value,
+    ...getStorage(UserInfoStoreKey),
+    ...value,
   });
 
   const { ensName, address } = value;

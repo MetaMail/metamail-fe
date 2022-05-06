@@ -172,7 +172,7 @@ function Login() {
         saveUserInfo({
           address,
           ensName: user?.user?.ens,
-          publicKey: user?.user?.public_key.public_key,
+          publicKey: user?.user?.public_key?.public_key,
         });
 
         history.push({

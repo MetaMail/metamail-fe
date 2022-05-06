@@ -31,6 +31,7 @@ import { EditorFormats, EditorModules } from './constants';
 import { pkEncrypt } from '@/layouts/SideMenu/utils';
 import locked from '@/assets/images/locked.svg';
 import ReceiverGroup from './ReceiverGroup';
+import { getUserInfo, getWalletAddress } from '@/store/user';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -43,6 +44,8 @@ const NewMail = (props: any) => {
     randomBits,
     publicKey,
   } = props;
+
+  const { address, ensName, showName } = getUserInfo();
 
   const [subject, setSubject] = useState<string>('');
 
@@ -68,9 +71,11 @@ const NewMail = (props: any) => {
     quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
       reactQuillRef.current.getEditor(),
     );
-
-    handleLoad();
   }, [reactQuillRef, query]);
+
+  useEffect(() => {
+    handleLoad();
+  }, []);
 
   const handleLoad = async () => {
     try {
@@ -91,7 +96,7 @@ const NewMail = (props: any) => {
         }
         setLoaded(true);
         if (mail?.meta_header?.keys)
-          myKeyRef.current = mail?.meta_header?.keys[0];
+          myKeyRef.current = mail?.meta_header?.keys?.[0];
       }
     } catch {
       notification.error({
@@ -107,10 +112,7 @@ const NewMail = (props: any) => {
     // @ts-ignore
     let randomBits = await ethereum.request({
       method: 'eth_decrypt',
-      params: [
-        Buffer.from(myKeyRef.current, 'base64').toString(),
-        props.address,
-      ],
+      params: [Buffer.from(myKeyRef.current, 'base64').toString(), address],
     });
     if (!randomBits) return;
 
@@ -171,6 +173,12 @@ const NewMail = (props: any) => {
         if (!obj) {
           return;
         }
+
+        if (!address || !showName) {
+          console.warn('No address or name of current user, please check.');
+          return;
+        }
+
         const { html, text } = obj;
 
         let keys: string[] = [];
@@ -204,20 +212,20 @@ const NewMail = (props: any) => {
         );
 
         let packData = {
-          from: props.showName,
+          from: showName,
           to: receivers,
           date: dateRef.current,
           subject,
           text_hash: CryptoJS.SHA256(text).toString(),
           html_hash: CryptoJS.SHA256(html).toString(),
           attachments_hash: orderedAtt.map((att) => att.sha256),
-          name: props.ensName,
+          name: ensName,
           keys: keys,
         };
 
         metaPack(packData).then(async (res) => {
           const { packedResult } = res ?? {};
-          getPersonalSign(props.address, packedResult).then(
+          getPersonalSign(getWalletAddress(), packedResult).then(
             async (signature) => {
               if (signature === false) {
                 notification.error({
@@ -270,8 +278,8 @@ const NewMail = (props: any) => {
       part_html: html,
       part_text: text,
       mail_from: {
-        address: props.showName + PostfixOfAddress,
-        name: props.ensName ?? '',
+        address: showName + PostfixOfAddress,
+        name: ensName ?? '',
       },
     });
 
@@ -344,7 +352,7 @@ const NewMail = (props: any) => {
     try {
       handleSave();
     } catch (err) {
-      // console.log('faile to auto save mail');
+      // console.log('failed to auto save mail');
     }
   }, 30000);
 

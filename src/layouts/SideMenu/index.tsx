@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
 import { generateRandom256Bits, updatePublicKey, pkEncrypt } from './utils';
-import { getWalletAddress, saveUserInfo } from '@/store/user';
+import { getUserInfo, getWalletAddress, saveUserInfo } from '@/store/user';
 
 const { Sider } = Layout;
 
@@ -34,7 +34,12 @@ function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
     try {
       let key;
       if (type === MetaMailTypeEn.Encrypted) {
-        let pKey = getWalletAddress();
+        const { publicKey, address } = getUserInfo();
+        if (!address) {
+          console.warn('No address of current user, please check');
+          return;
+        }
+        let pKey = publicKey;
         if (!pKey || pKey?.length === 0) {
           Modal.confirm({
             title: 'Enable Encrypted Mail',
@@ -43,7 +48,7 @@ function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
             okText: 'Confirm',
             cancelText: 'Not now',
             onOk: async () => {
-              pKey = saveUserInfo(getWalletAddress());
+              pKey = await updatePublicKey(address);
               if (!pKey) {
                 notification.error({
                   message: 'Permission denied',
@@ -51,7 +56,9 @@ function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
                 });
                 return;
               }
-              updatePublicKey(pKey);
+              saveUserInfo({
+                publicKey: pKey,
+              });
               notification.success({
                 message: 'Success',
                 description: 'You can send and receive encrypted mail now.',
