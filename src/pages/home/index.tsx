@@ -105,28 +105,4 @@ function Home(props: any) {
   );
 }
 
-const mapStateToProps = (state: any) => {
-  return state.user ?? {};
-};
-
-const mapDispatchToProps = (
-  dispatch: (arg0: { type: string; payload: any }) => any,
-) => ({
-  setUserAddress: (data: any) =>
-    dispatch({
-      type: 'user/setUserAddress',
-      payload: data,
-    }),
-  setUserEnsName: (data: any) =>
-    dispatch({
-      type: 'user/setUserEnsName',
-      payload: data,
-    }),
-  setShowName: (data: any) =>
-    dispatch({
-      type: 'user/setShowName',
-      payload: data,
-    }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

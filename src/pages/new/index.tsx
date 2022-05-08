@@ -42,10 +42,9 @@ const NewMail = (props: any) => {
   const {
     location: { query },
     randomBits,
-    publicKey,
   } = props;
 
-  const { address, ensName, showName } = getUserInfo();
+  const { address, ensName, showName, publicKey } = getUserInfo();
 
   const [subject, setSubject] = useState<string>('');
 
@@ -68,10 +67,11 @@ const NewMail = (props: any) => {
   useEffect(() => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
 
+    console.log('--------');
     quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
       reactQuillRef.current.getEditor(),
     );
-  }, [reactQuillRef, query]);
+  }, [reactQuillRef]);
 
   useEffect(() => {
     handleLoad();
@@ -179,12 +179,25 @@ const NewMail = (props: any) => {
           return;
         }
 
+        if (
+          !quillRef.current ||
+          !quillRef.current?.getHTML ||
+          !quillRef.current?.getText
+        ) {
+          notification.error({
+            message: 'ERROR',
+            description: 'Failed to get message content',
+          });
+
+          return;
+        }
+
         const { html, text } = obj;
 
         let keys: string[] = [];
         if (type === MetaMailTypeEn.Encrypted) {
           // TODO: 最好用户填一个收件人的时候，就获取这个收件人的public_key，如果没有pk，就标出来
-          let pks: string[] = [publicKey];
+          let pks: string[] = [publicKey!];
           const receiverInfos = await handleGetReceiversInfos(receivers);
           for (var i = 0; i < receivers.length; i++) {
             const receiverItem = receivers[i];
@@ -202,7 +215,7 @@ const NewMail = (props: any) => {
             }
             pks.push(rpk);
           }
-
+          console.log(pks, '--');
           keys = pks.map((pk) => pkEncrypt(pk, currRandomBitsRef.current));
         }
 
@@ -263,8 +276,8 @@ const NewMail = (props: any) => {
     if (!draftID) return;
     if (!editable) return;
 
-    let html = quillRef.current.getHTML(),
-      text = quillRef.current.getText();
+    let html = quillRef?.current?.getHTML(),
+      text = quillRef?.current?.getText();
 
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {

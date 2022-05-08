@@ -1,16 +1,5 @@
-import {
-  Button,
-  Divider,
-  notification,
-  message,
-  PageHeader,
-  Skeleton,
-} from 'antd';
-import {
-  IMailContentItem,
-  ReadStatusTypeEn,
-  MetaMailTypeEn,
-} from '../home/interfaces';
+import { notification, message, PageHeader } from 'antd';
+import { IMailContentItem, MetaMailTypeEn } from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
 import { useState, useEffect, useRef } from 'react';
@@ -20,8 +9,8 @@ import CryptoJS from 'crypto-js';
 import { connect } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
-import moment, { Moment } from 'moment';
-import { assert } from 'umi/node_modules/@umijs/runtime/dist/utils';
+import moment from 'moment';
+import { getUserInfo } from '@/store/user';
 
 DOMPurify.addHook('afterSanitizeAttributes', function (node) {
   // set all elements owning target to target=_blank
@@ -36,10 +25,9 @@ function Mail(props: any) {
   const {
     location: { query },
     history,
-    address,
-    ensName,
   } = props;
 
+  const { address, ensName } = getUserInfo();
   const [readable, setReadable] = useState(true);
   const randomBitsRef = useRef('');
 
@@ -106,6 +94,8 @@ function Mail(props: any) {
         setMail(res as IMailContentItem);
         message.success({ content: 'Mail decrypted', duration: 2 });
       }
+    } else {
+      console.warn(`please check your keys ${keys} and address ${address}`);
     }
   };
 
