@@ -6,17 +6,26 @@ import { useState, useEffect, useRef } from 'react';
 import { changeMailStatus, getMailDetailByID } from '@/services';
 import AttachmentItem from './AttachmentItem';
 import CryptoJS from 'crypto-js';
-import { connect } from 'umi';
+import { connect, Prompt } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
 import moment from 'moment';
 import { getUserInfo } from '@/store/user';
 
+// allowed URI schemes
+var allowlist = ['http', 'https', 'ftp'];
+
+// build fitting regex
+var regex = RegExp('^(' + allowlist.join('|') + '):', 'gim');
+
 DOMPurify.addHook('afterSanitizeAttributes', function (node) {
   // set all elements owning target to target=_blank
-  if ('target' in node) {
+
+  if (node.hasAttribute('href')) {
     node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener');
+    node.setAttribute('rel', 'noopener noreferrer');
+    const realLink = encodeURIComponent((node as any).href.split('/home/')[1]);
+    (node as any).href = `/notification?link=${realLink}`;
   }
 });
 
@@ -174,7 +183,15 @@ function Mail(props: any) {
                 </div>
               </div>
             )}
-            <div className={styles.content}>
+            <div className={styles.content} id="content-sanitized">
+              <Prompt
+                when={true}
+                message={(loc, act) => {
+                  console.log('test');
+
+                  return true;
+                }}
+              />
               {mail?.part_html
                 ? parse(DOMPurify.sanitize(mail?.part_html))
                 : mail?.part_text}

@@ -59,23 +59,21 @@ const NewMail = (props: any) => {
   const type: MetaMailTypeEn = Number(query?.type);
 
   const reactQuillRef = useRef<ReactQuill>();
-  const quillRef = useRef<any>();
   const myKeyRef = useRef<string>();
   const currRandomBitsRef = useRef<string>(randomBits);
   const dateRef = useRef<string>();
 
-  useEffect(() => {
+  const getQuill = () => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
 
-    console.log('--------');
-    quillRef.current = reactQuillRef.current.makeUnprivilegedEditor(
+    return reactQuillRef.current.makeUnprivilegedEditor(
       reactQuillRef.current.getEditor(),
     );
-  }, [reactQuillRef]);
+  };
 
   useEffect(() => {
     handleLoad();
-  }, []);
+  }, [query]);
 
   const handleLoad = async () => {
     try {
@@ -179,19 +177,6 @@ const NewMail = (props: any) => {
           return;
         }
 
-        if (
-          !quillRef.current ||
-          !quillRef.current?.getHTML ||
-          !quillRef.current?.getText
-        ) {
-          notification.error({
-            message: 'ERROR',
-            description: 'Failed to get message content',
-          });
-
-          return;
-        }
-
         const { html, text } = obj;
 
         let keys: string[] = [];
@@ -276,8 +261,19 @@ const NewMail = (props: any) => {
     if (!draftID) return;
     if (!editable) return;
 
-    let html = quillRef?.current?.getHTML(),
-      text = quillRef?.current?.getText();
+    const quill = getQuill();
+
+    if (!quill || !quill?.getHTML || !quill?.getText) {
+      notification.error({
+        message: 'ERROR',
+        description: 'Failed to get message content',
+      });
+
+      return;
+    }
+
+    let html = quill?.getHTML(),
+      text = quill?.getText();
 
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {

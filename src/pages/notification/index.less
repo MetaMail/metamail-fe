@@ -1,0 +1,67 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #eee;
+  .brand {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+
+    .logo {
+      height: 30px;
+      width: 30px;
+    }
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+
+    .brandBar {
+      display: flex;
+      align-items: flex-end;
+
+      flex-direction: row;
+      font-family: Roboto, Helvetica, Arial, sans-serif;
+
+      .brand {
+        margin-left: 8px;
+        font-weight: 500;
+        font-size: 32px;
+        line-height: 27px;
+        color: #000000;
+      }
+
+      .version {
+        margin-left: 8px;
+        font-size: 20px;
+        line-height: 20px;
+        vertical-align: bottom;
+        color: #575757;
+      }
+    }
+  }
+
+  .box {
+    margin-top: 22px;
+    background-color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+
+    .tip {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .link {
+      margin-top: 8px;
+      color: #8a8a8a;
+      font-size: 16px;
+    }
+
+    .btnBar {
+      display: flex;
+      margin-top: 12px;
+      flex-direction: row-reverse;
+    }
+  }
+}
