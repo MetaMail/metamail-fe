@@ -24,7 +24,18 @@ DOMPurify.addHook('afterSanitizeAttributes', function (node) {
   if (node.hasAttribute('href')) {
     node.setAttribute('target', '_blank');
     node.setAttribute('rel', 'noopener noreferrer');
-    const realLink = encodeURIComponent((node as any).href.split('/home/')[1]);
+    const originLink = (node as any).href;
+
+    let realLink;
+    if (originLink.includes('/home/')) {
+      const realLink = (node as any).href.split('/home/')[1];
+    } else {
+      const protocolName = originLink?.match(
+        /(http|https):\/\/([\w.]+\/?)\S*/,
+      )?.[1];
+      realLink = originLink.replace(protocolName + '://', '');
+    }
+
     (node as any).href = `/notification?link=${realLink}`;
   }
 });
