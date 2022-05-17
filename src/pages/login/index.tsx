@@ -265,6 +265,7 @@ function Login() {
       <footer className={styles.footer}>
         <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
+        <LinkElement name="Telegram" link="https://t.me/metamailink" />
         {/* <LinkElement
           name="Facebook"
           link="https://www.facebook.com/MetaMail-102795932381536"
@@ -277,7 +278,7 @@ function Login() {
         {/* <LinkElement name="Blog" link="" /> */}
         <LinkElement
           name="About"
-          link="https://mirror.xyz/suneal.eth/IWaw84vdezF_k7X1yweuVG7v-aH4TrlyvbBXisygNMw"
+          link="https://mirror.xyz/suneal.eth/WbTmDLjY-Q9q1KMf15_nzse7M2Q84jCVq0vWNFefBtc"
         />
       </footer>
 
