@@ -7,7 +7,7 @@ import {
   spam,
   trash,
   unread,
-  markFavorite
+  markFavorite,
 } from '@/assets/icons';
 import { FilterTypeEn } from '../../pages/home/interfaces';
 
@@ -18,7 +18,7 @@ export const SiderFilterMap = {
   [FilterTypeEn.Sent]: { title: 'Sent', logo: sent },
   // [FilterTypeEn.Read]: { title: 'Read', logo: read },
   [FilterTypeEn.Unread]: { title: 'Unread', logo: unread },
-  [FilterTypeEn.Starred]: {title:'Starred',logo:markFavorite},
+  [FilterTypeEn.Starred]: { title: 'Starred', logo: markFavorite },
   [FilterTypeEn.Trash]: { title: 'Trash', logo: trash },
   [FilterTypeEn.Spam]: { title: 'Spam', logo: spam },
 };

@@ -25,6 +25,7 @@ import {
   rightArrow,
 } from '@/assets/icons';
 import { connect, history } from 'umi';
+import { setRandomBits } from '@/store/user';
 
 function MailList(props: any) {
   const { location } = props;
@@ -116,7 +117,7 @@ function MailList(props: any) {
   ) => {
     const pathname =
       queryRef.current === FilterTypeEn.Draft ? '/home/new' : '/home/mail';
-    props.setRandomBits(undefined); // clear random bits
+    setRandomBits(undefined); // clear random bits
     if (!read) {
       const mails = [{ message_id: id, mailbox: Number(mailbox) }];
       changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
@@ -288,12 +289,6 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
-  setRandomBits: (data: any) =>
-    dispatch({
-      type: 'user/setRandomBits',
-      payload: data,
-    }),
-
   setUnreadCount: (data: any) =>
     dispatch({
       type: 'user/setUnreadCount',

@@ -9,7 +9,6 @@ export interface IUserStateProps {
   randomToken?: string;
   accountStatus?: number;
   unreadCount?: IUnreadCount;
-  randomBits?: string; // 256位随机数作为对称密钥
 }
 
 export default {
@@ -25,27 +24,12 @@ export default {
         unreadCount,
       };
     },
-    saveRandomBits(
-      state: IUserStateProps,
-      { payload: randomBits }: { payload: string },
-    ) {
-      return {
-        ...state,
-        randomBits,
-      };
-    },
   },
 
   effects: {
     *setUnreadCount({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
         type: 'saveUnreadCount',
-        payload,
-      });
-    },
-    *setRandomBits({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
-      yield put({
-        type: 'saveRandomBits',
         payload,
       });
     },

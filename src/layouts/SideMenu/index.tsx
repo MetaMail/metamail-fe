@@ -7,8 +7,19 @@ import cn from 'classnames';
 import { useState } from 'react';
 import { createDraft } from '@/services';
 import { connect, history } from 'umi';
-import { generateRandom256Bits, updatePublicKey, pkEncrypt } from './utils';
-import { getUserInfo, getWalletAddress, saveUserInfo } from '@/store/user';
+import {
+  generateRandom256Bits,
+  updatePublicKey,
+  pkEncrypt,
+  createMail,
+} from './utils';
+import {
+  getUserInfo,
+  getWalletAddress,
+  saveUserInfo,
+  setRandomBits,
+} from '@/store/user';
+import { contacts } from '@/assets';
 
 const { Sider } = Layout;
 
@@ -24,87 +35,36 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
+function SideMenu({ unreadCount }: ISiderMenuProps) {
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
   const [hover, setHover] = useState<MetaMailTypeEn | undefined>(undefined);
 
   const handleClickNewMail = async (type: MetaMailTypeEn) => {
-    try {
-      let key;
-      if (type === MetaMailTypeEn.Encrypted) {
-        const { publicKey, address } = getUserInfo();
-        if (!address) {
-          console.warn('No address of current user, please check');
-          return;
-        }
-        let pKey = publicKey;
-        if (!pKey || pKey?.length === 0) {
-          Modal.confirm({
-            title: 'Enable Encrypted Mail',
-            content:
-              'You are creating encrypted for the first time. You need to provide your public key for p2p encryption—no gas fee.',
-            okText: 'Confirm',
-            cancelText: 'Not now',
-            onOk: async () => {
-              pKey = await updatePublicKey(address);
-              if (!pKey) {
-                notification.error({
-                  message: 'Permission denied',
-                  description: 'Failed to get your public key',
-                });
-                return;
-              }
-              saveUserInfo({
-                publicKey: pKey,
-              });
-              notification.success({
-                message: 'Success',
-                description: 'You can send and receive encrypted mail now.',
-              });
-            },
-          });
-          return;
-        }
-        const randomBits = generateRandom256Bits(getWalletAddress());
-        key = pkEncrypt(pKey, randomBits);
-        setRandomBits(randomBits);
-      } else {
-        setRandomBits(undefined);
-      }
-      if (type === MetaMailTypeEn.Encrypted && (!key || key?.length === 0)) {
-        return;
-      }
-      const { data } = await createDraft(type, key);
-
-      if (data && data?.message_id) {
-        setMailType(type);
-        history.push({
-          pathname: '/home/new',
-          query: {
-            id: data.message_id,
-            type: type + '',
-          },
-        });
-      }
-      setMailType(type);
-    } catch (e) {
+    setMailType(type);
+    createMail(type).catch(() => {
       notification.error({
         message: 'Network Error',
         description: 'Can NOT create a new e-mail for now.',
       });
       setMailType(undefined);
-    }
+    });
   };
 
   const handleClickMenuItem = (filter: string) => {
-    if (!Number.isNaN(filter)) {
+    const filterNum = Number(filter);
+
+    if (!Number.isNaN(filterNum)) {
       history.push({
         pathname: '/home/list',
         query: {
           filter,
         },
+      });
+    } else {
+      history.push({
+        pathname: `/home/${filter}`,
       });
     }
 
@@ -200,6 +160,9 @@ function SideMenu({ unreadCount, setRandomBits }: ISiderMenuProps) {
             </Menu.Item>
           );
         })}
+        <Menu.Item key={'contacts'} icon={<Icon url={contacts} />}>
+          Contacts
+        </Menu.Item>
         {/*
         <SubMenu
           key={MenuItems.contacts.key}
@@ -225,14 +188,4 @@ const mapStateToProps = (state: any) => {
   return state.user ?? {};
 };
 
-const mapDispatchToProps = (
-  dispatch: (arg0: { type: string; payload: any }) => any,
-) => ({
-  setRandomBits: (data: any) =>
-    dispatch({
-      type: 'user/setRandomBits',
-      payload: data,
-    }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);
+export default connect(mapStateToProps)(SideMenu);

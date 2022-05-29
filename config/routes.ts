@@ -23,6 +23,11 @@ export default [
         component: '@/pages/new',
         title: 'Edit - MetaMail',
       },
+      {
+        path: '/home/contacts',
+        component: '@/pages/contacts',
+        title: 'Contacts - MetaMail',
+      },
     ],
   },
 ];

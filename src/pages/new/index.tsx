@@ -32,6 +32,7 @@ import { pkEncrypt } from '@/layouts/SideMenu/utils';
 import locked from '@/assets/images/locked.svg';
 import ReceiverGroup from './ReceiverGroup';
 import { getUserInfo, getWalletAddress } from '@/store/user';
+import { clearReceivers, getReceivers } from '@/store/mail';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -73,6 +74,10 @@ const NewMail = (props: any) => {
 
   useEffect(() => {
     handleLoad();
+
+    return () => {
+      clearReceivers();
+    };
   }, [query]);
 
   const handleLoad = async () => {
@@ -84,7 +89,7 @@ const NewMail = (props: any) => {
       const mail = data as IMailContentItem;
       if (mail) {
         setSubject(mail?.subject);
-        setReceivers(mail?.mail_to);
+        setReceivers(mail?.mail_to?.length > 0 ? mail.mail_to : getReceivers());
         setContent(mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
@@ -281,16 +286,17 @@ const NewMail = (props: any) => {
       text = CryptoJS.AES.encrypt(text, currRandomBitsRef.current).toString();
     }
 
-    const { data } = await updateMail(draftID, {
-      subject: subject,
-      mail_to: receivers,
-      part_html: html,
-      part_text: text,
-      mail_from: {
-        address: showName + PostfixOfAddress,
-        name: ensName ?? '',
-      },
-    });
+    const { data } =
+      (await updateMail(draftID, {
+        subject: subject,
+        mail_to: receivers,
+        part_html: html,
+        part_text: text,
+        mail_from: {
+          address: showName + PostfixOfAddress,
+          name: ensName ?? '',
+        },
+      })) ?? {};
 
     if (data?.message_id !== draftID) {
       console.warn('DANGER: wrong updating source');

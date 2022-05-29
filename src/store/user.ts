@@ -2,6 +2,7 @@ import { deleteStorage, getStorage, updateStorage } from '@/utils/storage';
 
 const UserInfoStoreKey = 'MetaMailUserInfo';
 const ShowNameKey = 'MetaMailShowName';
+const randomBitsKey = 'MetamailRandomBits';
 
 interface IUserInfo {
   publicKey?: string;
@@ -60,4 +61,12 @@ export const getShowName = () => {
 
 export const saveShowName = (name: string) => {
   updateStorage(ShowNameKey, name);
+};
+
+export const getRandomBits = () => {
+  return getStorage(randomBitsKey);
+};
+
+export const setRandomBits = (name?: string) => {
+  updateStorage(randomBitsKey, name);
 };
