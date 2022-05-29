@@ -15,7 +15,7 @@ export default function ContactCard({ address, avatar, domain }: IConnectItem) {
   const handleSendMail = () => {
     setReceivers([
       {
-        address,
+        address: `${domain?.length > 0 ? domain : address}@mmail.ink`,
         name: domain,
       },
     ]);
