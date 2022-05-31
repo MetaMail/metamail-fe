@@ -40,14 +40,14 @@ export default function SenderCard({ name, address }: ISenderInfo) {
   const getTwitterAccount = async () => {
     const res = await axios
       .create({
-        baseURL: 'https://proof-service.nextnext.id',
+        baseURL: 'https://proof-service.next.id',
         withCredentials: false,
         timeout: 5000,
       })
       .get(
         mergeUrlWithParams('/v1/proof', {
           platform: 'ethereum',
-          identity: '0x0da0ee86269797618032e56a69b1aad095c581fc',
+          identity: address?.split('@')[0], //'0x0da0ee86269797618032e56a69b1aad095c581fc',
         }),
       );
 
@@ -69,7 +69,12 @@ export default function SenderCard({ name, address }: ISenderInfo) {
         <Popover
           content={
             <div>
-              <div>Twitter Account: {twitter}</div>
+              <div>
+                Twitter Account:{' '}
+                <a href={'https://twitter.com/' + twitter} target="_blank">
+                  {twitter}
+                </a>
+              </div>
               <div style={{ color: '#aaa' }}>
                 Identity information from{' '}
                 <a href="https://next.id/" target="_blank">
