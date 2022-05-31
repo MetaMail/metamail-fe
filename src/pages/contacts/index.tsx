@@ -53,6 +53,7 @@ export default function Contacts() {
 
   return (
     <div className={styles.container}>
+      <h3>CyberConnect Relations</h3>
       <Tabs key={tabKey} onChange={onChange}>
         <TabPane tab="Friends" key={ContactTypeEn.Friend}>
           <ContactList data={friends} />

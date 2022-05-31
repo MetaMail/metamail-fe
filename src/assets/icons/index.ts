@@ -26,6 +26,7 @@ import rightArrow from './rightArrow.svg';
 import attachment from './attachment.svg';
 import clipboard from './clipboard.svg';
 import logout from './logout.svg';
+import knn3 from './other/knn3.svg';
 
 export {
   draft,
@@ -56,4 +57,5 @@ export {
   attachment,
   clipboard,
   logout,
+  knn3,
 };
