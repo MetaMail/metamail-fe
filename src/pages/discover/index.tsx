@@ -18,7 +18,7 @@ function About() {
   useEffect(() => {
     client
       .request(GET_RECOMMENDATIONS, {
-        address: '0xdeec9c0d7e9ff781adb13634728e8903a0150690',
+        address: getWalletAddress(), // '0xdeec9c0d7e9ff781adb13634728e8903a0150690',
       })
       .then((res) => {
         setList(res?.JACCARD?.data ?? []);

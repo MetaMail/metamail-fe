@@ -4,6 +4,7 @@ import { Button } from 'antd';
 import { MetaMailTypeEn } from '../home/interfaces';
 import styles from './index.less';
 import { UserOutlined } from '@ant-design/icons';
+import ContactCard from '../contacts/ContactCard';
 
 export default function DiscoverCard({ address }: { address: string }) {
   const handleSendMail = () => {
@@ -17,13 +18,7 @@ export default function DiscoverCard({ address }: { address: string }) {
 
   return (
     <div className={styles.cardWrapper}>
-      <UserOutlined
-        style={{ fontSize: '14px', color: '#2E82E5', lineHeight: '32px' }}
-      />
-      <div className={styles.address}>{address}</div>
-      <Button type="link" onClick={handleSendMail}>
-        Send
-      </Button>
+      <ContactCard address={address} domain="" avatar="" />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { createMail } from '@/layouts/SideMenu/utils';
 import { setReceivers } from '@/store/mail';
-import { Avatar, Button } from 'antd';
+import { Avatar, Button, Image } from 'antd';
 import React from 'react';
 import { MetaMailTypeEn } from '../home/interfaces';
 import styles from './index.less';
@@ -23,7 +23,18 @@ export default function ContactCard({ address, avatar, domain }: IConnectItem) {
   };
   return (
     <div className={styles.cardWrapper}>
-      <Avatar src={avatar} />
+      <Avatar
+        src={
+          <Image
+            src={
+              avatar?.length > 0
+                ? avatar
+                : 'https://www.pngitem.com/pimgs/m/421-4213053_default-avatar-icon-hd-png-download.png'
+            }
+            style={{ width: 32 }}
+          />
+        }
+      />
       <div className={styles.infoSection}>
         <div className={styles.domain}>
           {domain?.length > 0 ? domain : '-'}
