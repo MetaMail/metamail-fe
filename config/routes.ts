@@ -28,6 +28,11 @@ export default [
         component: '@/pages/contacts',
         title: 'Contacts - MetaMail',
       },
+      {
+        path: '/home/discover',
+        component: '@/pages/discover',
+        title: 'Discover - MetaMail',
+      },
     ],
   },
 ];

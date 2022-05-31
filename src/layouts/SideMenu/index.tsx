@@ -163,6 +163,9 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
         <Menu.Item key={'contacts'} icon={<Icon url={contacts} />}>
           Contacts
         </Menu.Item>
+        <Menu.Item key={'discover'} icon={<Icon url={contacts} />}>
+          Discover
+        </Menu.Item>
         {/*
         <SubMenu
           key={MenuItems.contacts.key}

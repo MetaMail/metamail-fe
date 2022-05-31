@@ -11,6 +11,7 @@ import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
 import moment from 'moment';
 import { getUserInfo } from '@/store/user';
+import SenderCard from './SenderCard';
 
 // allowed URI schemes
 var allowlist = ['http', 'https', 'ftp'];
@@ -148,12 +149,7 @@ function Mail(props: any) {
         </div>
         <div className={styles.from}>
           <span className={styles.label}> From: </span>
-          <span className={styles.info}>
-            {mail?.mail_from?.name ?? 'Unknown'}{' '}
-            {mail?.mail_from.address
-              ? '<' + mail?.mail_from.address + '>'
-              : null}
-          </span>
+          <SenderCard {...mail?.mail_from} />
         </div>
         <div className={styles.to}>
           <span className={styles.label}> To: </span>
