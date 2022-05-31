@@ -1,24 +1,12 @@
 import { MailMenuItems } from '@/layouts/SideMenu/constants';
 import { FilterTypeEn, MetaMailTypeEn } from '@/pages/home/interfaces';
-import { Layout, Menu, notification, Modal } from 'antd';
+import { Layout, Menu, notification } from 'antd';
 import Icon from '@/components/Icon';
 import styles from './index.less';
 import cn from 'classnames';
 import { useState } from 'react';
-import { createDraft } from '@/services';
 import { connect, history } from 'umi';
-import {
-  generateRandom256Bits,
-  updatePublicKey,
-  pkEncrypt,
-  createMail,
-} from './utils';
-import {
-  getUserInfo,
-  getWalletAddress,
-  saveUserInfo,
-  setRandomBits,
-} from '@/store/user';
+import { createMail } from './utils';
 import { contacts } from '@/assets';
 
 const { Sider } = Layout;

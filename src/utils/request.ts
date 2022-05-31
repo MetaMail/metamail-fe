@@ -11,9 +11,9 @@ const ajax = axios.create({
   timeout: 5000,
 });
 
-ajax.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-// ajax.defaults.headers.common['Access-Control-Allow-Origin'] =
-//   'https://api.metamail.ink/';
+// ajax.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+ajax.defaults.headers.common['Access-Control-Allow-Origin'] =
+  'https://api.metamail.ink/';
 
 type requestParams = Record<string, any>;
 

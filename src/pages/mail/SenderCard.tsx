@@ -1,6 +1,9 @@
-import request from '@/utils/request';
-import React, { useEffect, useState } from 'react';
+import { mergeUrlWithParams } from '@/utils/url';
+import { Popover } from 'antd';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import styles from './index.less';
+import { TwitterCircleFilled } from '@ant-design/icons';
 
 interface ISenderInfo {
   name?: string;
@@ -23,18 +26,34 @@ const processData = (data: any) => {
   return '';
 };
 
+const SenderInfo = ({ name, address }: ISenderInfo) => {
+  return (
+    <span className={styles.info}>
+      {name ?? 'Unknown'} {address ? '<' + address + '>' : null}
+    </span>
+  );
+};
+
 export default function SenderCard({ name, address }: ISenderInfo) {
   const [twitter, setTwitter] = useState<string>();
 
   const getTwitterAccount = async () => {
-    const res = await request('https://proof-service.nextnext.id/v1/proof').get(
-      {
-        platform: 'ethereum',
-        identity: '0x0da0ee86269797618032e56a69b1aad095c581fc',
-      },
-    );
+    const res = await axios
+      .create({
+        baseURL: 'https://proof-service.nextnext.id',
+        withCredentials: false,
+        timeout: 5000,
+      })
+      .get(
+        mergeUrlWithParams('/v1/proof', {
+          platform: 'ethereum',
+          identity: '0x0da0ee86269797618032e56a69b1aad095c581fc',
+        }),
+      );
 
-    setTwitter(processData(res?.ids));
+    if (res && (res?.status === 200 || res?.status === 304)) {
+      setTwitter(processData(res?.data?.ids));
+    }
   };
 
   useEffect(() => {
@@ -46,7 +65,41 @@ export default function SenderCard({ name, address }: ISenderInfo) {
   return (
     <span className={styles.info}>
       {name ?? 'Unknown'} {address ? '<' + address + '>' : null}
-      <div>{twitter}</div>
+      {twitter && twitter?.length > 0 ? (
+        <Popover
+          content={
+            <div>
+              <div>Twitter Account: {twitter}</div>
+              <div style={{ color: '#aaa' }}>
+                Identity information from{' '}
+                <a href="https://next.id/" target="_blank">
+                  Next.ID
+                </a>{' '}
+              </div>
+            </div>
+          }
+        >
+          <TwitterCircleFilled
+            style={{
+              marginLeft: '8px',
+            }}
+            onClick={() => {
+              window.open(`https://twitter.com/${twitter}`);
+            }}
+          />
+        </Popover>
+      ) : null}
     </span>
   );
+  // return twitter && twitter?.length > 0 ? (
+  //   <Popover
+  //     title="See more about the sender"
+  //     content={<TwitterCircleFilled />}
+  //   >
+  //     {console.log('-----???')}
+  //     <SenderInfo name={name} address={address} />
+  //   </Popover>
+  // ) : (
+  //   <SenderInfo name={name} address={address} />
+  // );
 }
