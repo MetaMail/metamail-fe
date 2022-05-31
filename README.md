@@ -1,4 +1,4 @@
-# umi project
+# MetaMail frontend
 
 ## Getting Started
 
