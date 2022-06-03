@@ -365,7 +365,7 @@ const NewMail = (props: any) => {
 
   useInterval(() => {
     try {
-      handleSave();
+      // handleSave();
     } catch (err) {
       // console.log('failed to auto save mail');
     }

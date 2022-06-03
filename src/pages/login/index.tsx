@@ -18,17 +18,20 @@ const BlockInfos = [
   {
     imgSrc: address,
     title: 'Use eth address/ens as email address',
-    desc: 'Use wallet to log in your mailbox directly. Send and receive mails just like gmail or outlook. Totally free!',
+    desc:
+      'Use wallet to log in your mailbox directly. Send and receive mails just like gmail or outlook. Totally free!',
   },
   {
     imgSrc: sign,
     title: 'Sign every mail you send',
-    desc: 'Not your sign, not your mail. Sign every mail digitally with your wallet. No forged mails anymore!',
+    desc:
+      'Not your sign, not your mail. Sign every mail digitally with your wallet. No forged mails anymore!',
   },
   {
     imgSrc: encrypted,
     title: 'Protect mail with p2p encryption',
-    desc: 'Mails sent and received by Metamail users could be optionally encrypted. Only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
+    desc:
+      'Mails sent and received by Metamail users could be optionally encrypted. Only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
     // extra: (
     //   <div
     //     style={{
@@ -279,6 +282,10 @@ function Login() {
         <LinkElement
           name="About"
           link="https://mirror.xyz/suneal.eth/WbTmDLjY-Q9q1KMf15_nzse7M2Q84jCVq0vWNFefBtc"
+        />
+        <LinkElement
+          name="FAQs"
+          link="https://docs.google.com/document/d/1K9H3oqeot-SJ1tzCjLxUe9Iu0RySxmMdomsvjZU51iI/edit?usp=sharing"
         />
       </footer>
 
