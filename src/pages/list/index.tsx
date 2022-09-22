@@ -1,6 +1,7 @@
 import MailListItem from '@/components/MailListItem';
 import { List, notification } from 'antd';
 import { useState, useEffect, useRef } from 'react';
+import { Popover } from 'antd';
 import {
   FilterTypeEn,
   getMailBoxType,
@@ -41,7 +42,7 @@ function MailList(props: any) {
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
-
+  //const [hover, setHover] = useState<string | undefined>(undefined);
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -146,7 +147,8 @@ function MailList(props: any) {
             style={{
               marginRight: '12px',
             }}
-          />
+            tip={'select all'}
+          ></Icon>
           <Icon
             url={favorite}
             select={isAllFavorite}
@@ -161,6 +163,7 @@ function MailList(props: any) {
               );
               setIsAllFavorite(res);
             }}
+            tip={'star'}
           />
           <Icon
             url={trash}
@@ -173,12 +176,14 @@ function MailList(props: any) {
                 queryRef.current == 3 ? MarkTypeEn.Deleted : MarkTypeEn.Trash,
               );
             }}
+            tip={'delete'}
           />
           <Icon
             url={read}
             style={{
               marginRight: '8px',
             }}
+            data-tip="marked read"
             onClick={() => {
               handleChangeMailStatus(
                 undefined,
@@ -186,6 +191,7 @@ function MailList(props: any) {
                 ReadStatusTypeEn.read,
               );
             }}
+            tip={'mark read'}
           />
         </div>
         <div className={styles.right}>

@@ -47,12 +47,14 @@ export default function MailListItem({
           checkedUrl={selected}
           onClick={onSelect}
           select={select}
+          tip={'select'}
         />
         <Icon
           url={favorite}
           checkedUrl={markFavorite}
           onClick={onFavorite}
           select={mark === MarkTypeEn.Starred}
+          tip={'star'}
         />
         {metaType != undefined && metaType != MetaMailTypeEn.Plain && (
           <Popover

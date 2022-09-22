@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Popover } from 'antd';
 interface IIconProps {
   url: any;
   checkedUrl?: any;
@@ -8,6 +8,7 @@ interface IIconProps {
   style?: React.CSSProperties;
   imgStyle?: React.CSSProperties;
   select?: boolean;
+  tip?: string;
 }
 
 export default function Icon({
@@ -18,6 +19,7 @@ export default function Icon({
   style,
   imgStyle,
   select,
+  tip,
 }: IIconProps) {
   const handleClick = () => {
     if (onClick) {
@@ -31,14 +33,16 @@ export default function Icon({
       style={onClick ? { cursor: 'pointer', ...style } : style}
       className={className}
     >
-      <img
-        src={!select ? url : checkedUrl ?? url}
-        style={{
-          height: '20px',
-          width: '20px',
-          ...imgStyle,
-        }}
-      />
+      <Popover title={null} content={<div>{tip}</div>}>
+        <img
+          src={!select ? url : checkedUrl ?? url}
+          style={{
+            height: '20px',
+            width: '20px',
+            ...imgStyle,
+          }}
+        />
+      </Popover>
     </div>
   );
 }
