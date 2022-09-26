@@ -57,7 +57,7 @@ export enum FilterTypeEn {
   Starred,
   Spam,
 
-  Read,
+  // Read,
   Unread,
 }
 
