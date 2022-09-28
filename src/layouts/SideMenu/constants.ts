@@ -11,7 +11,10 @@ import {
 } from '@/assets/icons';
 import { FilterTypeEn } from '../../pages/home/interfaces';
 
-export const SiderFilterMap = {
+export const SiderFilterMap: Record<
+  FilterTypeEn,
+  { title: string; logo: string }
+> = {
   [FilterTypeEn.Inbox]: { title: 'Inbox', logo: inbox },
   [FilterTypeEn.Encrypted]: { title: 'Encrypted Inbox', logo: encryptedInbox },
   [FilterTypeEn.Draft]: { title: 'Draft', logo: draft },
@@ -43,10 +46,11 @@ export const MailMenuItems: {
   title: string;
   logo: string;
 }[] = Object.keys(SiderFilterMap).map((key: string) => {
+  const filterTypeKey = Number(key) as FilterTypeEn;
   return {
-    key: Number(key) as FilterTypeEn,
-    title: SiderFilterMap.[Number(key) as FilterTypeEn].title,
-    logo: SiderFilterMap.[Number(key) as FilterTypeEn].logo,
+    key: filterTypeKey,
+    title: SiderFilterMap[filterTypeKey].title,
+    logo: SiderFilterMap[filterTypeKey].logo,
   };
 });
 
