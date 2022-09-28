@@ -13,11 +13,6 @@ export default function Notification() {
       setLink(jumpTo);
     }
   }, [window.location]);
-  let linkshown = link;
-  linkshown =
-    'undefined' !== typeof link && link.length > 90
-      ? link.slice(0, 89) + '...'
-      : link;
 
   return (
     <div className={styles.container}>
@@ -33,7 +28,7 @@ export default function Notification() {
           About to leave the MetaMail, please pay attention to your account
           property security.
         </div>
-        <div className={styles.link}>{linkshown}</div>
+        <div className={styles.link}>{link}</div>
         <div className={styles.btnBar}>
           <Button
             onClick={() => {

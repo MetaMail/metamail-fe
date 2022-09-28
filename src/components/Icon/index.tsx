@@ -33,7 +33,7 @@ export default function Icon({
       style={onClick ? { cursor: 'pointer', ...style } : style}
       className={className}
     >
-      <Popover title={null} content={<div>{tip}</div>}>
+      <Popover content={tip}>
         <img
           src={!select ? url : checkedUrl ?? url}
           style={{
