@@ -1,6 +1,7 @@
 import MailListItem from '@/components/MailListItem';
 import { List, notification } from 'antd';
 import { useState, useEffect, useRef } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Popover } from 'antd';
 import {
   FilterTypeEn,
@@ -32,9 +33,10 @@ function MailList(props: any) {
   const { location } = props;
 
   const queryRef = useRef(0);
-
+  const history = useHistory();
+  const { state } = useLocation();
   const mailBox = getMailBoxType(queryRef.current);
-
+  const [curFilter, setcurFilter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
   const [pageIdx, setPageIdx] = useState(1);
@@ -130,6 +132,7 @@ function MailList(props: any) {
         id,
         type: type + '',
       },
+      state: { from: '/home/list?filter=0', pageIdx },
     });
   };
   return (

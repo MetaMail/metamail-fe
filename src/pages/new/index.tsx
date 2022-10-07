@@ -1,5 +1,6 @@
 import { Button, Input, message, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
+import { changeMailStatus, getMailList, IMailChangeParams } from '@/services';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
@@ -13,7 +14,9 @@ import {
 import {
   IPersonItem,
   MetaMailTypeEn,
+  MarkTypeEn,
   IMailContentItem,
+  MailBoxTypeEn,
 } from '../home/interfaces';
 import CryptoJS from 'crypto-js';
 import Icon from '@/components/Icon';
@@ -391,6 +394,19 @@ const NewMail = (props: any) => {
             // notification.warn({
             //   message: 'TODO: 删除草稿接口',
             // });
+            //async () => {
+            try {
+              changeMailStatus(
+                [draftID, MailBoxTypeEn.Draft],
+                MarkTypeEn.Trash,
+              );
+              history.go(-1);
+            } catch {
+              notification.error({
+                message: 'Failed',
+                description: 'Sorry, network problem.',
+              });
+            }
           }}
           style={{ marginRight: '8px' }}
         />
