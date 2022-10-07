@@ -11,7 +11,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { FilterTypeEn } from '../home/interfaces';
 import { address, encrypted, sign } from '@/assets';
 import { getWalletAddress, saveUserInfo } from '@/store/user';
-
+import Home from '@/pages/home';
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
 const BlockInfos = [
@@ -191,7 +191,6 @@ function Login() {
       });
     }
   };
-
   useEffect(() => {
     if (address && address.length > 0 && isOnLoginProcess) {
       getRandomAuth();
@@ -214,6 +213,7 @@ function Login() {
   };
 
   return (
+    //(!address && isOnLoginProcess)?(
     <div className={styles.container}>
       <header className={styles.header}>
         <a href="/">
@@ -307,6 +307,7 @@ function Login() {
         )}
       </Modal>
     </div>
+    //):<Home/>
   );
 }
 

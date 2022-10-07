@@ -34,9 +34,9 @@ function MailList(props: any) {
 
   const queryRef = useRef(0);
   const history = useHistory();
-  const { state } = useLocation();
+  //const { state } = useLocation();
   const mailBox = getMailBoxType(queryRef.current);
-  const [curFilter, setcurFilter] = useState(0);
+  //const [curFilter, setcurFilter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
   const [pageIdx, setPageIdx] = useState(1);
@@ -132,7 +132,7 @@ function MailList(props: any) {
         id,
         type: type + '',
       },
-      state: { from: '/home/list?filter=0', pageIdx },
+      //state: { from: '/home/list?filter=0', pageIdx },
     });
   };
   return (

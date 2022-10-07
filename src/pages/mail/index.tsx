@@ -22,7 +22,7 @@ import DOMPurify from 'dompurify';
 import moment from 'moment';
 import { getUserInfo } from '@/store/user';
 import SenderCard from './SenderCard';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 // allowed URI schemes
 var allowlist = ['http', 'https', 'ftp'];
 
@@ -52,7 +52,7 @@ DOMPurify.addHook('afterSanitizeAttributes', function (node) {
 });
 
 function Mail(props: any) {
-  const { state } = useLocation();
+  //const { state } = useLocation();
   const [mail, setMail] = useState<IMailContentItem>();
   const {
     location: { query },
