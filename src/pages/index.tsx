@@ -38,7 +38,7 @@ function IndexPage(props: any) {
   }, []);
 
   // @ts-ignore
-  return !isLogin ? <Login /> : <Home />;
+  return <Login />;
 }
 
 const mapStateToProps = (state: any) => {

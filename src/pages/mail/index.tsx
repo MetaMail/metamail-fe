@@ -1,9 +1,19 @@
 import { notification, message, PageHeader } from 'antd';
-import { IMailContentItem, MetaMailTypeEn } from '../home/interfaces';
+import {
+  IMailContentItem,
+  MetaMailTypeEn,
+  MailBoxTypeEn,
+  FilterTypeEn,
+} from '../home/interfaces';
 import styles from './index.less';
 import parse from 'html-react-parser';
 import { useState, useEffect, useRef } from 'react';
-import { changeMailStatus, getMailDetailByID } from '@/services';
+import {
+  changeMailStatus,
+  getMailDetailByID,
+  getMailList,
+  IMailChangeParams,
+} from '@/services';
 import AttachmentItem from './AttachmentItem';
 import CryptoJS from 'crypto-js';
 import { connect, Prompt } from 'umi';
@@ -12,7 +22,7 @@ import DOMPurify from 'dompurify';
 import moment from 'moment';
 import { getUserInfo } from '@/store/user';
 import SenderCard from './SenderCard';
-
+//import { useLocation } from 'react-router-dom';
 // allowed URI schemes
 var allowlist = ['http', 'https', 'ftp'];
 
@@ -37,11 +47,12 @@ DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       realLink = originLink.replace(protocolName + '://', '');
     }
 
-    (node as any).href = `/notification?link=${realLink}`;
+    (node as any).href = `/notification/?link=${realLink}`;
   }
 });
 
 function Mail(props: any) {
+  //const { state } = useLocation();
   const [mail, setMail] = useState<IMailContentItem>();
   const {
     location: { query },
@@ -51,6 +62,16 @@ function Mail(props: any) {
   const { address, ensName } = getUserInfo();
   const [readable, setReadable] = useState(true);
   const randomBitsRef = useRef('');
+  const queryRef = useRef(0);
+  const [pageIdx, setPageIdx] = useState(1);
+  useEffect(() => {
+    async () => {
+      await getMailList({
+        filter: queryRef.current,
+        page_index: pageIdx,
+      });
+    };
+  }, [queryRef, pageIdx]);
 
   const handleLoad = async () => {
     try {
@@ -127,17 +148,20 @@ function Mail(props: any) {
     // handleMarkRead();
     handleLoad();
   }, [query]);
-
   return (
     <div className={styles.container}>
       <PageHeader
         onBack={() => {
-          history.push({
-            pathname: '/home/list',
-            query: {
-              filter: 0,
-            },
-          });
+          //const { history } = props;
+          history.go(-1);
+          //history.push({
+          //pathname: `/home/list/${queryRef.current}`,
+          //  pathname: '/home/list',
+          //  query: {
+          //    filter: 0
+          //  },
+          //  state,
+          //});
         }}
         title="Back"
       />

@@ -11,27 +11,24 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { FilterTypeEn } from '../home/interfaces';
 import { address, encrypted, sign } from '@/assets';
 import { getWalletAddress, saveUserInfo } from '@/store/user';
-
+import Home from '@/pages/home';
 const { isMetaMaskInstalled } = MetaMaskOnboarding;
 
 const BlockInfos = [
   {
     imgSrc: address,
     title: 'Use eth address/ens as email address',
-    desc:
-      'Use wallet to log in your mailbox directly. Send and receive mails just like gmail or outlook. Totally free!',
+    desc: 'Use wallet to log in your mailbox directly. Send and receive mails just like gmail or outlook. Totally free!',
   },
   {
     imgSrc: sign,
     title: 'Sign every mail you send',
-    desc:
-      'Not your sign, not your mail. Sign every mail digitally with your wallet. No forged mails anymore!',
+    desc: 'Not your sign, not your mail. Sign every mail digitally with your wallet. No forged mails anymore!',
   },
   {
     imgSrc: encrypted,
     title: 'Protect mail with p2p encryption',
-    desc:
-      'Mails sent and received by Metamail users could be optionally encrypted. Only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
+    desc: 'Mails sent and received by Metamail users could be optionally encrypted. Only the recipient has the private key to decrypt the mails, ensuring the ultimate security.',
     // extra: (
     //   <div
     //     style={{
@@ -62,6 +59,7 @@ function Login() {
   const address = getWalletAddress();
 
   const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
+  const [isOnLoginProcess, setisOnLoginProcess] = useState(false);
   const [hasMetaMask, setHasMetaMask] = useState(false);
 
   const getMetaMask = async () => {
@@ -75,7 +73,7 @@ function Login() {
   };
 
   useEffect(() => {
-    getMetaMask();
+    if (!address) getMetaMask();
   }, []);
 
   const handleConnectMetaMask = async () => {
@@ -119,6 +117,7 @@ function Login() {
       });
     } finally {
       setIsConnectModalVisible(false);
+      setisOnLoginProcess(false);
     }
   };
 
@@ -192,27 +191,29 @@ function Login() {
       });
     }
   };
-
   useEffect(() => {
-    if (address && address.length > 0) {
+    if (address && address.length > 0 && isOnLoginProcess) {
       getRandomAuth();
     }
   }, [address]);
 
   const handleOpenConnectModal = () => {
-    setIsConnectModalVisible(true);
-    // if (!address) {
-    //   setIsConnectModalVisible(true);
-    // } else {
-    //   history.push('/home/list');
-    // }
+    //setIsConnectModalVisible(true);
+    if (!address) {
+      setIsConnectModalVisible(true);
+      setisOnLoginProcess(true);
+    } else {
+      history.push('/home/list');
+    }
   };
 
   const handleCloseModal = () => {
     setIsConnectModalVisible(false);
+    setisOnLoginProcess(false);
   };
 
   return (
+    //(!address && isOnLoginProcess)?(
     <div className={styles.container}>
       <header className={styles.header}>
         <a href="/">
@@ -306,6 +307,7 @@ function Login() {
         )}
       </Modal>
     </div>
+    //):<Home/>
   );
 }
 
