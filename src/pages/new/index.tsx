@@ -1,6 +1,6 @@
 import { Button, Input, message, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
-import { changeMailStatus, getMailList, IMailChangeParams } from '@/services';
+import { changeMailStatus, IMailChangeParams } from '@/services';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
@@ -74,7 +74,22 @@ const NewMail = (props: any) => {
       reactQuillRef.current.getEditor(),
     );
   };
-
+  const handleDelete = async (
+    inputMails: IMailChangeParams[],
+    mark: MarkTypeEn,
+  ) => {
+    const mails = inputMails;
+    try {
+      await changeMailStatus(mails, mark, undefined);
+    } catch {
+      notification.error({
+        message: 'Failed',
+        description: 'Sorry, network problem.',
+      });
+    } finally {
+      history.go(-1);
+    }
+  };
   useEffect(() => {
     handleLoad();
 
@@ -391,22 +406,16 @@ const NewMail = (props: any) => {
         <Icon
           url={trash}
           onClick={() => {
-            // notification.warn({
-            //   message: 'TODO: 删除草稿接口',
-            // });
-            //async () => {
-            try {
-              changeMailStatus(
-                [draftID, MailBoxTypeEn.Draft],
-                MarkTypeEn.Trash,
-              );
-              history.go(-1);
-            } catch {
-              notification.error({
-                message: 'Failed',
-                description: 'Sorry, network problem.',
-              });
-            }
+            handleDelete(
+              [
+                {
+                  message_id: query.id,
+                  mailbox: MailBoxTypeEn.Draft,
+                },
+              ],
+              MarkTypeEn.Trash,
+            );
+            //history.go(-1);
           }}
           style={{ marginRight: '8px' }}
         />
