@@ -52,7 +52,7 @@ DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       realLink = originLink.replace(protocolName + '://', '');
     }
 
-    (node as any).href = `/notification?link=${realLink}`;
+    (node as any).href = `/notification/?link=${realLink}`;
   }
 });
 
