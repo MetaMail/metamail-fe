@@ -35,7 +35,7 @@ import { pkEncrypt } from '@/layouts/SideMenu/utils';
 import locked from '@/assets/images/locked.svg';
 import ReceiverGroup from './ReceiverGroup';
 import { getUserInfo, getWalletAddress } from '@/store/user';
-import { clearReceivers, getReceivers } from '@/store/mail';
+import { clearMailContent, getMailContent } from '@/store/mail';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -66,7 +66,7 @@ const NewMail = (props: any) => {
   const myKeyRef = useRef<string>();
   const currRandomBitsRef = useRef<string>(randomBits);
   const dateRef = useRef<string>();
-
+  const allowSaveRef = useRef(true);
   const getQuill = () => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
 
@@ -94,7 +94,7 @@ const NewMail = (props: any) => {
     handleLoad();
 
     return () => {
-      clearReceivers();
+      clearMailContent();
     };
   }, [query]);
 
@@ -106,9 +106,11 @@ const NewMail = (props: any) => {
       const { data } = await getMailDetailByID(window.btoa(query.id));
       const mail = data as IMailContentItem;
       if (mail) {
-        setSubject(mail?.subject);
-        setReceivers(mail?.mail_to?.length > 0 ? mail.mail_to : getReceivers());
-        setContent(mail?.part_html ?? mail?.part_text);
+        const { subject, mail_to, part_html } = getMailContent();
+
+        setSubject(subject ?? mail?.subject);
+        setReceivers(mail_to ?? mail?.mail_to);
+        setContent(part_html ?? mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
           setEditable(false);
@@ -188,7 +190,7 @@ const NewMail = (props: any) => {
 
       return;
     }
-
+    allowSaveRef.current = false;
     try {
       handleSave().then(async (obj) => {
         if (!obj) {
@@ -252,7 +254,7 @@ const NewMail = (props: any) => {
                 notification.error({
                   message: 'Not Your Sign, Not your Mail',
                   description:
-                    "Please sign this email to send. It's totally free, no gas fee",
+                    "Please make sure that you have login MetaMask. It's totally free, no gas fee",
                 });
                 // Modal.confirm({
                 //   title: 'Failed to sign this mail',
@@ -382,6 +384,7 @@ const NewMail = (props: any) => {
   };
 
   useInterval(() => {
+    if (!allowSaveRef.current) return;
     try {
       // handleSave();
     } catch (err) {

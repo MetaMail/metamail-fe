@@ -1,16 +1,23 @@
 import { IPersonItem } from '@/pages/home/interfaces';
 import { deleteStorage, getStorage, updateStorage } from '@/utils/storage';
 
-const ReceiversStoreKey = 'MetaMailReceivers';
+const TempMailStoreKey = 'MetaMailTemporalContent';
 
-export const setReceivers = (value: IPersonItem[]) => {
-  updateStorage(ReceiversStoreKey, value);
+interface IMailContent {
+  subject?: string;
+  mail_from?: IPersonItem;
+  mail_to?: IPersonItem[];
+  part_html?: string;
+}
+
+export const setMailContent = (mail: IMailContent) => {
+  updateStorage(TempMailStoreKey, mail);
 };
 
-export const clearReceivers = () => {
-  deleteStorage(ReceiversStoreKey);
+export const clearMailContent = () => {
+  deleteStorage(TempMailStoreKey);
 };
 
-export const getReceivers = () => {
-  return getStorage(ReceiversStoreKey, []);
+export const getMailContent = () => {
+  return getStorage(TempMailStoreKey);
 };

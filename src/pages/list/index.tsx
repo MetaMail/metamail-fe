@@ -30,11 +30,10 @@ import { connect, history } from 'umi';
 import { setRandomBits } from '@/store/user';
 
 function MailList(props: any) {
-  const { location } = props;
+  const { location = useLocation() } = props;
 
   const queryRef = useRef(0);
   const history = useHistory();
-  //const { state } = useLocation();
   const mailBox = getMailBoxType(queryRef.current);
   //const [curFilter, setcurFilter] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -45,6 +44,12 @@ function MailList(props: any) {
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
   //const [hover, setHover] = useState<string | undefined>(undefined);
+  //useEffect(() => {
+  //   if (history.location.state && history.location.state.pageIdx) {
+  //     setPageIdx(history.location.state.pageIdx);
+  //   }
+  //},
+  //[]);
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -91,6 +96,7 @@ function MailList(props: any) {
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
+    //if(!history.location.state)
     fetchMailList();
   }, [pageIdx, location?.query]);
 
@@ -125,14 +131,17 @@ function MailList(props: any) {
       const mails = [{ message_id: id, mailbox: Number(mailbox) }];
       changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
     }
-
+    history.replace({
+      pathname: location.pathname,
+      state: { pageIdx },
+    });
     history.push({
       pathname,
       query: {
         id,
         type: type + '',
       },
-      //state: { from: '/home/list?filter=0', pageIdx },
+      state: { pageIdx },
     });
   };
   return (

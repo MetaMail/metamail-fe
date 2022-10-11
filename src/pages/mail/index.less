@@ -1,7 +1,21 @@
 .container {
   display: flex;
   flex-direction: column;
+  .btnBar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
+    button {
+      border: 1px solid #575757;
+      color: #575757;
+
+      &:hover {
+        border: 1px solid #2e82e5;
+        color: #2e82e5;
+      }
+    }
+  }
   .mail {
     display: flex;
     flex-direction: column;
@@ -134,6 +148,21 @@
         width: 100px;
         height: 100px;
         margin-bottom: 12px;
+      }
+    }
+    .btnBar {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      button {
+        border: 1px solid #575757;
+        color: #575757;
+
+        &:hover {
+          border: 1px solid #2e82e5;
+          color: #2e82e5;
+        }
       }
     }
   }
