@@ -31,11 +31,13 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
   const [hover, setHover] = useState<MetaMailTypeEn | undefined>(undefined);
   const history = useHistory();
   const [pageIdx, setPageIdx] = useState(1);
-  useEffect(() => {
-    if (history.location.state && history.location.state.pageIdx) {
-      setPageIdx(history.location.state.pageIdx);
-    }
-  }, []);
+
+  //useEffect(() => {
+  //  if (history.location.state && history.location.state.pageIdx) {
+  //    setPageIdx(history.location.state.pageIdx);
+  //  }
+  //  else setPageIdx(1);
+  //}, []);
   const handleClickNewMail = async (type: MetaMailTypeEn) => {
     setMailType(type);
     createMail(type).catch(() => {
@@ -51,19 +53,19 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
     const filterNum = Number(filter);
 
     if (!Number.isNaN(filterNum)) {
-      history.replace({
-        pathname: location.pathname,
-        state: {
-          pageIdx,
-        },
-      });
+      //history.replace({
+      //  pathname: location.pathname,
+      //  state: {
+      //    pageIdx : 1,
+      //  },
+      //});
       history.push({
         pathname: '/home/list',
         query: {
           filter,
         },
         state: {
-          pageIdx,
+          pageIdx: 1,
         },
       });
     } else {

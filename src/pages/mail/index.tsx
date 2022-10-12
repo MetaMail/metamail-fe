@@ -201,16 +201,16 @@ function Mail(props: any) {
       <PageHeader
         onBack={() => {
           //const { history } = props;
-          history.goBack();
-          //history.push({
-          //  pathname: '/home/list',
-          //  query: {
-          //    filter: 0
-          //  },
-          //  state:{
-          //    pageIdx,
-          //  },
-          //});
+          //history.goBack();
+          history.push({
+            pathname: '/home/list',
+            query: {
+              filter: 0,
+            },
+            state: {
+              pageIdx,
+            },
+          });
         }}
         title="Back"
       >

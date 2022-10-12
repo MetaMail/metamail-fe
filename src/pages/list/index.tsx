@@ -40,9 +40,17 @@ function MailList(props: any) {
   const [list, setList] = useState<IMailItem[]>([]);
   const [pageIdx, setPageIdx] = useState(1);
   const [pageNum, setPageNum] = useState(0);
+  const [inboxType, setinboxType] = useState(Number(mailBox));
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
+  const [isPageIndexChanged, setisPageIndexChanged] = useState(false);
+  const fetchIndex =
+    history.location.state &&
+    history.location.state.pageIdx &&
+    !isPageIndexChanged
+      ? history.location.state.pageIdx
+      : pageIdx;
   //const [hover, setHover] = useState<string | undefined>(undefined);
   //useEffect(() => {
   //   if (history.location.state && history.location.state.pageIdx) {
@@ -67,14 +75,17 @@ function MailList(props: any) {
     if (showLoading) {
       setLoading(true);
     }
+    //if (history.location.state && history.location.state.pageIdx) {
+    //  setPageIdx(history.location.state.pageIdx);
+    //}
     try {
       const { data } = await getMailList({
         filter: queryRef.current,
-        page_index: pageIdx,
+        page_index: fetchIndex,
       });
 
       setList(data?.mails ?? []);
-      setPageIdx(data?.page_index);
+      //setPageIdx(data?.page_index);
       setPageNum(data?.page_num);
       props.setUnreadCount({
         unread: data?.unread,
@@ -96,9 +107,13 @@ function MailList(props: any) {
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
-    //if(!history.location.state)
     fetchMailList();
-  }, [pageIdx, location?.query]);
+    //if (history.location.state && history.location.state.pageIdx) {
+    //  setPageIdx(history.location.state.pageIdx);
+    //}
+  }, [pageIdx, location?.query, isPageIndexChanged]);
+
+  useEffect(() => {}, []);
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -141,7 +156,7 @@ function MailList(props: any) {
         id,
         type: type + '',
       },
-      state: { pageIdx },
+      state: { pageIdx, inboxType },
     });
   };
   return (
@@ -209,7 +224,7 @@ function MailList(props: any) {
         <div className={styles.right}>
           <div className={styles.pageIndicator}>
             <span>
-              {pageIdx ?? '-'} /{pageNum ?? '-'}
+              {fetchIndex ?? '-'} /{pageNum ?? '-'}
             </span>
 
             {/* <span style={{ marginLeft: '8px' }}>Go</span> */}
@@ -220,6 +235,7 @@ function MailList(props: any) {
               style={{ marginRight: '40px' }}
               onClick={() => {
                 setPageIdx((prev) => {
+                  setisPageIndexChanged(true);
                   if (prev - 1 > 0) {
                     return prev - 1;
                   } else return prev;
@@ -230,6 +246,7 @@ function MailList(props: any) {
               url={rightArrow}
               onClick={() => {
                 setPageIdx((prev) => {
+                  setisPageIndexChanged(true);
                   if (prev + 1 <= pageNum) {
                     return prev + 1;
                   } else return prev;
