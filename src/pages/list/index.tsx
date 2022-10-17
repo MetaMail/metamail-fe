@@ -45,13 +45,15 @@ function MailList(props: any) {
   const [isPageIndexChanged, setisPageIndexChanged] = useState(false);
   //  const [isChangeInbox,setisChangeInbox] = useState(false);
 
-  const fetchIndex = history.location.state.isChangeInbox
-    ? 1
-    : history.location.state.pageIdx &&
-      !isPageIndexChanged &&
-      history.location.state.isReturnFromMail
-    ? history.location.state.pageIdx
-    : pageIdx;
+  const fetchIndex =
+    history.location.state && history.location.state.isChangeInbox
+      ? 1
+      : history.location.state &&
+        history.location.state.pageIdx &&
+        !isPageIndexChanged &&
+        history.location.state.isReturnFromMail
+      ? history.location.state.pageIdx
+      : pageIdx;
   //const [hover, setHover] = useState<string | undefined>(undefined);
 
   const getMails = () => {
