@@ -69,9 +69,14 @@ function Mail(props: any) {
   const randomBitsRef = useRef('');
   const queryRef = useRef(0);
   const [pageIdx, setPageIdx] = useState(1);
+  const [inboxType, setinboxType] = useState(0);
+  const [isReturnFromMail, setisReturnFromMail] = useState(true);
   useEffect(() => {
     if (history.location.state && history.location.state.pageIdx) {
       setPageIdx(history.location.state.pageIdx);
+    }
+    if (history.location.inboxType && history.location.state.inboxType) {
+      setPageIdx(history.location.state.inboxType);
     }
   }, []);
 
@@ -205,10 +210,12 @@ function Mail(props: any) {
           history.push({
             pathname: '/home/list',
             query: {
-              filter: 0,
+              filter: history.location.state.inboxType,
             },
             state: {
               pageIdx,
+              isReturnFromMail,
+              inboxType,
             },
           });
         }}

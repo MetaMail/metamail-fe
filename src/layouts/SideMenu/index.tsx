@@ -30,7 +30,7 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
   );
   const [hover, setHover] = useState<MetaMailTypeEn | undefined>(undefined);
   const history = useHistory();
-  const [pageIdx, setPageIdx] = useState(1);
+  //const [pageIdx, setPageIdx] = useState(1);
 
   //useEffect(() => {
   //  if (history.location.state && history.location.state.pageIdx) {
@@ -55,8 +55,8 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
     if (!Number.isNaN(filterNum)) {
       //history.replace({
       //  pathname: location.pathname,
-      //  state: {
-      //    pageIdx : 1,
+      //state: {
+      //pageIdx : 1,
       //  },
       //});
       history.push({
@@ -66,6 +66,7 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
         },
         state: {
           pageIdx: 1,
+          isChangeInbox: true,
         },
       });
     } else {

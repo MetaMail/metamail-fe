@@ -31,11 +31,9 @@ import { setRandomBits } from '@/store/user';
 
 function MailList(props: any) {
   const { location = useLocation() } = props;
-
   const queryRef = useRef(0);
   const history = useHistory();
   const mailBox = getMailBoxType(queryRef.current);
-  //const [curFilter, setcurFilter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
   const [pageIdx, setPageIdx] = useState(1);
@@ -45,19 +43,17 @@ function MailList(props: any) {
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
   const [isPageIndexChanged, setisPageIndexChanged] = useState(false);
-  const fetchIndex =
-    history.location.state &&
-    history.location.state.pageIdx &&
-    !isPageIndexChanged
-      ? history.location.state.pageIdx
-      : pageIdx;
+  //  const [isChangeInbox,setisChangeInbox] = useState(false);
+
+  const fetchIndex = history.location.state.isChangeInbox
+    ? 1
+    : history.location.state.pageIdx &&
+      !isPageIndexChanged &&
+      history.location.state.isReturnFromMail
+    ? history.location.state.pageIdx
+    : pageIdx;
   //const [hover, setHover] = useState<string | undefined>(undefined);
-  //useEffect(() => {
-  //   if (history.location.state && history.location.state.pageIdx) {
-  //     setPageIdx(history.location.state.pageIdx);
-  //   }
-  //},
-  //[]);
+
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -72,12 +68,18 @@ function MailList(props: any) {
   };
 
   const fetchMailList = async (showLoading = true) => {
+    //if (!history.location.state.isChangeInbox || !isPageIndexChanged) setisChangeInbox(false);
+    //console.log('history.pageind: '+history.location.state.pageIdx);
+    //console.log('fetchinx: '+fetchIndex);
+    //console.log('pageindx: '+pageIdx);
+    //console.log('isReturnFromMail: '+history.location.state.isReturnFromMail);
+    //console.log('ischangeinbox: '+isChangeInbox);
+    //console.log('history.location.state.isChangeInbox '+history.location.state.isChangeInbox);
+    //console.log('ifPageindexChanged: '+isPageIndexChanged);
+    //console.log('end');
     if (showLoading) {
       setLoading(true);
     }
-    //if (history.location.state && history.location.state.pageIdx) {
-    //  setPageIdx(history.location.state.pageIdx);
-    //}
     try {
       const { data } = await getMailList({
         filter: queryRef.current,
@@ -100,6 +102,7 @@ function MailList(props: any) {
       if (showLoading) {
         setLoading(false);
       }
+      setPageIdx(fetchIndex);
     }
   };
 
@@ -107,13 +110,10 @@ function MailList(props: any) {
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
+    setinboxType(queryRef.current);
     fetchMailList();
-    //if (history.location.state && history.location.state.pageIdx) {
-    //  setPageIdx(history.location.state.pageIdx);
-    //}
+    //setisChangeInbox(true);
   }, [pageIdx, location?.query, isPageIndexChanged]);
-
-  useEffect(() => {}, []);
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -146,10 +146,11 @@ function MailList(props: any) {
       const mails = [{ message_id: id, mailbox: Number(mailbox) }];
       changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
     }
-    history.replace({
-      pathname: location.pathname,
-      state: { pageIdx },
-    });
+    //history.replace({
+    //pathname: location.pathname,
+    //state: { pageIdx },
+    //});
+    //setPageIdx(fetchIndex);
     history.push({
       pathname,
       query: {
@@ -235,10 +236,20 @@ function MailList(props: any) {
               style={{ marginRight: '40px' }}
               onClick={() => {
                 setPageIdx((prev) => {
+                  //setisChangeInbox(false);
                   setisPageIndexChanged(true);
                   if (prev - 1 > 0) {
                     return prev - 1;
                   } else return prev;
+                });
+                history.push({
+                  pathname: '/home/list',
+                  query: {
+                    filter: inboxType,
+                  },
+                  state: {
+                    pageIdx,
+                  },
                 });
               }}
             />
@@ -246,10 +257,20 @@ function MailList(props: any) {
               url={rightArrow}
               onClick={() => {
                 setPageIdx((prev) => {
+                  //setisChangeInbox(false);
                   setisPageIndexChanged(true);
                   if (prev + 1 <= pageNum) {
                     return prev + 1;
                   } else return prev;
+                });
+                history.push({
+                  pathname: '/home/list',
+                  query: {
+                    filter: inboxType,
+                  },
+                  state: {
+                    pageIdx,
+                  },
                 });
               }}
             />
