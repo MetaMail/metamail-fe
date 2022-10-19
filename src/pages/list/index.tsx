@@ -321,17 +321,18 @@ function MailList(props: any) {
               );
             }}
             onSelect={(isSelect) => {
-              const nextList = selectList.slice();
               if (isSelect) {
+                const nextList = selectList.slice();
                 nextList.push(item);
+                setSelectList(nextList);
               } else {
-                nextList.filter(
+                const nextList = selectList.filter(
                   (i) =>
                     i.message_id !== item.message_id &&
                     i.mailbox !== item.mailbox,
                 );
+                setSelectList(nextList);
               }
-              setSelectList(nextList);
             }}
           />
         )}
