@@ -210,13 +210,15 @@ function Mail(props: any) {
           history.push({
             pathname: '/home/list',
             query: {
-              filter: history.location.state.inboxType,
+              filter: sessionStorage.getItem('inboxType')
+                ? Number(sessionStorage.getItem('inboxType'))
+                : 0,
             },
-            state: {
-              pageIdx,
-              isReturnFromMail,
-              inboxType,
-            },
+            //state: {
+            //  pageIdx,
+            //  isReturnFromMail,
+            //  inboxType,
+            //},
           });
         }}
         title="Back"

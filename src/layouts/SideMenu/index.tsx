@@ -59,15 +59,17 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
       //pageIdx : 1,
       //  },
       //});
+      sessionStorage.setItem('isChangeInbox', '1');
+      sessionStorage.removeItem('pageIdx');
       history.push({
         pathname: '/home/list',
         query: {
           filter,
         },
-        state: {
-          pageIdx: 1,
-          isChangeInbox: true,
-        },
+        //state: {
+        //  pageIdx: 1,
+        //  isChangeInbox: true,
+        //},
       });
     } else {
       history.push({

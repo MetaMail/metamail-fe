@@ -2,13 +2,11 @@ import MailListItem from '@/components/MailListItem';
 import { List, notification } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Popover } from 'antd';
 import {
   FilterTypeEn,
   getMailBoxType,
   IMailItem,
   MailBoxTypeEn,
-  MailTypeIconMap,
   MarkTypeEn,
   MetaMailTypeEn,
   ReadStatusTypeEn,
@@ -36,24 +34,15 @@ function MailList(props: any) {
   const mailBox = getMailBoxType(queryRef.current);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
-  const [pageIdx, setPageIdx] = useState(1);
+  const fetchIndex = sessionStorage.getItem('pageIdx')
+    ? Number(sessionStorage.getItem('pageIdx'))
+    : 1;
+  const [pageIdx, setPageIdx] = useState(fetchIndex);
   const [pageNum, setPageNum] = useState(0);
   const [inboxType, setinboxType] = useState(Number(mailBox));
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
-  const [isPageIndexChanged, setisPageIndexChanged] = useState(false);
-  //  const [isChangeInbox,setisChangeInbox] = useState(false);
-
-  const fetchIndex =
-    history.location.state && history.location.state.isChangeInbox
-      ? 1
-      : history.location.state &&
-        history.location.state.pageIdx &&
-        !isPageIndexChanged &&
-        history.location.state.isReturnFromMail
-      ? history.location.state.pageIdx
-      : pageIdx;
   //const [hover, setHover] = useState<string | undefined>(undefined);
 
   const getMails = () => {
@@ -70,14 +59,9 @@ function MailList(props: any) {
   };
 
   const fetchMailList = async (showLoading = true) => {
-    //if (!history.location.state.isChangeInbox || !isPageIndexChanged) setisChangeInbox(false);
-    //console.log('history.pageind: '+history.location.state.pageIdx);
-    //console.log('fetchinx: '+fetchIndex);
-    //console.log('pageindx: '+pageIdx);
-    //console.log('isReturnFromMail: '+history.location.state.isReturnFromMail);
-    //console.log('ischangeinbox: '+isChangeInbox);
-    //console.log('history.location.state.isChangeInbox '+history.location.state.isChangeInbox);
-    //console.log('ifPageindexChanged: '+isPageIndexChanged);
+    //console.log('pageindx: '+sessionStorage.getItem("pageIdx"));
+    //console.log('inbox: '+queryRef.current);
+    //console.log('pageindxstate: '+pageIdx);
     //console.log('end');
     if (showLoading) {
       setLoading(true);
@@ -85,7 +69,7 @@ function MailList(props: any) {
     try {
       const { data } = await getMailList({
         filter: queryRef.current,
-        page_index: fetchIndex,
+        page_index: pageIdx,
       });
 
       setList(data?.mails ?? []);
@@ -104,7 +88,7 @@ function MailList(props: any) {
       if (showLoading) {
         setLoading(false);
       }
-      setPageIdx(fetchIndex);
+      //setPageIdx(fetchIndex);
     }
   };
 
@@ -112,10 +96,11 @@ function MailList(props: any) {
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
+    if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
+
     setinboxType(queryRef.current);
     fetchMailList();
-    //setisChangeInbox(true);
-  }, [pageIdx, location?.query, isPageIndexChanged]);
+  }, [pageIdx, location?.query]);
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -153,13 +138,15 @@ function MailList(props: any) {
     //state: { pageIdx },
     //});
     //setPageIdx(fetchIndex);
+    sessionStorage.setItem('pageIdx', String(pageIdx));
+    sessionStorage.setItem('inboxType', String(inboxType));
     history.push({
       pathname,
       query: {
         id,
         type: type + '',
       },
-      state: { pageIdx, inboxType },
+      //  state: { pageIdx, inboxType },
     });
   };
   return (
@@ -227,7 +214,7 @@ function MailList(props: any) {
         <div className={styles.right}>
           <div className={styles.pageIndicator}>
             <span>
-              {fetchIndex ?? '-'} /{pageNum ?? '-'}
+              {pageIdx ?? '-'} /{pageNum ?? '-'}
             </span>
 
             {/* <span style={{ marginLeft: '8px' }}>Go</span> */}
@@ -238,20 +225,20 @@ function MailList(props: any) {
               style={{ marginRight: '40px' }}
               onClick={() => {
                 setPageIdx((prev) => {
-                  //setisChangeInbox(false);
-                  setisPageIndexChanged(true);
                   if (prev - 1 > 0) {
                     return prev - 1;
                   } else return prev;
                 });
+                sessionStorage.setItem('pageIdx', String(pageIdx));
+                console.log(pageIdx);
                 history.push({
                   pathname: '/home/list',
                   query: {
                     filter: inboxType,
                   },
-                  state: {
-                    pageIdx,
-                  },
+                  //  state: {
+                  //    pageIdx,
+                  //  },
                 });
               }}
             />
@@ -259,20 +246,20 @@ function MailList(props: any) {
               url={rightArrow}
               onClick={() => {
                 setPageIdx((prev) => {
-                  //setisChangeInbox(false);
-                  setisPageIndexChanged(true);
                   if (prev + 1 <= pageNum) {
                     return prev + 1;
                   } else return prev;
                 });
+                sessionStorage.setItem('pageIdx', String(pageIdx));
+                console.log(pageIdx);
                 history.push({
                   pathname: '/home/list',
                   query: {
                     filter: inboxType,
                   },
-                  state: {
-                    pageIdx,
-                  },
+                  //  state: {
+                  //    pageIdx,
+                  //  },
                 });
               }}
             />
