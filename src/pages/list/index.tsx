@@ -101,6 +101,18 @@ function MailList(props: any) {
     setinboxType(queryRef.current);
     fetchMailList();
   }, [pageIdx, location?.query]);
+  const handleChangeSelectList = (item: IMailItem, isSelect?: boolean) => {
+    if (isSelect) {
+      const nextList = selectList.slice();
+      nextList.push(item);
+      setSelectList(nextList);
+    } else {
+      const nextList = selectList.filter(
+        (i) => i.message_id !== item.message_id && i.mailbox !== item.mailbox,
+      );
+      setSelectList(nextList);
+    }
+  };
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -308,18 +320,7 @@ function MailList(props: any) {
               );
             }}
             onSelect={(isSelect) => {
-              if (isSelect) {
-                const nextList = selectList.slice();
-                nextList.push(item);
-                setSelectList(nextList);
-              } else {
-                const nextList = selectList.filter(
-                  (i) =>
-                    i.message_id !== item.message_id &&
-                    i.mailbox !== item.mailbox,
-                );
-                setSelectList(nextList);
-              }
+              handleChangeSelectList(item, isSelect);
             }}
           />
         )}

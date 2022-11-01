@@ -68,26 +68,9 @@ function Mail(props: any) {
   const [readable, setReadable] = useState(true);
   const randomBitsRef = useRef('');
   const queryRef = useRef(0);
-  const [pageIdx, setPageIdx] = useState(1);
-  const [inboxType, setinboxType] = useState(0);
-  const [isReturnFromMail, setisReturnFromMail] = useState(true);
-  useEffect(() => {
-    if (history.location.state && history.location.state.pageIdx) {
-      setPageIdx(history.location.state.pageIdx);
-    }
-    if (history.location.inboxType && history.location.state.inboxType) {
-      setPageIdx(history.location.state.inboxType);
-    }
-  }, []);
-
-  //useEffect(() => {
-  //  async () => {
-  //   await getMailList({
-  //     filter: queryRef.current,
-  //     page_index: pageIdx,
-  ///   });
-  // };
-  //}, [queryRef, pageIdx]);
+  //const [pageIdx, setPageIdx] = useState(1);
+  //const [inboxType, setinboxType] = useState(0);
+  //const [isReturnFromMail, setisReturnFromMail] = useState(true);
 
   const handleOpenReplyMail = async () => {
     createMail(MetaMailTypeEn.Signed).catch(() => {
@@ -106,6 +89,9 @@ function Mail(props: any) {
       const { data } = await getMailDetailByID(window.btoa(query.id));
 
       setMail(data);
+      //console.log(data?.part_html);
+      //console.log(data?.part_text);
+      //console.log(data?.download?.url);
     } catch (e) {
       console.log(e);
       notification.error({
@@ -225,6 +211,16 @@ function Mail(props: any) {
       >
         <div className={styles.btnBar} onClick={handleClickReply}>
           <Button>Reply</Button>
+        </div>
+        <div className={styles.btnBar}>
+          <Button
+            href={mail?.download?.url}
+            color="transparent"
+            target="_blank"
+            download
+          >
+            Download Mail
+          </Button>
         </div>
       </PageHeader>
 
