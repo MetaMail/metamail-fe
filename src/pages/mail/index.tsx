@@ -87,7 +87,38 @@ function Mail(props: any) {
         throw new Error();
       }
       const { data } = await getMailDetailByID(window.btoa(query.id));
-
+      if (data.part_html) {
+        var el = document.createElement('html');
+        el.innerHTML = data.part_html;
+        //console.log(el.innerHTML);
+        {
+          data?.attachments?.map(
+            (item: {
+              filename: string;
+              download: {
+                expire_at: string;
+                url: string;
+              };
+            }) => {
+              //imgReplace = document.querySelector("#DSC_5439.JPG");
+              //console.log(imgReplace);
+              //console.log(item.filename);
+              //console.log(item.download.url);
+              //imgReplace = document.getElementById(item.filename);
+              el.querySelectorAll('img').forEach(function (element) {
+                //console.log(element.alt);
+                //console.log(element.src);
+                if (element.alt == item.filename) {
+                  element.src = item.download.url;
+                  //console.log(el.innerHTML);
+                  data.part_html = el.innerHTML;
+                }
+              });
+            },
+          );
+          //console.log(el.innerHTML);
+        }
+      }
       setMail(data);
       //console.log(data?.part_html);
       //console.log(data?.part_text);
