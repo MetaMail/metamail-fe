@@ -106,12 +106,16 @@ const NewMail = (props: any) => {
       const { data } = await getMailDetailByID(window.btoa(query.id));
       const mail = data as IMailContentItem;
       if (mail) {
-        const { subject, mail_to, part_html } = getMailContent();
-
-        setSubject(subject ?? mail?.subject);
-        setReceivers(mail_to ?? mail?.mail_to);
-        setContent(part_html ?? mail?.part_html ?? mail?.part_text);
+        //const { subject, mail_to, part_html } = getMailContent();
+        //console.log(subject);
+        setSubject(mail?.subject);
+        setReceivers(mail?.mail_to);
+        setContent(mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
+        const { subject, mail_to, part_html } = getMailContent();
+        subject && setSubject(subject);
+        mail_to && setReceivers(mail_to);
+        part_html && setContent(part_html);
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
           setEditable(false);
         } else {
@@ -122,10 +126,10 @@ const NewMail = (props: any) => {
           myKeyRef.current = mail?.meta_header?.keys?.[0];
       }
     } catch {
-      notification.error({
-        message: 'Network Error',
-        description: 'Can not fetch detail info of this email for now.',
-      });
+      //notification.error({
+      //  message: 'Network Error',
+      //  description: 'Can not fetch detail info of this email for now.',
+      //});
     }
   };
 
