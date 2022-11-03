@@ -1,4 +1,7 @@
-import { notification, message, PageHeader } from 'antd';
+import { notification, message, PageHeader, Button } from 'antd';
+import Icon from '@/components/Icon';
+import { createMail } from '@/layouts/SideMenu/utils';
+import { sent } from '@/assets/icons';
 import {
   IMailContentItem,
   MetaMailTypeEn,
@@ -20,9 +23,11 @@ import { connect, Prompt } from 'umi';
 import locked from '@/assets/images/locked.svg';
 import DOMPurify from 'dompurify';
 import moment from 'moment';
-import { getUserInfo } from '@/store/user';
+import { getUserInfo, getShowName } from '@/store/user';
 import SenderCard from './SenderCard';
+import { setMailContent } from '@/store/mail';
 //import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 // allowed URI schemes
 var allowlist = ['http', 'https', 'ftp'];
 
@@ -53,25 +58,28 @@ DOMPurify.addHook('afterSanitizeAttributes', function (node) {
 
 function Mail(props: any) {
   //const { state } = useLocation();
+  //const pageIdxHistory = useHistory();
   const [mail, setMail] = useState<IMailContentItem>();
   const {
     location: { query },
-    history,
+    history = useHistory(),
   } = props;
-
   const { address, ensName } = getUserInfo();
   const [readable, setReadable] = useState(true);
   const randomBitsRef = useRef('');
   const queryRef = useRef(0);
-  const [pageIdx, setPageIdx] = useState(1);
-  useEffect(() => {
-    async () => {
-      await getMailList({
-        filter: queryRef.current,
-        page_index: pageIdx,
+  //const [pageIdx, setPageIdx] = useState(1);
+  //const [inboxType, setinboxType] = useState(0);
+  //const [isReturnFromMail, setisReturnFromMail] = useState(true);
+
+  const handleOpenReplyMail = async () => {
+    createMail(MetaMailTypeEn.Signed).catch(() => {
+      notification.error({
+        message: 'Network Error',
+        description: 'Can NOT create a new e-mail for now.',
       });
-    };
-  }, [queryRef, pageIdx]);
+    });
+  };
 
   const handleLoad = async () => {
     try {
@@ -79,8 +87,42 @@ function Mail(props: any) {
         throw new Error();
       }
       const { data } = await getMailDetailByID(window.btoa(query.id));
-
+      if (data.part_html) {
+        var el = document.createElement('html');
+        el.innerHTML = data.part_html;
+        //console.log(el.innerHTML);
+        {
+          data?.attachments?.map(
+            (item: {
+              filename: string;
+              download: {
+                expire_at: string;
+                url: string;
+              };
+            }) => {
+              //imgReplace = document.querySelector("#DSC_5439.JPG");
+              //console.log(imgReplace);
+              //console.log(item.filename);
+              //console.log(item.download.url);
+              //imgReplace = document.getElementById(item.filename);
+              el.querySelectorAll('img').forEach(function (element) {
+                //console.log(element.alt);
+                //console.log(element.src);
+                if (element.alt == item.filename) {
+                  element.src = item.download.url;
+                  //console.log(el.innerHTML);
+                  data.part_html = el.innerHTML;
+                }
+              });
+            },
+          );
+          //console.log(el.innerHTML);
+        }
+      }
       setMail(data);
+      //console.log(data?.part_html);
+      //console.log(data?.part_text);
+      //console.log(data?.download?.url);
     } catch (e) {
       console.log(e);
       notification.error({
@@ -148,23 +190,70 @@ function Mail(props: any) {
     // handleMarkRead();
     handleLoad();
   }, [query]);
+
+  const handleClickReply = () => {
+    setMailContent({
+      mail_from: {
+        address: address!,
+        name: ensName,
+      },
+      mail_to: [mail!.mail_from],
+      subject: `Re: ${mail?.subject}`,
+      part_html: `
+      <br/>
+      ----------------------------------------------------------------------\n
+      <br/>
+      <div><span>At ${moment(mail?.mail_date).format(
+        'llll',
+      )}, </span> <span style="font-weight:700">${
+        ensName ?? '-'
+      }</span> <${address}@mmail.ink> wrote:</div>
+      <br/>
+      <blockquote>
+      ${mail?.part_html}
+      </blockquote>
+      `,
+    });
+
+    createMail(MetaMailTypeEn.Plain);
+  };
+
   return (
     <div className={styles.container}>
       <PageHeader
         onBack={() => {
           //const { history } = props;
-          history.go(-1);
-          //history.push({
-          //pathname: `/home/list/${queryRef.current}`,
-          //  pathname: '/home/list',
-          //  query: {
-          //    filter: 0
-          //  },
-          //  state,
-          //});
+          //history.goBack();
+          history.push({
+            pathname: '/home/list',
+            query: {
+              filter: sessionStorage.getItem('inboxType')
+                ? Number(sessionStorage.getItem('inboxType'))
+                : 0,
+            },
+            //state: {
+            //  pageIdx,
+            //  isReturnFromMail,
+            //  inboxType,
+            //},
+          });
         }}
         title="Back"
-      />
+      >
+        <div className={styles.btnBar} onClick={handleClickReply}>
+          <Button>Reply</Button>
+        </div>
+        <div className={styles.btnBar}>
+          <Button
+            href={mail?.download?.url}
+            color="transparent"
+            target="_blank"
+            download
+          >
+            Download Mail
+          </Button>
+        </div>
+      </PageHeader>
 
       <div className={styles.mail}>
         <div className={styles.subject}>
@@ -234,6 +323,9 @@ function Mail(props: any) {
             <div>Click to decrypt this mail.</div>
           </div>
         )}
+        <div className={styles.btnBar} onClick={handleClickReply}>
+          <Button>Reply</Button>
+        </div>
       </div>
     </div>
   );

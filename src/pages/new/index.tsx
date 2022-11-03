@@ -1,6 +1,6 @@
 import { Button, Input, message, notification, Upload } from 'antd';
 import { useState, useRef, useEffect } from 'react';
-import { changeMailStatus, getMailList, IMailChangeParams } from '@/services';
+import { changeMailStatus, IMailChangeParams } from '@/services';
 import ReactQuill from 'react-quill';
 import styles from './index.less';
 import 'react-quill/dist/quill.snow.css';
@@ -35,7 +35,7 @@ import { pkEncrypt } from '@/layouts/SideMenu/utils';
 import locked from '@/assets/images/locked.svg';
 import ReceiverGroup from './ReceiverGroup';
 import { getUserInfo, getWalletAddress } from '@/store/user';
-import { clearReceivers, getReceivers } from '@/store/mail';
+import { clearMailContent, getMailContent } from '@/store/mail';
 
 export interface INewModalHandles {
   open: (draftID?: string) => void;
@@ -66,7 +66,7 @@ const NewMail = (props: any) => {
   const myKeyRef = useRef<string>();
   const currRandomBitsRef = useRef<string>(randomBits);
   const dateRef = useRef<string>();
-
+  const allowSaveRef = useRef(true);
   const getQuill = () => {
     if (typeof reactQuillRef?.current?.getEditor !== 'function') return;
 
@@ -74,12 +74,27 @@ const NewMail = (props: any) => {
       reactQuillRef.current.getEditor(),
     );
   };
-
+  const handleDelete = async (
+    inputMails: IMailChangeParams[],
+    mark: MarkTypeEn,
+  ) => {
+    const mails = inputMails;
+    try {
+      await changeMailStatus(mails, mark, undefined);
+    } catch {
+      notification.error({
+        message: 'Failed',
+        description: 'Sorry, network problem.',
+      });
+    } finally {
+      history.go(-1);
+    }
+  };
   useEffect(() => {
     handleLoad();
 
     return () => {
-      clearReceivers();
+      clearMailContent();
     };
   }, [query]);
 
@@ -91,10 +106,16 @@ const NewMail = (props: any) => {
       const { data } = await getMailDetailByID(window.btoa(query.id));
       const mail = data as IMailContentItem;
       if (mail) {
+        //const { subject, mail_to, part_html } = getMailContent();
+        //console.log(subject);
         setSubject(mail?.subject);
-        setReceivers(mail?.mail_to?.length > 0 ? mail.mail_to : getReceivers());
+        setReceivers(mail?.mail_to);
         setContent(mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
+        const { subject, mail_to, part_html } = getMailContent();
+        subject && setSubject(subject);
+        mail_to && setReceivers(mail_to);
+        part_html && setContent(part_html);
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
           setEditable(false);
         } else {
@@ -105,10 +126,10 @@ const NewMail = (props: any) => {
           myKeyRef.current = mail?.meta_header?.keys?.[0];
       }
     } catch {
-      notification.error({
-        message: 'Network Error',
-        description: 'Can not fetch detail info of this email for now.',
-      });
+      //notification.error({
+      //  message: 'Network Error',
+      //  description: 'Can not fetch detail info of this email for now.',
+      //});
     }
   };
 
@@ -173,7 +194,7 @@ const NewMail = (props: any) => {
 
       return;
     }
-
+    allowSaveRef.current = false;
     try {
       handleSave().then(async (obj) => {
         if (!obj) {
@@ -237,7 +258,7 @@ const NewMail = (props: any) => {
                 notification.error({
                   message: 'Not Your Sign, Not your Mail',
                   description:
-                    "Please sign this email to send. It's totally free, no gas fee",
+                    "Please make sure that you have login MetaMask. It's totally free, no gas fee",
                 });
                 // Modal.confirm({
                 //   title: 'Failed to sign this mail',
@@ -367,6 +388,7 @@ const NewMail = (props: any) => {
   };
 
   useInterval(() => {
+    if (!allowSaveRef.current) return;
     try {
       // handleSave();
     } catch (err) {
@@ -391,22 +413,16 @@ const NewMail = (props: any) => {
         <Icon
           url={trash}
           onClick={() => {
-            // notification.warn({
-            //   message: 'TODO: 删除草稿接口',
-            // });
-            //async () => {
-            try {
-              changeMailStatus(
-                [draftID, MailBoxTypeEn.Draft],
-                MarkTypeEn.Trash,
-              );
-              history.go(-1);
-            } catch {
-              notification.error({
-                message: 'Failed',
-                description: 'Sorry, network problem.',
-              });
-            }
+            handleDelete(
+              [
+                {
+                  message_id: query.id,
+                  mailbox: MailBoxTypeEn.Draft,
+                },
+              ],
+              MarkTypeEn.Trash,
+            );
+            //history.go(-1);
           }}
           style={{ marginRight: '8px' }}
         />

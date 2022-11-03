@@ -4,11 +4,11 @@ import { Layout, Menu, notification } from 'antd';
 import Icon from '@/components/Icon';
 import styles from './index.less';
 import cn from 'classnames';
-import { useState } from 'react';
-import { connect, history } from 'umi';
+import { useState, useEffect } from 'react';
+import { connect, history, useHistory } from 'umi';
 import { createMail } from './utils';
 import { contacts } from '@/assets';
-
+import { useLocation } from 'react-router-dom';
 const { Sider } = Layout;
 
 const SiderWidth = 200;
@@ -24,11 +24,20 @@ interface ISiderMenuProps {
 }
 
 function SideMenu({ unreadCount }: ISiderMenuProps) {
+  const location = useLocation();
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
   );
   const [hover, setHover] = useState<MetaMailTypeEn | undefined>(undefined);
+  const history = useHistory();
+  //const [pageIdx, setPageIdx] = useState(1);
 
+  //useEffect(() => {
+  //  if (history.location.state && history.location.state.pageIdx) {
+  //    setPageIdx(history.location.state.pageIdx);
+  //  }
+  //  else setPageIdx(1);
+  //}, []);
   const handleClickNewMail = async (type: MetaMailTypeEn) => {
     setMailType(type);
     createMail(type).catch(() => {
@@ -44,11 +53,23 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
     const filterNum = Number(filter);
 
     if (!Number.isNaN(filterNum)) {
+      //history.replace({
+      //  pathname: location.pathname,
+      //state: {
+      //pageIdx : 1,
+      //  },
+      //});
+      sessionStorage.setItem('isChangeInbox', '1');
+      sessionStorage.removeItem('pageIdx');
       history.push({
         pathname: '/home/list',
         query: {
           filter,
         },
+        //state: {
+        //  pageIdx: 1,
+        //  isChangeInbox: true,
+        //},
       });
     } else {
       history.push({

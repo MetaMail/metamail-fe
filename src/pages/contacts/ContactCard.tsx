@@ -1,5 +1,6 @@
 import { createMail } from '@/layouts/SideMenu/utils';
-import { setReceivers } from '@/store/mail';
+//import { setReceivers } from '@/store/mail';
+import { setMailContent } from '@/store/mail';
 import { Avatar, Button, Image } from 'antd';
 import React from 'react';
 import { MetaMailTypeEn } from '../home/interfaces';
@@ -13,12 +14,14 @@ export interface IConnectItem {
 
 export default function ContactCard({ address, avatar, domain }: IConnectItem) {
   const handleSendMail = () => {
-    setReceivers([
-      {
-        address: `${domain?.length > 0 ? domain : address}@mmail.ink`,
-        name: domain,
-      },
-    ]);
+    setMailContent({
+      mail_to: [
+        {
+          address: `${domain?.length > 0 ? domain : address}@mmail.ink`,
+          name: domain,
+        },
+      ],
+    });
     createMail(MetaMailTypeEn.Signed);
   };
   return (

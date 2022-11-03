@@ -102,6 +102,10 @@ export interface IMailContentItem {
   mail_cc: IPersonItem[];
   mail_bcc: IPersonItem[];
   mail_date: string;
+  download: {
+    expire_at: string;
+    url: string;
+  };
   in_reply_to?: IPersonItem;
   reply_to?: IPersonItem;
   mail_reference: [];

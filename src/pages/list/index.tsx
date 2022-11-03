@@ -2,13 +2,11 @@ import MailListItem from '@/components/MailListItem';
 import { List, notification } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Popover } from 'antd';
 import {
   FilterTypeEn,
   getMailBoxType,
   IMailItem,
   MailBoxTypeEn,
-  MailTypeIconMap,
   MarkTypeEn,
   MetaMailTypeEn,
   ReadStatusTypeEn,
@@ -30,21 +28,23 @@ import { connect, history } from 'umi';
 import { setRandomBits } from '@/store/user';
 
 function MailList(props: any) {
-  const { location } = props;
-
+  const { location = useLocation() } = props;
   const queryRef = useRef(0);
   const history = useHistory();
-  //const { state } = useLocation();
   const mailBox = getMailBoxType(queryRef.current);
-  //const [curFilter, setcurFilter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
-  const [pageIdx, setPageIdx] = useState(1);
+  const fetchIndex = sessionStorage.getItem('pageIdx')
+    ? Number(sessionStorage.getItem('pageIdx'))
+    : 1;
+  const [pageIdx, setPageIdx] = useState(fetchIndex);
   const [pageNum, setPageNum] = useState(0);
+  const [inboxType, setinboxType] = useState(Number(mailBox));
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
   //const [hover, setHover] = useState<string | undefined>(undefined);
+
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -59,6 +59,10 @@ function MailList(props: any) {
   };
 
   const fetchMailList = async (showLoading = true) => {
+    //console.log('pageindx: '+sessionStorage.getItem("pageIdx"));
+    //console.log('inbox: '+queryRef.current);
+    //console.log('pageindxstate: '+pageIdx);
+    //console.log('end');
     if (showLoading) {
       setLoading(true);
     }
@@ -69,7 +73,7 @@ function MailList(props: any) {
       });
 
       setList(data?.mails ?? []);
-      setPageIdx(data?.page_index);
+      //setPageIdx(data?.page_index);
       setPageNum(data?.page_num);
       props.setUnreadCount({
         unread: data?.unread,
@@ -84,6 +88,7 @@ function MailList(props: any) {
       if (showLoading) {
         setLoading(false);
       }
+      //setPageIdx(fetchIndex);
     }
   };
 
@@ -91,8 +96,23 @@ function MailList(props: any) {
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
+    if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
+
+    setinboxType(queryRef.current);
     fetchMailList();
   }, [pageIdx, location?.query]);
+  const handleChangeSelectList = (item: IMailItem, isSelect?: boolean) => {
+    if (isSelect) {
+      const nextList = selectList.slice();
+      nextList.push(item);
+      setSelectList(nextList);
+    } else {
+      const nextList = selectList.filter(
+        (i) => i.message_id !== item.message_id && i.mailbox !== item.mailbox,
+      );
+      setSelectList(nextList);
+    }
+  };
 
   const handleChangeMailStatus = async (
     inputMails?: IMailChangeParams[],
@@ -125,14 +145,20 @@ function MailList(props: any) {
       const mails = [{ message_id: id, mailbox: Number(mailbox) }];
       changeMailStatus(mails, undefined, ReadStatusTypeEn.read);
     }
-
+    //history.replace({
+    //pathname: location.pathname,
+    //state: { pageIdx },
+    //});
+    //setPageIdx(fetchIndex);
+    sessionStorage.setItem('pageIdx', String(pageIdx));
+    sessionStorage.setItem('inboxType', String(inboxType));
     history.push({
       pathname,
       query: {
         id,
         type: type + '',
       },
-      //state: { from: '/home/list?filter=0', pageIdx },
+      //  state: { pageIdx, inboxType },
     });
   };
   return (
@@ -215,6 +241,17 @@ function MailList(props: any) {
                     return prev - 1;
                   } else return prev;
                 });
+                sessionStorage.setItem('pageIdx', String(pageIdx));
+                console.log(pageIdx);
+                history.push({
+                  pathname: '/home/list',
+                  query: {
+                    filter: inboxType,
+                  },
+                  //  state: {
+                  //    pageIdx,
+                  //  },
+                });
               }}
             />
             <Icon
@@ -224,6 +261,17 @@ function MailList(props: any) {
                   if (prev + 1 <= pageNum) {
                     return prev + 1;
                   } else return prev;
+                });
+                sessionStorage.setItem('pageIdx', String(pageIdx));
+                console.log(pageIdx);
+                history.push({
+                  pathname: '/home/list',
+                  query: {
+                    filter: inboxType,
+                  },
+                  //  state: {
+                  //    pageIdx,
+                  //  },
                 });
               }}
             />
@@ -272,17 +320,7 @@ function MailList(props: any) {
               );
             }}
             onSelect={(isSelect) => {
-              const nextList = selectList.slice();
-              if (isSelect) {
-                nextList.push(item);
-              } else {
-                nextList.filter(
-                  (i) =>
-                    i.message_id !== item.message_id &&
-                    i.mailbox !== item.mailbox,
-                );
-              }
-              setSelectList(nextList);
+              handleChangeSelectList(item, isSelect);
             }}
           />
         )}
