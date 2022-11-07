@@ -102,8 +102,8 @@ function Mail(props: any) {
             }) => {
               //imgReplace = document.querySelector("#DSC_5439.JPG");
               //console.log(imgReplace);
-              console.log(item.filename);
-              console.log(item.download.url);
+              //console.log(item.filename);
+              //console.log(item.download.url);
               //imgReplace = document.getElementById(item.filename);
               el.querySelectorAll('img').forEach(function (element) {
                 //console.log(element.alt);
@@ -116,13 +116,13 @@ function Mail(props: any) {
               });
             },
           );
-          console.log(el.innerHTML);
+          //console.log(el.innerHTML);
         }
       }
       setMail(data);
-      console.log(data?.part_html);
-      console.log(data?.part_text);
-      console.log(data?.download?.url);
+      //console.log(data?.part_html);
+      //console.log(data?.part_text);
+      //console.log(data?.download?.url);
     } catch (e) {
       console.log(e);
       notification.error({
