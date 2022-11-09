@@ -1,7 +1,7 @@
 import { notification, message, PageHeader, Button } from 'antd';
 import Icon from '@/components/Icon';
 import { createMail } from '@/layouts/SideMenu/utils';
-import { sent } from '@/assets/icons';
+import { downloadmail, reply } from '@/assets/icons';
 import {
   IMailContentItem,
   MetaMailTypeEn,
@@ -191,6 +191,15 @@ function Mail(props: any) {
     handleLoad();
   }, [query]);
 
+  const handleClickDownload = () => {
+    //const downloadLink=document.createElement('a');
+    mail &&
+      mail.download &&
+      mail.download.url &&
+      window.open(mail?.download?.url);
+    //downloadLink.href=mail?.download?.url;
+    //downloadLink.click();
+  };
   const handleClickReply = () => {
     setMailContent({
       mail_from: {
@@ -240,18 +249,23 @@ function Mail(props: any) {
         }}
         title="Back"
       >
-        <div className={styles.btnBar} onClick={handleClickReply}>
-          <Button>Reply</Button>
-        </div>
-        <div className={styles.btnBar}>
-          <Button
-            href={mail?.download?.url}
-            color="transparent"
-            target="_blank"
-            download
-          >
-            Download Mail
-          </Button>
+        <div className={styles.left}>
+          <Icon
+            url={downloadmail}
+            style={{
+              marginRight: '16px',
+            }}
+            onClick={handleClickDownload}
+            tip={'Download Mail'}
+          />
+          <Icon
+            url={reply}
+            style={{
+              marginRight: '8px',
+            }}
+            onClick={handleClickReply}
+            tip={'Reply'}
+          />
         </div>
       </PageHeader>
 

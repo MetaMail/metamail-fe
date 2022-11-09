@@ -27,6 +27,8 @@ import attachment from './attachment.svg';
 import clipboard from './clipboard.svg';
 import logout from './logout.svg';
 import knn3 from './other/knn3.svg';
+import downloadmail from './downloadmailcontent.svg';
+import reply from './reply.svg';
 
 export {
   draft,
@@ -58,4 +60,6 @@ export {
   clipboard,
   logout,
   knn3,
+  downloadmail,
+  reply,
 };
