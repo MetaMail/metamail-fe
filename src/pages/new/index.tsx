@@ -112,24 +112,29 @@ const NewMail = (props: any) => {
         setReceivers(mail?.mail_to);
         setContent(mail?.part_html ?? mail?.part_text);
         setAttList(mail?.attachments);
-        const { subject, mail_to, part_html } = getMailContent();
-        subject && setSubject(subject);
-        mail_to && setReceivers(mail_to);
-        part_html && setContent(part_html);
+
         if (type === MetaMailTypeEn.Encrypted && !currRandomBitsRef.current) {
           setEditable(false);
         } else {
           setEditable(true);
         }
-        setLoaded(true);
+
         if (mail?.meta_header?.keys)
           myKeyRef.current = mail?.meta_header?.keys?.[0];
+        if (sessionStorage.getItem('reply')) {
+          const { subject, mail_to, part_html } = getMailContent();
+          subject && setSubject(subject);
+          mail_to && setReceivers(mail_to);
+          part_html && setContent(part_html);
+          sessionStorage.removeItem('reply');
+        }
+        setLoaded(true);
       }
     } catch {
-      //notification.error({
-      //  message: 'Network Error',
-      //  description: 'Can not fetch detail info of this email for now.',
-      //});
+      notification.error({
+        message: 'Network Error',
+        description: 'Can not fetch detail info of this email for now.',
+      });
     }
   };
 
@@ -150,6 +155,7 @@ const NewMail = (props: any) => {
     ).toString(CryptoJS.enc.Utf8);
     setContent(decryptedContent);
     setEditable(true);
+    console.log('setEditable(true);');
   };
 
   const handleSend = async (
@@ -390,11 +396,11 @@ const NewMail = (props: any) => {
   useInterval(() => {
     if (!allowSaveRef.current) return;
     try {
-      // handleSave();
+      handleSave();
     } catch (err) {
-      // console.log('failed to auto save mail');
+      console.log('failed to auto save mail');
     }
-  }, 30000);
+  }, 2000);
 
   const onReceiversChange = (newReceivers: string[]) => {
     setReceivers(

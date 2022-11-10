@@ -225,6 +225,7 @@ function Mail(props: any) {
     });
 
     createMail(MetaMailTypeEn.Plain);
+    sessionStorage.setItem('reply', 'true');
   };
 
   return (
