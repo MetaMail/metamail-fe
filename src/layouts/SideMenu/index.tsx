@@ -23,7 +23,7 @@ interface ISiderMenuProps {
   [K: string]: any;
 }
 
-function SideMenu({ unreadCount }: ISiderMenuProps) {
+function SideMenu(props: any) {
   const location = useLocation();
   const [mailType, setMailType] = useState<MetaMailTypeEn | undefined>(
     undefined,
@@ -59,8 +59,11 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
       //pageIdx : 1,
       //  },
       //});
-      sessionStorage.setItem('isChangeInbox', '1');
-      sessionStorage.removeItem('pageIdx');
+      //sessionStorage.setItem('isChangeInbox', '1');
+      //sessionStorage.removeItem('pageIdx');
+      props.setPageIndex({
+        currentIndex: 1,
+      }); // 这里会给totalIndex一个undefined
       history.push({
         pathname: '/home/list',
         query: {
@@ -162,7 +165,7 @@ function SideMenu({ unreadCount }: ISiderMenuProps) {
                 <span className={styles.title}> {item.title}</span>
                 {item.title === 'Inbox' ? (
                   <span className={styles.unreadBubble}>
-                    {unreadCount?.unread}
+                    {props?.unreadCount?.unread}
                   </span>
                 ) : null}
               </div>
@@ -200,4 +203,18 @@ const mapStateToProps = (state: any) => {
   return state.user ?? {};
 };
 
-export default connect(mapStateToProps)(SideMenu);
+//const mapIndexStateToProps = (state: any) => {
+//  return state.pageIndex ?? {};
+//};
+
+const mapDispatchToProps = (
+  dispatch: (arg0: { type: string; payload: any }) => any,
+) => ({
+  setPageIndex: (data: any) =>
+    dispatch({
+      type: 'user/setPageIndex',
+      payload: data,
+    }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

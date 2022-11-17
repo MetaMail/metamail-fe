@@ -34,17 +34,18 @@ function MailList(props: any) {
   const mailBox = getMailBoxType(queryRef.current);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
-  const fetchIndex = sessionStorage.getItem('pageIdx')
-    ? Number(sessionStorage.getItem('pageIdx'))
-    : 1;
-  const [pageIdx, setPageIdx] = useState(fetchIndex);
+  //const fetchIndex = sessionStorage.getItem('pageIdx')
+  //  ? Number(sessionStorage.getItem('pageIdx'))
+  //  : 1;
+  const [pageIdx, setPageIdx] = useState(
+    props?.pageIndex?.currentIndex ? props?.pageIndex?.currentIndex : 1,
+  );
   const [pageNum, setPageNum] = useState(0);
   const [inboxType, setinboxType] = useState(Number(mailBox));
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
   //const [hover, setHover] = useState<string | undefined>(undefined);
-
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -66,12 +67,38 @@ function MailList(props: any) {
     if (showLoading) {
       setLoading(true);
     }
+    //console.log('in');
+    //console.log(props?.pageIndex?.totalIndex);
+    if (props?.pageIndex && typeof props?.pageIndex?.totalIndex == 'undefined')
+      setPageIdx(1); //undefined就证明是sidemenu传的state，代表了初次渲染时点击了别的inbox，因此返回第一页
+    //if (pageNum==0) {setPageIdx(0);
+    //setPageIdx(1);};
     try {
+      //props.setUnreadCount({
+      //  unread: 3,
+      //  total: 3,
+      //});
+      //console.log("page1 "+props.pageIndex.currentIndex);
+      //console.log("total1 "+props.pageIndex.totalIndex);
       const { data } = await getMailList({
         filter: queryRef.current,
         page_index: pageIdx,
       });
+      //console.log('this');
+      //props.setPageIndex({
+      //  currentIndex: pageIdx,
+      //  totalIndex: data?.page_num,
+      //})
+      //console.log('this');
+      //console.log(pageIdx);
+      //console.log(data?.page_num);
 
+      props.setPageIndex({
+        currentIndex: pageIdx,
+        totalIndex: data?.page_num,
+      });
+      //console.log("page1 "+props.pageIndex.currentIndex);
+      //console.log("total1 "+props.pageIndex.totalIndex);
       setList(data?.mails ?? []);
       //setPageIdx(data?.page_index);
       setPageNum(data?.page_num);
@@ -93,11 +120,16 @@ function MailList(props: any) {
   };
 
   useEffect(() => {
+    //if (props?.pageIndex?.currentIndex && props?.pageIndex?.currentIndex!=pageIdx)
+    //setPageIdx(props.pageIndex.currentIndex);
+    props.setPageIndex({
+      currentIndex: pageIdx,
+      totalIndex: pageNum,
+    });
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
-    if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
-
+    //if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
     setinboxType(queryRef.current);
     fetchMailList();
   }, [pageIdx, location?.query]);
@@ -150,8 +182,9 @@ function MailList(props: any) {
     //state: { pageIdx },
     //});
     //setPageIdx(fetchIndex);
-    sessionStorage.setItem('pageIdx', String(pageIdx));
-    sessionStorage.setItem('inboxType', String(inboxType));
+    //sessionStorage.setItem('pageIdx', String(pageIdx));
+    //sessionStorage.setItem('inboxType', String(inboxType));
+    //setinboxType(inboxType);
     history.push({
       pathname,
       query: {
@@ -241,17 +274,24 @@ function MailList(props: any) {
                     return prev - 1;
                   } else return prev;
                 });
-                sessionStorage.setItem('pageIdx', String(pageIdx));
-                console.log(pageIdx);
-                history.push({
-                  pathname: '/home/list',
-                  query: {
-                    filter: inboxType,
-                  },
-                  //  state: {
-                  //    pageIdx,
-                  //  },
-                });
+                //props.minusPageIdx();
+                //sessionStorage.setItem('pageIdx', String(pageIdx));
+                //console.log(pageIdx);
+                //props.setPageIndex({
+                //  currentIndex: pageIdx,
+                //  totalIndex: pageNum,
+                //});
+                //console.log("page2 "+props.pageIndex.currentIndex);
+                //console.log("total2 "+props.pageIndex.totalIndex);
+                //history.push({
+                //  pathname: '/home/list',
+                //  query: {
+                //    filter: inboxType,
+                //  },
+                //  state: {
+                //    pageIdx,
+                //  },
+                //});
               }}
             />
             <Icon
@@ -262,17 +302,25 @@ function MailList(props: any) {
                     return prev + 1;
                   } else return prev;
                 });
-                sessionStorage.setItem('pageIdx', String(pageIdx));
-                console.log(pageIdx);
-                history.push({
-                  pathname: '/home/list',
-                  query: {
-                    filter: inboxType,
-                  },
-                  //  state: {
-                  //    pageIdx,
-                  //  },
-                });
+                //console.log('xian1');
+                //props.setPageIndex({
+                //  currentIndex: pageIdx,
+                //  totalIndex: pageNum,
+                //});
+                //props.addPageIdx();
+                //sessionStorage.setItem('pageIdx', String(pageIdx));
+                //console.log(pageIdx);
+                //console.log("page3 "+props.pageIndex.currentIndex);
+                //console.log("total3 "+props.pageIndex.totalIndex);
+                //history.push({
+                //  pathname: '/home/list',
+                //  query: {
+                //    filter: inboxType,
+                //  },
+                //  state: {
+                //    pageIdx,
+                //  },
+                //});
               }}
             />
           </div>
@@ -333,6 +381,10 @@ const mapStateToProps = (state: any) => {
   return state.user ?? {};
 };
 
+//const mapIndexStateToProps = (state: any) => {
+//  return state.pageIndex ?? {};
+//};
+
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
@@ -341,6 +393,26 @@ const mapDispatchToProps = (
       type: 'user/setUnreadCount',
       payload: data,
     }),
+  setPageIndex: (data: any) =>
+    dispatch({
+      type: 'user/setPageIndex',
+      payload: data,
+    }),
+  //setIndoxType: (data: any) =>
+  //  dispatch({
+  //    type: 'user/setIndoxType',
+  //    payload: data,
+  //  }),
+  //addPageIdx: (data: any) =>
+  //  dispatch({
+  //    type: 'page/addPageIdx',
+  //    payload: data,
+  ////  }),
+  //minusPageIdx: (data: any) =>
+  //  dispatch({
+  //    type: 'page/minusPageIdx',
+  //    payload: data,
+  //  }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MailList);
