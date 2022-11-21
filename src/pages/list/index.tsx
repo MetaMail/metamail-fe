@@ -74,38 +74,54 @@ function MailList(props: any) {
     //if (pageNum==0) {setPageIdx(0);
     //setPageIdx(1);};
     try {
+      //console.log(props?.data);
       //props.setUnreadCount({
       //  unread: 3,
       //  total: 3,
       //});
       //console.log("page1 "+props.pageIndex.currentIndex);
       //console.log("total1 "+props.pageIndex.totalIndex);
-      const { data } = await getMailList({
-        filter: queryRef.current,
-        page_index: pageIdx,
-      });
-      //console.log('this');
-      //props.setPageIndex({
-      //  currentIndex: pageIdx,
-      //  totalIndex: data?.page_num,
-      //})
-      //console.log('this');
-      //console.log(pageIdx);
-      //console.log(data?.page_num);
+      //console.log('try');
+      //console.log(props?.data?.pageIndex);
+      //console.log(props?.data?.inboxType);
+      //console.log(props?.data?.content);
+      if (
+        props?.data &&
+        props?.data?.pageIndex == pageIdx &&
+        props?.data?.inboxType == queryRef.current
+      ) {
+        console.log('shi');
+        setList(props?.data?.mailList);
+        //setPageIdx(data?.page_index);
+        setPageNum(props?.data?.totalPage);
+      } else {
+        const { data } = await getMailList({
+          filter: queryRef.current,
+          page_index: pageIdx,
+        });
+        //console.log('this');
+        //props.setPageIndex({
+        //  currentIndex: pageIdx,
+        //  totalIndex: data?.page_num,
+        //})
+        //console.log('this');
+        //console.log(pageIdx);
+        //console.log(data?.page_num);
 
-      props.setPageIndex({
-        currentIndex: pageIdx,
-        totalIndex: data?.page_num,
-      });
-      //console.log("page1 "+props.pageIndex.currentIndex);
-      //console.log("total1 "+props.pageIndex.totalIndex);
-      setList(data?.mails ?? []);
-      //setPageIdx(data?.page_index);
-      setPageNum(data?.page_num);
-      props.setUnreadCount({
-        unread: data?.unread,
-        total: data?.total,
-      });
+        props.setPageIndex({
+          currentIndex: pageIdx,
+          totalIndex: data?.page_num,
+        });
+        //console.log("page1 "+props.pageIndex.currentIndex);
+        //console.log("total1 "+props.pageIndex.totalIndex);
+        setList(data?.mails ?? []);
+        //setPageIdx(data?.page_index);
+        setPageNum(data?.page_num);
+        props.setUnreadCount({
+          unread: data?.unread,
+          total: data?.total,
+        });
+      }
     } catch {
       notification.error({
         message: 'Network Error',
@@ -117,6 +133,22 @@ function MailList(props: any) {
       }
       //setPageIdx(fetchIndex);
     }
+    console.log('finally');
+    console.log(list);
+    console.log(pageNum);
+    //因为缓存的时候每次读data，所以如果old data有数据证明old data是下一次返回要用的，把old data变成data，现在这一页存进old data里
+    props.setDataList({
+      pageIndex: props?.data?.oldPageIndex ? props.data.oldPageIndex : pageIdx,
+      inboxType: props?.data?.oldInboxType
+        ? props.data.oldInboxType
+        : queryRef.current,
+      //mailList: props?.data?.oldMailList ? props.data.oldMailList : list,
+      //totalPage: props?.data?.oldTotalPage ? props.data.oldTotalPage : pageNum,
+      mailList: list, //这里的list和pagenum实际上就是old data的state，由于在这个阶段未更新所以可以直接用
+      totalPage: pageNum,
+      oldPageIndex: pageIdx,
+      oldInboxType: queryRef.current,
+    });
   };
 
   useEffect(() => {
@@ -342,6 +374,13 @@ function MailList(props: any) {
             isRead={item.read == ReadStatusTypeEn.read}
             abstract={item?.digest}
             onClick={() => {
+              props.setDataList({
+                //点击了邮件那肯定是需要返回最新的一页，因此重新把store更新
+                pageIndex: pageIdx,
+                inboxType: queryRef.current,
+                mailList: list,
+                totalPage: pageNum,
+              });
               handleClickMail(
                 item.message_id,
                 item.meta_type,
@@ -396,6 +435,11 @@ const mapDispatchToProps = (
   setPageIndex: (data: any) =>
     dispatch({
       type: 'user/setPageIndex',
+      payload: data,
+    }),
+  setDataList: (data: any) =>
+    dispatch({
+      type: 'user/setDataList',
       payload: data,
     }),
   //setIndoxType: (data: any) =>

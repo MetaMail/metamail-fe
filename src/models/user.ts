@@ -1,6 +1,6 @@
 import { ReduxSagaEffects, ReduxAction, DvaModel } from '@/interfaces';
 import { getRandomStrToSign } from '@/services';
-
+import { IMailItem } from '@/pages/home/interfaces';
 interface IUnreadCount {
   unread: number;
   total: number;
@@ -9,6 +9,17 @@ interface IUnreadCount {
 interface pageIndexCount {
   currentIndex: number;
   totalIndex: number;
+}
+
+interface dataList {
+  pageIndex: number;
+  inboxType: number;
+  mailList: IMailItem[];
+  totalPage: number;
+  oldPageIndex: number;
+  oldInboxType: number;
+  oldMailList: IMailItem[];
+  oldTotalPage: number;
 }
 
 export interface IpageIndex {
@@ -22,6 +33,10 @@ export interface IUserStateProps {
   randomToken?: string;
   accountStatus?: number;
   unreadCount?: IUnreadCount;
+}
+
+export interface IdataMailList {
+  data?: dataList;
 }
 
 export default {
@@ -49,6 +64,19 @@ export default {
       return {
         ...state,
         pageIndex,
+      };
+    },
+
+    saveDataList(
+      state: IdataMailList,
+      { payload: data }: { payload: dataList },
+    ) {
+      //console.log(data.pageIndex);
+      //console.log(data.inboxType);
+      //console.log(data.content);
+      return {
+        ...state,
+        data,
       };
     },
     //saveInboxType(state: IisReply,
@@ -80,6 +108,12 @@ export default {
     *setUnreadCount({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
       yield put({
         type: 'saveUnreadCount',
+        payload,
+      });
+    },
+    *setDataList({ payload }: ReduxAction, { put }: ReduxSagaEffects) {
+      yield put({
+        type: 'saveDataList',
         payload,
       });
     },
