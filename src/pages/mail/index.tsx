@@ -233,20 +233,21 @@ function Mail(props: any) {
       <PageHeader
         onBack={() => {
           //const { history } = props;
-          //history.goBack();
-          history.push({
-            pathname: '/home/list',
-            query: {
-              filter: sessionStorage.getItem('inboxType')
-                ? Number(sessionStorage.getItem('inboxType'))
-                : 0,
-            },
-            //state: {
-            //  pageIdx,
-            //  isReturnFromMail,
-            //  inboxType,
-            //},
-          });
+          history.goBack();
+          //history.push({
+          //  pathname: '/home/list',
+          //  query: {
+          //    //filter: sessionStorage.getItem('inboxType')
+          //</div>  ? Number(sessionStorage.getItem('inboxType'))
+          //  : 0,
+          //    filter: props?.inboxType ? props.inboxType : 0,
+          //  },
+          //state: {
+          //  pageIdx,
+          //  isReturnFromMail,
+          //  inboxType,
+          //},
+          //});
         }}
         title="Back"
       >

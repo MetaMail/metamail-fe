@@ -295,7 +295,8 @@ const NewMail = (props: any) => {
   const handleSave = async () => {
     if (!draftID) return;
     if (!editable) return;
-
+    const oldHtml = sessionStorage.getItem('html');
+    const oldText = sessionStorage.getItem('text');
     const quill = getQuill();
 
     if (!quill || !quill?.getHTML || !quill?.getText) {
@@ -309,7 +310,7 @@ const NewMail = (props: any) => {
 
     let html = quill?.getHTML(),
       text = quill?.getText();
-
+    if (oldHtml == html && oldText == text) return; //一样
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {
       html = CryptoJS.AES.encrypt(html, currRandomBitsRef.current).toString();
@@ -331,7 +332,9 @@ const NewMail = (props: any) => {
     if (data?.message_id !== draftID) {
       console.warn('DANGER: wrong updating source');
     }
-
+    sessionStorage.setItem('html', html);
+    sessionStorage.setItem('text', text);
+    //console.log('save');
     dateRef.current = data?.mail_date;
     return { html, text };
   };
@@ -411,6 +414,24 @@ const NewMail = (props: any) => {
         };
       }),
     );
+  };
+
+  const handleChangeContent = (content: any) => {
+    setContent(content);
+    const quill = getQuill();
+
+    if (!quill || !quill?.getHTML || !quill?.getText) {
+      notification.error({
+        message: 'ERROR',
+        description: 'Failed to get message content',
+      });
+
+      return;
+    }
+
+    //let html = quill?.getHTML(),
+    //  text = quill?.getText();
+    //console.log('set');
   };
 
   return (
@@ -544,7 +565,7 @@ const NewMail = (props: any) => {
               formats={EditorFormats}
               value={content}
               onChange={(value) => {
-                setContent(value);
+                handleChangeContent(value);
               }}
             />
           </div>

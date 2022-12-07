@@ -34,17 +34,19 @@ function MailList(props: any) {
   const mailBox = getMailBoxType(queryRef.current);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<IMailItem[]>([]);
-  const fetchIndex = sessionStorage.getItem('pageIdx')
-    ? Number(sessionStorage.getItem('pageIdx'))
-    : 1;
-  const [pageIdx, setPageIdx] = useState(fetchIndex);
+  //const fetchIndex = sessionStorage.getItem('pageIdx')
+  //  ? Number(sessionStorage.getItem('pageIdx'))
+  //  : 1;
+  const [pageIdx, setPageIdx] = useState(
+    props?.pageIndex?.currentIndex ? props?.pageIndex?.currentIndex : 1,
+  );
   const [pageNum, setPageNum] = useState(0);
   const [inboxType, setinboxType] = useState(Number(mailBox));
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
+  //const [clickItemInfo, setClickItemInfo] = useState(sessionStorage.getItem('clickInfo')? sessionStorage.getItem('clickInfo') : '');
   //const [hover, setHover] = useState<string | undefined>(undefined);
-
   const getMails = () => {
     const res: IMailChangeParams[] = [];
 
@@ -66,19 +68,62 @@ function MailList(props: any) {
     if (showLoading) {
       setLoading(true);
     }
+    //console.log('in');
+    //console.log(props?.pageIndex?.totalIndex);
+    if (props?.pageIndex && typeof props?.pageIndex?.totalIndex == 'undefined')
+      setPageIdx(1); //undefined就证明是sidemenu传的state，代表了初次渲染时点击了别的inbox，因此返回第一页
+    //if (pageNum==0) {setPageIdx(0);
+    //setPageIdx(1);};
     try {
-      const { data } = await getMailList({
-        filter: queryRef.current,
-        page_index: pageIdx,
-      });
+      //console.log(props?.data);
+      //props.setUnreadCount({
+      //  unread: 3,
+      //  total: 3,
+      //});
+      //console.log("page1 "+props.pageIndex.currentIndex);
+      //console.log("total1 "+props.pageIndex.totalIndex);
+      //console.log('try');
+      //console.log(props?.data?.pageIndex);
+      //console.log(props?.data?.inboxType);
+      //console.log(props?.data?.content);
+      if (
+        props?.data &&
+        props?.data?.pageIndex == pageIdx &&
+        props?.data?.inboxType == queryRef.current &&
+        props?.data?.mailList.length !== 0
+      ) {
+        //console.log('shi');
+        setList(props?.data?.mailList);
+        //setPageIdx(data?.page_index);
+        setPageNum(props?.data?.totalPage);
+      } else {
+        const { data } = await getMailList({
+          filter: queryRef.current,
+          page_index: pageIdx,
+        });
+        //console.log('this');
+        //props.setPageIndex({
+        //  currentIndex: pageIdx,
+        //  totalIndex: data?.page_num,
+        //})
+        //console.log('this');
+        //console.log(pageIdx);
+        //console.log(data?.page_num);
 
-      setList(data?.mails ?? []);
-      //setPageIdx(data?.page_index);
-      setPageNum(data?.page_num);
-      props.setUnreadCount({
-        unread: data?.unread,
-        total: data?.total,
-      });
+        props.setPageIndex({
+          currentIndex: pageIdx,
+          totalIndex: data?.page_num,
+        });
+        //console.log("page1 "+props.pageIndex.currentIndex);
+        //console.log("total1 "+props.pageIndex.totalIndex);
+        setList(data?.mails ?? []);
+        //setPageIdx(data?.page_index);
+        setPageNum(data?.page_num);
+        props.setUnreadCount({
+          unread: data?.unread,
+          total: data?.total,
+        });
+      }
     } catch {
       notification.error({
         message: 'Network Error',
@@ -90,14 +135,35 @@ function MailList(props: any) {
       }
       //setPageIdx(fetchIndex);
     }
+    //console.log('finally');
+    //console.log(list);
+    //console.log(pageNum);
+    //因为缓存的时候每次读data，所以如果old data有数据证明old data是下一次返回要用的，把old data变成data，现在这一页存进old data里
+    props.setDataList({
+      pageIndex: props?.data?.oldPageIndex ? props.data.oldPageIndex : pageIdx,
+      inboxType: props?.data?.oldInboxType
+        ? props.data.oldInboxType
+        : queryRef.current,
+      //mailList: props?.data?.oldMailList ? props.data.oldMailList : list,
+      //totalPage: props?.data?.oldTotalPage ? props.data.oldTotalPage : pageNum,
+      mailList: list, //这里的list和pagenum实际上就是old data的state，由于在这个阶段未更新所以可以直接用
+      totalPage: pageNum,
+      oldPageIndex: pageIdx,
+      oldInboxType: queryRef.current,
+    });
   };
 
   useEffect(() => {
+    //if (props?.pageIndex?.currentIndex && props?.pageIndex?.currentIndex!=pageIdx)
+    //setPageIdx(props.pageIndex.currentIndex);
+    props.setPageIndex({
+      currentIndex: pageIdx,
+      totalIndex: pageNum,
+    });
     queryRef.current = location?.query?.filter
       ? Number(location?.query?.filter)
       : 0;
-    if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
-
+    //if (!sessionStorage.getItem('pageIdx')) setPageIdx(1);
     setinboxType(queryRef.current);
     fetchMailList();
   }, [pageIdx, location?.query]);
@@ -150,8 +216,9 @@ function MailList(props: any) {
     //state: { pageIdx },
     //});
     //setPageIdx(fetchIndex);
-    sessionStorage.setItem('pageIdx', String(pageIdx));
-    sessionStorage.setItem('inboxType', String(inboxType));
+    //sessionStorage.setItem('pageIdx', String(pageIdx));
+    //sessionStorage.setItem('inboxType', String(inboxType));
+    //setinboxType(inboxType);
     history.push({
       pathname,
       query: {
@@ -241,17 +308,24 @@ function MailList(props: any) {
                     return prev - 1;
                   } else return prev;
                 });
-                sessionStorage.setItem('pageIdx', String(pageIdx));
-                console.log(pageIdx);
-                history.push({
-                  pathname: '/home/list',
-                  query: {
-                    filter: inboxType,
-                  },
-                  //  state: {
-                  //    pageIdx,
-                  //  },
-                });
+                //props.minusPageIdx();
+                //sessionStorage.setItem('pageIdx', String(pageIdx));
+                //console.log(pageIdx);
+                //props.setPageIndex({
+                //  currentIndex: pageIdx,
+                //  totalIndex: pageNum,
+                //});
+                //console.log("page2 "+props.pageIndex.currentIndex);
+                //console.log("total2 "+props.pageIndex.totalIndex);
+                //history.push({
+                //  pathname: '/home/list',
+                //  query: {
+                //    filter: inboxType,
+                //  },
+                //  state: {
+                //    pageIdx,
+                //  },
+                //});
               }}
             />
             <Icon
@@ -262,17 +336,25 @@ function MailList(props: any) {
                     return prev + 1;
                   } else return prev;
                 });
-                sessionStorage.setItem('pageIdx', String(pageIdx));
-                console.log(pageIdx);
-                history.push({
-                  pathname: '/home/list',
-                  query: {
-                    filter: inboxType,
-                  },
-                  //  state: {
-                  //    pageIdx,
-                  //  },
-                });
+                //console.log('xian1');
+                //props.setPageIndex({
+                //  currentIndex: pageIdx,
+                //  totalIndex: pageNum,
+                //});
+                //props.addPageIdx();
+                //sessionStorage.setItem('pageIdx', String(pageIdx));
+                //console.log(pageIdx);
+                //console.log("page3 "+props.pageIndex.currentIndex);
+                //console.log("total3 "+props.pageIndex.totalIndex);
+                //history.push({
+                //  pathname: '/home/list',
+                //  query: {
+                //    filter: inboxType,
+                //  },
+                //  state: {
+                //    pageIdx,
+                //  },
+                //});
               }}
             />
           </div>
@@ -291,9 +373,21 @@ function MailList(props: any) {
             subject={item.subject}
             date={item.mail_date}
             metaType={item.meta_type as MetaMailTypeEn}
-            isRead={item.read == ReadStatusTypeEn.read}
+            isRead={
+              item.read == ReadStatusTypeEn.read ||
+              sessionStorage.getItem(item?.message_id) !== null
+            } // message_id as primary key
             abstract={item?.digest}
             onClick={() => {
+              props.setDataList({
+                //点击了邮件那肯定是需要返回最新的一页，因此重新把store更新
+                pageIndex: pageIdx,
+                inboxType: queryRef.current,
+                mailList: list,
+                totalPage: pageNum,
+              });
+              sessionStorage.setItem(item?.message_id, item?.message_id); // set read in sessionstorage for update without fetching maillist
+              //console.log(item?.message_id);
               handleClickMail(
                 item.message_id,
                 item.meta_type,
@@ -333,6 +427,10 @@ const mapStateToProps = (state: any) => {
   return state.user ?? {};
 };
 
+//const mapIndexStateToProps = (state: any) => {
+//  return state.pageIndex ?? {};
+//};
+
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: any }) => any,
 ) => ({
@@ -341,6 +439,31 @@ const mapDispatchToProps = (
       type: 'user/setUnreadCount',
       payload: data,
     }),
+  setPageIndex: (data: any) =>
+    dispatch({
+      type: 'user/setPageIndex',
+      payload: data,
+    }),
+  setDataList: (data: any) =>
+    dispatch({
+      type: 'user/setDataList',
+      payload: data,
+    }),
+  //setIndoxType: (data: any) =>
+  //  dispatch({
+  //    type: 'user/setIndoxType',
+  //    payload: data,
+  //  }),
+  //addPageIdx: (data: any) =>
+  //  dispatch({
+  //    type: 'page/addPageIdx',
+  //    payload: data,
+  ////  }),
+  //minusPageIdx: (data: any) =>
+  //  dispatch({
+  //    type: 'page/minusPageIdx',
+  //    payload: data,
+  //  }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MailList);
