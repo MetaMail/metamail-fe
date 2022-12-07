@@ -45,6 +45,7 @@ function MailList(props: any) {
   const [selectList, setSelectList] = useState<IMailItem[]>([]);
   const [isAll, setIsAll] = useState(false);
   const [isAllFavorite, setIsAllFavorite] = useState(false);
+  //const [clickItemInfo, setClickItemInfo] = useState(sessionStorage.getItem('clickInfo')? sessionStorage.getItem('clickInfo') : '');
   //const [hover, setHover] = useState<string | undefined>(undefined);
   const getMails = () => {
     const res: IMailChangeParams[] = [];
@@ -88,9 +89,10 @@ function MailList(props: any) {
       if (
         props?.data &&
         props?.data?.pageIndex == pageIdx &&
-        props?.data?.inboxType == queryRef.current
+        props?.data?.inboxType == queryRef.current &&
+        props?.data?.mailList.length !== 0
       ) {
-        console.log('shi');
+        //console.log('shi');
         setList(props?.data?.mailList);
         //setPageIdx(data?.page_index);
         setPageNum(props?.data?.totalPage);
@@ -133,9 +135,9 @@ function MailList(props: any) {
       }
       //setPageIdx(fetchIndex);
     }
-    console.log('finally');
-    console.log(list);
-    console.log(pageNum);
+    //console.log('finally');
+    //console.log(list);
+    //console.log(pageNum);
     //因为缓存的时候每次读data，所以如果old data有数据证明old data是下一次返回要用的，把old data变成data，现在这一页存进old data里
     props.setDataList({
       pageIndex: props?.data?.oldPageIndex ? props.data.oldPageIndex : pageIdx,
@@ -371,7 +373,10 @@ function MailList(props: any) {
             subject={item.subject}
             date={item.mail_date}
             metaType={item.meta_type as MetaMailTypeEn}
-            isRead={item.read == ReadStatusTypeEn.read}
+            isRead={
+              item.read == ReadStatusTypeEn.read ||
+              sessionStorage.getItem(item?.message_id) !== null
+            } // message_id as primary key
             abstract={item?.digest}
             onClick={() => {
               props.setDataList({
@@ -381,6 +386,8 @@ function MailList(props: any) {
                 mailList: list,
                 totalPage: pageNum,
               });
+              sessionStorage.setItem(item?.message_id, item?.message_id); // set read in sessionstorage for update without fetching maillist
+              //console.log(item?.message_id);
               handleClickMail(
                 item.message_id,
                 item.meta_type,

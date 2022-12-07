@@ -6,9 +6,9 @@ interface IUnreadCount {
   total: number;
 }
 
-interface pageIndexCount {
-  currentIndex: number;
-  totalIndex: number;
+interface IPageIndexCount {
+  currentIndex: 1;
+  totalIndex: 0;
 }
 
 interface dataList {
@@ -23,7 +23,7 @@ interface dataList {
 }
 
 export interface IpageIndex {
-  pageIndex?: pageIndexCount;
+  pageIndex?: IPageIndexCount;
 }
 
 export interface IisReply {
@@ -59,7 +59,7 @@ export default {
     //},
     savePageIndex(
       state: IpageIndex,
-      { payload: pageIndex }: { payload: pageIndexCount },
+      { payload: pageIndex }: { payload: IPageIndexCount },
     ) {
       return {
         ...state,

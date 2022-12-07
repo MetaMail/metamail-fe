@@ -332,9 +332,10 @@ const NewMail = (props: any) => {
     if (data?.message_id !== draftID) {
       console.warn('DANGER: wrong updating source');
     }
-
+    sessionStorage.setItem('html', html);
+    sessionStorage.setItem('text', text);
+    //console.log('save');
     dateRef.current = data?.mail_date;
-    //console.log(text.toString());
     return { html, text };
   };
 
@@ -428,10 +429,8 @@ const NewMail = (props: any) => {
       return;
     }
 
-    let html = quill?.getHTML(),
-      text = quill?.getText();
-    sessionStorage.setItem('html', html);
-    sessionStorage.setItem('text', text);
+    //let html = quill?.getHTML(),
+    //  text = quill?.getText();
     //console.log('set');
   };
 
