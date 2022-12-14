@@ -7,6 +7,9 @@ import table from '@/assets/homeUI/Table.png';
 import xuri from '@/assets/homeUI/ava 1.svg';
 import gly from '@/assets/homeUI/ava 2.svg';
 import purpleDot from '@/assets/homeUI/purpleDot.png';
+import dsp1 from '@/assets/homeUI/p1.png';
+import dsp2 from '@/assets/homeUI/p2.png';
+import dsp3 from '@/assets/homeUI/p3.png';
 //import renderLeft from '@/assets/homeUI/renderLeft.svg';
 //import vecNE from '@/assets/homeUI/Vector 1.svg';
 //import vecNW from '@/assets/homeUI/Vector 4.svg';
@@ -345,15 +348,85 @@ function Login() {
               </p>
             </div>
           </div>
+          <img className={styles.dsp1} src={dsp1}></img>
+          <img className={styles.bigDot} src={purpleDot} />
+          <img className={styles.smallDot} src={purpleDot} />
+
+          <div className={styles.headDes1}>
+            Use your wallet or ens as email address{' '}
+          </div>
+          <div className={styles.contentDes1}>
+            Use the wallet to log in our mailbox directly, send and receive
+            mails with users of our mailbox and other common mainstream
+            mailboxes. Totally free!
+          </div>
+          <div className={styles.btnFrame}>
+            <Button
+              type="primary"
+              // ghost
+              onClick={handleOpenConnectModal}
+              className={styles.btnContent}
+            >
+              Connect Wallet
+              {/* {address ?? 'Connect Wallet'} */}
+            </Button>
+          </div>
         </div>
-        <div className={styles.page2}></div>
-        <div className={styles.page3}></div>
+        <div className={styles.page2}>
+          <img className={styles.dsp2} src={dsp2}></img>
+          <img className={styles.bigDot} src={purpleDot} />
+          <img className={styles.smallDot} src={purpleDot} />
+
+          <div className={styles.headDes2}>Sign every mail you send</div>
+          <div className={styles.contentDes2}>
+            Sign evey mail digitally with your wallet. No forged mails anymore!
+          </div>
+          <div className={styles.btnFrame}>
+            <Button
+              type="primary"
+              // ghost
+              onClick={handleOpenConnectModal}
+              className={styles.btnContent}
+            >
+              Start Now
+              {/* {address ?? 'Connect Wallet'} */}
+            </Button>
+          </div>
+        </div>
+        <div className={styles.page3}>
+          <img className={styles.dsp3} src={dsp3}></img>
+          <img className={styles.bigDot} src={purpleDot} />
+          {/*<img className={styles.smallDot} src={purpleDot} />*/}
+
+          <div className={styles.headDes3}>
+            Protect mail with p2p encryption
+          </div>
+          <div className={styles.contentDes3}>
+            Mails sent and received by Metamail users could be optionally
+            encrypted, and only the recipient has the private key to decrypt the
+            mails, ensuring the ultimate security.
+          </div>
+          <div className={styles.btnFrame}>
+            <Button
+              type="primary"
+              // ghost
+              onClick={handleOpenConnectModal}
+              className={styles.btnContent}
+            >
+              Encrypt Now
+              {/* {address ?? 'Connect Wallet'} */}
+            </Button>
+          </div>
+        </div>
       </div>
 
       <footer className={styles.footer}>
-        {/*<div className={styles.logobottom}>MetaMail</div>
-        <div className={styles.contentbottom}>Create and Use your Cryto Email</div>
-        
+        <div className={styles.logobottom}>MetaMail</div>
+        <div className={styles.contentbottom}>
+          Create and Use your Cryto Email
+        </div>
+        <div className={styles.linkTwitter}></div>
+        {/*
         <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
         <LinkElement name="Telegram" link="https://t.me/metamailink" />
