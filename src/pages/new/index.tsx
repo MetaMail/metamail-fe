@@ -310,7 +310,7 @@ const NewMail = (props: any) => {
 
     let html = quill?.getHTML(),
       text = quill?.getText();
-    if (oldHtml == html && oldText == text) return; //一样
+    if (oldHtml == html && oldText == text) return { html, text }; //一样
     // 加密邮件
     if (type === MetaMailTypeEn.Encrypted) {
       html = CryptoJS.AES.encrypt(html, currRandomBitsRef.current).toString();
