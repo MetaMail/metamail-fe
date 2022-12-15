@@ -10,6 +10,10 @@ import purpleDot from '@/assets/homeUI/purpleDot.png';
 import dsp1 from '@/assets/homeUI/p1.png';
 import dsp2 from '@/assets/homeUI/p2.png';
 import dsp3 from '@/assets/homeUI/p3.png';
+import twitter from '@/assets/homeUI/twi.svg';
+import facebook from '@/assets/homeUI/fac.svg';
+import instra from '@/assets/homeUI/ins.svg';
+
 //import renderLeft from '@/assets/homeUI/renderLeft.svg';
 //import vecNE from '@/assets/homeUI/Vector 1.svg';
 //import vecNW from '@/assets/homeUI/Vector 4.svg';
@@ -425,9 +429,11 @@ function Login() {
         <div className={styles.contentbottom}>
           Create and Use your Cryto Email
         </div>
-        <div className={styles.linkTwitter}></div>
+        {/*<div className={styles.threeLinkItem}>
+        <img className={styles.twitter} src={twitter}></img>
+      </div>*/}
         {/*
-        <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk" />
+        <LinkElement name="Twitter" link="https://twitter.com/MetaMailInk"className={styles.linkTwitter}/>        
         <LinkElement name="Discord" link="https://discord.gg/URYGebMHye" />
         <LinkElement name="Telegram" link="https://t.me/metamailink" />
         <LinkElement
