@@ -1,5 +1,6 @@
 import { Button, Modal, notification } from 'antd';
 import { useState, useEffect } from 'react';
+import Review from '@/components/Review';
 import logo from '@/assets/logo/logo.svg';
 import computer from '@/assets/homeUI/Computer.svg';
 import fiveStar from '@/assets/homeUI/5star.png';
@@ -229,21 +230,20 @@ function Login() {
     setIsConnectModalVisible(false);
     setisOnLoginProcess(false);
   };
-
+  //let scaleRatio = 'scale('+String(window.innerWidth / 1440)+')';
+  //window.resizeTo(window.innerWidth, window.innerHeight);
+  //console.log(scaleRatio);
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.gradentBackground}>
-          <div className={styles.render1}></div>
-          <div className={styles.render2}></div>
-          <div className={styles.render3}></div>
-          <div className={styles.render4}></div>
-          <div className={styles.render5}></div>
-        </div>
-        {/*<div className={styles.ui}>
-          <div className={styles.svgLeft}></div>*/}
-        {/*<div className={styles.colorLeft}></div>
-        </div>*/}
+    <div
+      className={styles.container} //style={{
+      //  transform: scaleRatio,
+      //}}
+    >
+      <div className={styles.header}>
+        <div className={styles.render1} />
+        <div className={styles.render2} />
+        <div className={styles.render3} />
+        <div className={styles.render4} />
         <a href="/">
           <div className={styles.left}>
             <img src={logo} className={styles.logo} />
@@ -264,55 +264,59 @@ function Login() {
             {/* {address ?? 'Connect Wallet'} */}
           </Button>
         </div>
-      </header>
-      <div className={styles.detailBox}>
-        <p className={styles.title}>
-          Your <br />
-          web3 email
-        </p>
-        <div className={styles.subtitle}>Create and Use your crypto email</div>
-        <div className={styles.tryItNow}>
-          <Button
-            type="primary"
-            // ghost
-            onClick={handleOpenConnectModal}
-            className={styles.titContent}
-          >
-            Try It Now
-            {/* {address ?? 'Connect Wallet'} */}
-          </Button>
+        <div className={styles.detailBox}>
+          <p className={styles.title}>
+            Your <br />
+            web3 email
+          </p>
+          <div className={styles.subtitle}>
+            Create and Use your crypto email
+          </div>
+          <div className={styles.tryItNow}>
+            <Button
+              type="primary"
+              // ghost
+              onClick={handleOpenConnectModal}
+              className={styles.titContent}
+            >
+              Try It Now
+              {/* {address ?? 'Connect Wallet'} */}
+            </Button>
+          </div>
+          <img className={styles.purpleDot1W} src={purpleDot} />
+          <img className={styles.purpleDot1E} src={purpleDot} />
+          <div className={styles.imgs}>
+            <img className={styles.imgComputer} src={computer}></img>
+            <img className={styles.vecNW} src={table}></img>
+          </div>
         </div>
-        <img className={styles.purpleDot1W} src={purpleDot} />
-        <img className={styles.purpleDot1E} src={purpleDot} />
-
-        <div className={styles.imgs}>
-          <img className={styles.imgComputer} src={computer}></img>
-          <img className={styles.vecNW} src={table}></img>
-          {/*<img className={styles.colorNE} src={colorNE}></img>*/}
-        </div>
-        {/*
-        <img src={logo} className={styles.logo}></img>
-         <div className={styles.divider}></div> */}
-        {/*<p className={styles.desc}>
-          Sending and receiving mails are totally free, no gas fee.
-        </p>
-
-        <Button
-          type="primary"
-          className={styles.tryBtn}
-          onClick={handleOpenConnectModal}
-        >
-  Try It Now!
-        </Button>
-
-        <div className={styles.showSection}>
-          {BlockInfos?.map((block, idx) => (
-            <ShowBlock {...block} key={idx} />
-          ))}
-        </div>*/}
         <div className={styles.page1}>
           <div className={styles.threeMessage}>
-            <div className={styles.messageMid}>
+            <Review
+              imgSrc={xuri}
+              desc={'xuri'}
+              content={
+                'MetaMail is the most secure mail application with digitalsignature and end-to-end encryption.'
+              }
+              desc2={'developer @ WeChat'}
+            />
+            <Review
+              imgSrc={gly}
+              desc={'colin'}
+              content={
+                'MetaMail is an amazing product, web3 style, and it evolves cauti- ously'
+              }
+              desc2={'dev @ scroll.io'}
+            />
+            <Review
+              imgSrc={xuri}
+              desc={'xuri'}
+              content={
+                'MetaMail is the most secure mail application with digitalsignature and end-to-end encryption.'
+              }
+              desc2={'developer @ WeChat'}
+            />
+            {/*<div className={styles.messageMid}>
               <img className={styles.starMid} src={fiveStar}></img>
               <div className={styles.contentMid}>
                 MetaMail is the most secure mail application with digital
@@ -350,7 +354,7 @@ function Login() {
                 <br />
                 dev @ scroll.io
               </p>
-            </div>
+  </div>*/}
           </div>
           <img className={styles.dsp1} src={dsp1}></img>
           <img className={styles.bigDot} src={purpleDot} />
@@ -425,8 +429,8 @@ function Login() {
       </div>
 
       <footer className={styles.footer}>
-        <div className={styles.logobottom}>MetaMail</div>
-        <div className={styles.contentbottom}>
+        <div className={styles.logoBottom}>MetaMail</div>
+        <div className={styles.contentBottom}>
           Create and Use your Cryto Email
         </div>
         {/*<div className={styles.threeLinkItem}>

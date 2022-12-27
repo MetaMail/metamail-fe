@@ -1,77 +1,26 @@
-@font-face {
-  font-family: 'Poppins';
-  src: url('Poppins-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Space Grotesk';
-  src: url('SpaceGrotesk-Regular.ttf') format('truetype');
-}
-
-.container {
-  //display: flex;
-  //flex-direction: column;
-  //align-items: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0px 0px 32px;
-
-  position: relative;
-  width: 1440px;
-  height: 3882px;
-  background: #ffffff;
-  .header {
-    //display: flex;
-    //flex-direction: row;
-    //justify-content: space-between;
-    //align-items: center;
-    //height: 86px;
-    // box-shadow: 0px 1px 30px rgba(0, 0, 0, 0.2);
-    //width: 100%;
-    width: 1440px;
-    height: 960px;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    //.ui{
-    //position: absolute;
-    //width: 1180px;
-    //height: 897px;
-    //left: 422px;
-    //top: 155px;
-    //.svgLeft{
-    //  position: relative;
-    //width: 765.63px;
-    //height: 301.22px;
-    //left: 130px;
-    //top: 452px;
-    //border: 1px solid #000000;
-    //src: url('Vector_1.svg');
-    //}
-    //.colorLeft{
-    //position: relative;
-    //width: 766px;
-    //height: 204px;
-    //left: 131px;
-    //top: 452px;
-
-    //background: linear-gradient(180deg, #A1AAFF 0%, #FFFFFF 100%);
-    //opacity: 0.5;
-    //}
-    //}
-    .gradentBackground {
-      position: absolute;
-      width: 1440px;
-      height: 1957px;
-      left: -477px;
-      top: -669px;
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Poppins&family=Space+Grotesk&display=swap');
+* {
+  //outline: solid #f00 20px !important;
+  //background: #000 !important;
+  //color: #fff !important;
+  .container {
+    width: 100vw;
+    min-width: 1600px;
+    max-width: 2200px;
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    color: #000000;
+    .header {
+      height: 960px;
+      flex: none;
+      position: relative;
       .render1 {
         position: absolute;
         width: 1182px;
         height: 1181px;
-        left: 0px;
-        top: 0px;
-
+        left: -477px;
+        top: -669px;
         background: radial-gradient(
           50% 50% at 50% 50%,
           #bf6ffd 0%,
@@ -83,9 +32,8 @@
         position: absolute;
         width: 847px;
         height: 847px;
-        left: 40px;
-        top: 1075px;
-
+        left: -437px;
+        top: 406px;
         background: radial-gradient(
           50% 50% at 50% 50%,
           #2e82e5 0%,
@@ -95,948 +43,417 @@
       }
       .render3 {
         position: absolute;
-        width: 527px;
+        width: 388px;
         height: 527px;
-        left: 1599px;
-        top: 741px;
-
+        right: 0px;
+        top: 72px;
         background: radial-gradient(
-          50% 50% at 50% 50%,
+          50% 50% at 100% 50%,
           #a0c9ff 0%,
           rgba(217, 217, 217, 0) 100%
         );
-        opacity: 0.3;
+        opacity: 0.4;
       }
       .render4 {
         position: absolute;
-        width: 847px;
+        width: 497px;
         height: 847px;
-        left: 1505px;
-        top: 157px;
-
+        right: 0px;
+        top: -512px;
         background: radial-gradient(
-          50% 50% at 50% 50%,
+          50% 50% at 100% 50%,
           #a1aaff 0%,
           rgba(217, 217, 217, 0) 100%
         );
-        opacity: 0.3;
+        opacity: 0.5;
       }
-      .render5 {
+      .left {
+        .logo {
+          position: absolute;
+          width: 55px;
+          height: 52px;
+          left: 108px;
+          top: 43px;
+        }
+        .brandBar {
+          font-family: 'Poppins';
+          .brand {
+            position: absolute;
+            left: 174px;
+            top: 41px;
+            font-weight: 800;
+            font-size: 36px;
+            color: #000000;
+          }
+          .version {
+            color: rgba(65, 111, 165, 1);
+            position: absolute;
+            left: 344px;
+            top: 70px;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 18px;
+          }
+        }
+      }
+      .right {
         position: absolute;
-        width: 847px;
-        height: 847px;
-        left: 1505px;
-        top: 2100px;
-
-        background: radial-gradient(
-          50% 50% at 10% 0%,
-          white 0%,
-          rgba(217, 217, 217, 0) 100%
-        );
-        opacity: 0.3;
+        width: 250px;
+        height: 44px;
+        right: 120px;
+        top: 51px;
+        border: 1px solid #1e1e1e;
+        border-radius: 40px;
+        text-align: center;
+        float: none;
+        .connectBtn {
+          top: 5.5px;
+          font-weight: 500;
+          font-size: 16px;
+          background-color: transparent;
+          border-color: transparent;
+          color: #000000;
+        }
+      }
+      .detailBox {
+        .title {
+          position: absolute;
+          width: 399px;
+          height: 250px;
+          left: 233px;
+          top: 242px;
+          font-weight: 700;
+          font-size: 60px;
+          line-height: 77px;
+        }
+        .subtitle {
+          position: absolute;
+          width: 399px;
+          height: 250px;
+          left: 233px;
+          top: 400px;
+          font-weight: 300;
+          font-size: 40px;
+          line-height: 51.04px;
+        }
+        .purpleDot1W {
+          position: absolute;
+          width: 36px;
+          left: 614px;
+          top: 448px;
+        }
+        .purpleDot1E {
+          position: absolute;
+          width: 36px;
+          left: 1332px;
+          top: 145px;
+        }
+        .tryItNow {
+          padding: 11px 22px;
+          position: absolute;
+          width: 219px;
+          height: 69px;
+          left: 233px;
+          top: 587px;
+          background: #1e1e1e;
+          border-radius: 20px;
+          .titContent {
+            font-weight: 700;
+            font-size: 30px;
+            line-height: 38px;
+            color: #ffffff;
+            background-color: transparent;
+            border-color: transparent;
+          }
+        }
+        .imgs {
+          position: absolute;
+          right: 0px;
+          top: 155px;
+          .imgComputer {
+            position: relative;
+            width: 1.1 * 630.85px;
+            height: 1.1 * 403.52px;
+            right: 1.1 * 40px;
+            top: 1.1 * 58px;
+          }
+          .vecNW {
+            position: absolute;
+            width: 1.1 * 888px;
+            height: 1.1 * 439.87px;
+            right: 0px;
+            top: 1.1 * 313.35px;
+          }
+        }
       }
     }
-    .left {
-      //display: flex;
-      //flex-direction: row;
-      //align-items: center;
-      //height: 64px;
-      .logo {
+    .page1 {
+      height: 960px;
+      top: 960px;
+      background: linear-gradient(
+        296.84deg,
+        rgba(141, 152, 255, 0.02) 2.19%,
+        rgba(171, 207, 255, 0.31) 98%
+      );
+      position: relative;
+      .dsp1 {
         position: absolute;
-        width: 55px;
-        height: 52px;
-        left: 108px;
-        top: 43px;
+        width: 483px;
+        height: 507px;
+        left: 159px;
+        top: 276px;
       }
-      //font-family: Roboto, Helvetica, Arial, sans-serif;
+      .bigDot {
+        position: absolute;
+        width: 36px;
+        left: 692px;
+        top: 494px;
+      }
+      .smallDot {
+        position: absolute;
+        width: 19px;
+        left: 1295px;
+        top: 855px;
+      }
+      .headDes1 {
+        position: absolute;
+        width: 619px;
+        height: 122px;
+        left: 780px;
+        top: 283px;
+        font-weight: 1000;
+        font-size: 48px;
+        line-height: 61px;
+      }
+      .contentDes1 {
+        position: absolute;
+        width: 575px;
+        height: 205px;
+        left: 780px;
+        top: 459px;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 41px;
+      }
+      .btnFrame {
+        box-sizing: border-box;
 
-      .brandBar {
+        position: absolute;
+        width: 250px;
+        height: 44px;
+        left: 780px;
+        top: 725px;
+
+        border: 1.3px solid #1e1e1e;
+        border-radius: 10px;
+        .btnContent {
+          position: absolute;
+          width: 145.42px;
+          height: 18.33px;
+          left: 52.29px;
+          top: 6.8px;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 20px;
+          text-align: center;
+          background-color: transparent;
+          border-color: transparent;
+          color: black;
+        }
+      }
+      .threeMessage {
+        position: absolute;
+        //width: 1313px;
         display: flex;
-        flex-direction: row;
-        align-items: flex-end;
-        //font-family: Roboto, Helvetica, Arial, sans-serif;
-        font-family: 'Poppins';
-
-        .brand {
-          position: absolute;
-          width: 232px;
-          height: 51px;
-          left: 174px;
-          top: 44px;
-          font-style: normal;
-          font-weight: 800;
-          font-size: 36px;
-          line-height: 54px;
-          color: #000000;
-        }
-
-        .version {
-          //margin-left: 8px;
-          //font-size: 20px;
-          //line-height: 20px;
-          //vertical-align: bottom;
-          color: rgba(65, 111, 165, 1);
-          position: absolute;
-          width: 232px;
-          height: 51px;
-          left: 344px;
-          top: 70px;
-          font-style: normal;
-          font-weight: 500;
-          font-size: 12px;
-          line-height: 18px;
-        }
-      }
-    }
-
-    .right {
-      box-sizing: border-box;
-
-      position: absolute;
-      width: 250px;
-      height: 44px;
-      left: 1070px;
-      top: 51px;
-
-      border: 1.3px solid #1e1e1e;
-      border-radius: 40px;
-
-      .connectBtn {
-        position: absolute;
-        width: 145.42px;
-        height: 18.33px;
-        left: 50px;
-        top: 6.8px;
-
-        font-family: 'Space Grotesk';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        text-align: center;
-        background-color: transparent;
-        border-color: transparent;
-        color: #000000;
-      }
-    }
-  }
-
-  .detailBox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 42px auto;
-    min-height: 600px;
-
-    .title {
-      position: absolute;
-      width: 399px;
-      height: 250px;
-      left: 133px;
-      top: 242px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 700;
-      font-size: 60px;
-      line-height: 77px;
-      text-transform: capitalize;
-
-      color: #000000;
-    }
-
-    .subtitle {
-      position: absolute;
-      width: 399px;
-      height: 250px;
-      left: 133px;
-      top: 400px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 300;
-      font-size: 40px;
-      line-height: 51.04px;
-      text-transform: capitalize;
-
-      color: #000000;
-    }
-    .purpleDot1W {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      left: 514px;
-      top: 448px;
-
-      //background: linear-gradient(142deg, #C3DBFF 0%, #A887EA 90.41%);
-    }
-    .purpleDot1E {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      left: 1332px;
-      top: 145px;
-    }
-    .tryItNow {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      padding: 16px 32px;
-      gap: 10px;
-
-      position: absolute;
-      width: 219px;
-      height: 69px;
-      left: 133px;
-      top: 587px;
-
-      background: #1e1e1e;
-      border-radius: 20px;
-      .titContent {
-        width: 145px;
-        height: 38px;
-
-        font-family: 'Space Grotesk';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 30px;
-        line-height: 38px;
-        text-transform: capitalize;
-        left: -10px;
-        top: -5px;
-        color: #ffffff;
-        background-color: transparent;
-        border-color: transparent;
-        /* Inside auto layout */
-
-        flex: none;
-        order: 0;
-        flex-grow: 0;
-      }
-    }
-    .imgs {
-      position: absolute;
-      width: 1180px;
-      height: 897px;
-      left: 422px;
-      top: 155px;
-
-      .imgComputer {
-        position: relative;
-        width: 630.85px;
-        height: 403.52px;
-        left: 352px;
-        top: 58px;
-      }
-      .vecNW {
-        position: absolute;
-        width: 901px;
-        height: 439.87px;
-        left: 130px;
-        top: 313.35px;
-      }
-      //.render{
-
-      //  position: absolute;
-      //  width: 766px;
-      //  height: 204px;
-      //  left: 131px;
-      //  top: 452px;
-      //}
-      //border: 1px solid #000000;
-      //.colorNE{
-      //  position: absolute;
-      //  width: 765.63px;
-      //  height: 301.22px;
-      //  left: 145px;
-      //  top: 450px;
-      //}
-      //.colorE {
-      //  position: absolute;
-      //  width: 134.37px;
-      //  height: 223.27px;
-      //  left: 896.22px;
-      //  top: 432.29px;
-
-      //  background: linear-gradient(180deg, #a2caff 20%, #ffffff 100%);
-      //  border: 1px solid #000000;
-      //}
-      //.vecNE {
-      //  position: absolute;
-      //  width: 765.63px;
-      //  height: 301.22px;
-      //  left: 145px;
-      //  top: 450px;
-      //background-image: linear-gradient(180deg, #A1AAFF 0%, #FFFFFF 100%);
-
-      //border: 1px solid #000000;
-      //.fill{
-      //  fill: linear-gradient(180deg, #A1AAFF 0%, #FFFFFF 100%);
-      //}
-      //}
-      //.renderLeft{
-      //  position: relative;
-      //width: 765.63px;
-      ////height: 301.22px;
-      //left: 130px;
-      //top: 452px;
-
-      //border: 1px solid #000000;
-      //    }
-    }
-    .divider {
-      margin: 13px 0;
-      width: 50vw;
-      height: 6px;
-
-      border-radius: 3px;
-    }
-
-    .desc {
-      font-family: Roboto, Helvetica, Arial, sans-serif;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 18px;
-      text-align: center;
-      color: #8a8a8a;
-    }
-  }
-  .page1 {
-    box-sizing: border-box;
-
-    width: 1440px;
-    height: 960px;
-
-    background: linear-gradient(
-      296.84deg,
-      rgba(141, 152, 255, 0.02) 2.19%,
-      rgba(171, 207, 255, 0.31) 98%
-    );
-    //border: 1px solid #000000;
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    .dsp1 {
-      position: relative;
-      width: 483px;
-      height: 507px;
-      left: 159px;
-      top: -90px;
-    }
-    .bigDot {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      left: 692px;
-      top: 1454px;
-    }
-    .smallDot {
-      position: absolute;
-      width: 19px;
-      height: 19px;
-      left: 1295px;
-      top: 1855px;
-    }
-    .headDes1 {
-      position: absolute;
-      width: 619px;
-      height: 122px;
-      left: 780px;
-      top: 1293px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 1000;
-      font-size: 48px;
-      line-height: 61px;
-
-      color: #000000;
-    }
-    .contentDes1 {
-      position: absolute;
-      width: 575px;
-      height: 205px;
-      left: 780px;
-      top: 1449px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 32px;
-      line-height: 41px;
-
-      color: #000000;
-    }
-    .btnFrame {
-      box-sizing: border-box;
-
-      position: absolute;
-      width: 250px;
-      height: 44px;
-      left: 780px;
-      top: 1715px;
-
-      border: 1.3px solid #1e1e1e;
-      border-radius: 10px;
-      .btnContent {
-        position: absolute;
-        width: 145.42px;
-        height: 18.33px;
-        left: 52.29px;
-        top: 6.8px;
-
-        font-family: 'Space Grotesk';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        text-align: center;
-
-        color: #000000;
-        background-color: transparent;
-        border-color: transparent;
-      }
-    }
-    .threeMessage {
-      box-sizing: border-box;
-
-      position: relative;
-      width: 1313px;
-      height: 393px;
-      left: 86px;
-      top: -196px;
-
-      background: #ffffff;
-      border: 1px solid #000000;
-      box-shadow: 0px 24px 16px -16px rgba(0, 0, 0, 0.05);
-      backdrop-filter: blur(20px);
-      /* Note: backdrop-filter has minimal browser support */
-
-      border-radius: 28px;
-      .messageMid {
-        box-sizing: border-box;
-
-        position: absolute;
-        width: 420px;
-        height: 306.88px;
-        left: 446px;
-        top: 43px;
-
+        left: 200px;
+        height: 1.1 * 393px;
+        right: 100px;
+        top: -196px;
         background: #ffffff;
         border: 1px solid #000000;
         box-shadow: 0px 24px 16px -16px rgba(0, 0, 0, 0.05);
         backdrop-filter: blur(20px);
-        /* Note: backdrop-filter has minimal browser support */
-
         border-radius: 28px;
-        .starMid {
-          position: absolute;
-          width: 160px;
-          height: 25px;
-          left: 39px;
-          top: 53px;
-
-          font-family: 'Space Grotesk';
-          font-style: normal;
-          font-weight: 500;
-          font-size: 28px;
-          line-height: 36px;
-
-          color: #000000;
-        }
-        .contentMid {
-          position: absolute;
-          width: 370px;
-          height: 99px;
-          left: 40px;
-          top: 96px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 22px;
-          line-height: 33px;
-
-          color: #000000;
-        }
-        .iconMid {
-          box-sizing: border-box;
-
-          position: absolute;
-          width: 42px;
-          height: 42px;
-          left: 40px;
-          top: 225px;
-
-          //background: url(ava.jpg);
-          border: 1px solid #000000;
-          border-radius: 45px;
-        }
-        .noteMid {
-          position: absolute;
-          width: 244px;
-          height: 42px;
-          left: 103px;
-          top: 225px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 20px;
-          line-height: 20px;
-          /* or 100% */
-
-          color: #979797;
-        }
-      }
-      .messageLeft {
-        box-sizing: border-box;
-
-        position: relative;
-        width: 320px;
-        height: 233.81px;
-        left: 60px;
-        top: 72px;
-
-        background: #ffffff;
-        border: 1px solid #000000;
-        box-shadow: 0px 24px 16px -16px rgba(0, 0, 0, 0.05);
-        backdrop-filter: blur(20px);
-        /* Note: backdrop-filter has minimal browser support */
-
-        border-radius: 24px;
-        .starSmallLeft {
-          position: absolute;
-          width: 130px;
-          height: 20px;
-          left: 40px;
-          top: 28px;
-
-          font-family: 'Space Grotesk';
-          font-style: normal;
-          font-weight: 500;
-          font-size: 18px;
-          line-height: 23px;
-
-          color: #000000;
-        }
-        .contentLeft {
-          position: absolute;
-          width: 294px;
-          height: 72px;
-          left: 32px;
-          top: 68px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 24px;
-
-          color: #000000;
-        }
-        .iconLeft {
-          box-sizing: border-box;
-
-          position: absolute;
-          width: 36px;
-          height: 36px;
-          left: 47px;
-          top: 172px;
-
-          //background: url(ava.jpg);
-          border: 1px solid #000000;
-          border-radius: 45px;
-        }
-        .noteLeft {
-          position: absolute;
-          width: 244px;
-          height: 42px;
-          left: 90px;
-          top: 169px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 20px;
-          /* or 125% */
-
-          color: #979797;
-        }
-      }
-      .messageRig {
-        box-sizing: border-box;
-
-        position: absolute;
-        width: 320px;
-        height: 233.81px;
-        left: 933px;
-        top: 72px;
-
-        background: #ffffff;
-        border: 1px solid #000000;
-        box-shadow: 0px 24px 16px -16px rgba(0, 0, 0, 0.05);
-        backdrop-filter: blur(20px);
-        /* Note: backdrop-filter has minimal browser support */
-
-        border-radius: 24px;
-        .starSmallRig {
-          position: absolute;
-          width: 130px;
-          height: 20px;
-          left: 40px;
-          top: 28px;
-
-          font-family: 'Space Grotesk';
-          font-style: normal;
-          font-weight: 500;
-          font-size: 18px;
-          line-height: 23px;
-
-          color: #000000;
-        }
-        .contentRig {
-          position: absolute;
-          width: 261px;
-          height: 96px;
-          left: 34px;
-          top: 69px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 24px;
-
-          color: #000000;
-        }
-        .iconRig {
-          box-sizing: border-box;
-
-          position: absolute;
-          width: 36px;
-          height: 36px;
-          left: 40px;
-          top: 172px;
-
-          //background: url(截屏2022-11-30 下午10.08.png);
-          border: 1px solid #000000;
-          border-radius: 45px;
-        }
-        .noteRight {
-          position: absolute;
-          width: 244px;
-          height: 42px;
-          left: 88px;
-          top: 169px;
-
-          font-family: 'Poppins';
-          font-style: normal;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 20px;
-          /* or 125% */
-
-          color: #979797;
-        }
       }
     }
-  }
-  .page2 {
-    box-sizing: border-box;
-
-    width: 1440px;
-    height: 820px;
-
-    background: linear-gradient(
-      72.92deg,
-      rgba(170, 178, 255, 0.182) 5.55%,
-      rgba(189, 102, 255, 0.147) 94.95%
-    );
-    //border: 1px solid #000000;
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 2;
-    flex-grow: 0;
-    .dsp2 {
-      position: absolute;
-      width: 496px;
-      height: 518.55px;
-      left: 849px;
-      top: 2139px;
-    }
-    .bigDot {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      left: 758px;
-      top: 2473px;
-    }
-    .smallDot {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      left: 112px;
-      top: 2118px;
-    }
-    .headDes2 {
-      position: absolute;
-      width: 619px;
-      height: 61px;
-      left: 112px;
-      top: 2206px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 1000;
-      font-size: 48px;
-      line-height: 61px;
-    }
-    .contentDes2 {
-      position: absolute;
-      width: 575px;
-      height: 82px;
-      left: 112px;
-      top: 2349px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 32px;
-      line-height: 41px;
-    }
-    .btnFrame {
+    .page2 {
       box-sizing: border-box;
-
-      position: absolute;
-      width: 250px;
-      height: 44px;
-      left: 112px;
-      top: 2489px;
-
-      border: 1.3px solid #1e1e1e;
-      border-radius: 10px;
-      .btnContent {
+      height: 820px;
+      top: 960px;
+      background: linear-gradient(
+        72.92deg,
+        rgba(170, 178, 255, 0.182) 5.55%,
+        rgba(189, 102, 255, 0.147) 94.95%
+      );
+      flex: none;
+      order: 2;
+      flex-grow: 0;
+      position: relative;
+      .dsp2 {
         position: absolute;
-        width: 145.42px;
-        height: 18.33px;
-        left: 52.29px;
-        top: 6.8px;
+        width: 496px;
+        height: 518.55px;
+        left: 849px;
+        top: 179px;
+      }
+      .bigDot {
+        position: absolute;
+        width: 36px;
+        height: 36px;
+        left: 758px;
+        top: 513px;
+      }
+      .smallDot {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 112px;
+        top: 118px;
+      }
+      .headDes2 {
+        position: absolute;
+        width: 619px;
+        height: 61px;
+        left: 112px;
+        top: 246px;
+        font-weight: 1000;
+        font-size: 48px;
+        line-height: 61px;
+      }
+      .contentDes2 {
+        position: absolute;
+        width: 575px;
+        height: 82px;
+        left: 112px;
+        top: 389px;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 41px;
+      }
+      .btnFrame {
+        position: absolute;
+        width: 250px;
+        height: 44px;
+        left: 112px;
+        top: 529px;
 
-        font-family: 'Space Grotesk';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        text-align: center;
-
-        color: #000000;
-        background-color: transparent;
-        border-color: transparent;
+        border: 1.3px solid #1e1e1e;
+        border-radius: 10px;
+        .btnContent {
+          position: absolute;
+          width: 145.42px;
+          height: 18.33px;
+          left: 52.29px;
+          top: 6.8px;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 20px;
+          text-align: center;
+          color: #000000;
+          background-color: transparent;
+          border-color: transparent;
+        }
       }
     }
-  }
-  .page3 {
-    width: 1440px;
-    height: 820px;
-
-    background: linear-gradient(
-      292.77deg,
-      rgba(171, 207, 255, 0.08) 14.7%,
-      rgba(141, 152, 255, 0.26) 97.91%
-    );
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 3;
-    flex-grow: 0;
-    .dsp3 {
-      position: absolute;
-      width: 496px;
-      height: 384.17px;
-      left: 128px;
-      top: 3060px;
+    .page3 {
+      position: relative;
+      height: 820px;
+      top: 960px;
+      background: linear-gradient(
+        292.77deg,
+        rgba(171, 207, 255, 0.08) 14.7%,
+        rgba(141, 152, 255, 0.26) 97.91%
+      );
+      flex: none;
+      order: 3;
+      flex-grow: 0;
+      .dsp3 {
+        position: absolute;
+        width: 496px;
+        height: 384.17px;
+        left: 128px;
+        top: 270px;
+      }
+      .bigDot {
+        position: absolute;
+        width: 36px;
+        height: 36px;
+        left: 128px;
+        top: 703px;
+      }
+      .headDes3 {
+        position: absolute;
+        width: 619px;
+        height: 122px;
+        left: 780px;
+        top: 198px;
+        font-weight: 1000;
+        font-size: 48px;
+        line-height: 61px;
+      }
+      .contentDes3 {
+        position: absolute;
+        width: 575px;
+        height: 205px;
+        left: 780px;
+        top: 398px;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 41px;
+      }
+      .btnFrame {
+        box-sizing: border-box;
+        position: absolute;
+        width: 250px;
+        height: 44px;
+        left: 780px;
+        top: 681px;
+        border: 1.3px solid #1e1e1e;
+        border-radius: 10px;
+        .btnContent {
+          position: absolute;
+          width: 145.42px;
+          height: 18.33px;
+          left: 52.29px;
+          top: 6.8px;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 20px;
+          text-align: center;
+          background-color: transparent;
+          border-color: transparent;
+          color: #000000;
+        }
+      }
     }
-    .bigDot {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      left: 128px;
-      top: 3474px;
-    }
-    .smallDot {
-      position: absolute;
-      width: 19px;
-      height: 19px;
-      left: 1295px;
-      top: 3855px;
-    }
-    .headDes3 {
-      position: absolute;
-      width: 619px;
-      height: 122px;
-      left: 780px;
-      top: 2993px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 1000;
-      font-size: 48px;
-      line-height: 61px;
-
-      color: #000000;
-    }
-    .contentDes3 {
-      position: absolute;
-      width: 575px;
-      height: 205px;
-      left: 780px;
-      top: 3149px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 32px;
-      line-height: 41px;
-
-      color: #000000;
-    }
-    .btnFrame {
+    .footer {
       box-sizing: border-box;
-
-      position: absolute;
-      width: 250px;
-      height: 44px;
-      left: 780px;
-      top: 3415px;
-
-      border: 1.3px solid #1e1e1e;
-      border-radius: 10px;
-      .btnContent {
+      height: 280px;
+      top: 2640px;
+      background: white;
+      flex: none;
+      order: 4;
+      flex-grow: 0;
+      position: relative;
+      .logoBottom {
         position: absolute;
-        width: 145.42px;
-        height: 18.33px;
-        left: 52.29px;
-        top: 6.8px;
-
-        font-family: 'Space Grotesk';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        text-align: center;
-
-        color: #000000;
-        background-color: transparent;
-        border-color: transparent;
+        left: 120px;
+        top: 83px;
+        font-weight: 800;
+        font-size: 30px;
+        line-height: 34px;
+        letter-spacing: 0.01em;
+        color: #0069e5;
       }
-    }
-  }
-  //  .page4{
-  //    width: 1440px;
-  //    height: 322px;
-
-  /* Inside auto layout */
-
-  //    flex: none;
-  //    order: 4;
-  //    flex-grow: 0;
-  //  }
-  .showSection {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-top: 48px;
-    height: 350px;
-  }
-
-  .tryBtn {
-    height: 40px;
-    margin-top: 20px;
-    color: #fff;
-    width: 125px;
-    border-radius: 5px;
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 500;
-  }
-
-  .footer {
-    width: 1440px;
-    height: 322px;
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 4;
-    flex-grow: 0;
-    .logobottom {
-      position: relative;
-      width: 153px;
-      height: 34px;
-      left: 120px;
-      top: 150px;
-
-      font-family: 'Poppins';
-      font-style: normal;
-      font-weight: 800;
-      font-size: 30px;
-      line-height: 34px;
-      /* identical to box height, or 113% */
-
-      letter-spacing: 0.01em;
-
-      color: #0069e5;
-    }
-    .contentbottom {
-      position: relative;
-      width: 320px;
-      height: 82px;
-      left: 120px;
-      top: 168px;
-
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 300;
-      font-size: 32px;
-      line-height: 41px;
-      text-transform: capitalize;
-
-      color: #000000;
-    }
-    .threeLinkItem {
-      position: absolute;
-      left: 1153px;
-      //right: 10.49%;
-
-      bottom: 102px;
-      width: 40px;
-      height: 40px;
-      background-color: #000000;
-      border-radius: 50%;
-      .twitter {
-        left: 60px;
-        top: 60px;
-        width: 16px;
-        height: 13px;
+      .contentBottom {
+        position: absolute;
+        width: 320px;
+        left: 120px;
+        top: 138px;
+        font-weight: 300;
+        font-size: 32px;
+        line-height: 41px;
       }
-    }
-    .linkTwitter {
-      position: relative;
-      left: 80.07%;
-      right: 17.15%;
-      top: 55.9%;
-      bottom: 31.68%;
-
-      background: #000000;
     }
   }
 }
