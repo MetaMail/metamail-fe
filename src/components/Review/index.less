@@ -1,0 +1,65 @@
+.block {
+  flex-grow: 1;
+  margin: 4% 3%;
+  bottom: 8%;
+  //position: absolute;
+  //width: 20%;
+  //height: 80%;
+  //left: 33%;
+  //top: 10%;
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-shadow: 0px 24px 16px -16px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  transition: transform 0.5s;
+  &:hover {
+    transform: scale(1.1);
+  }
+  .icon {
+    box-sizing: border-box;
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    left: 40px;
+    top: 225px;
+    //background: url(ava.jpg);
+    border: 1px solid #000000;
+    border-radius: 45px;
+  }
+  .star {
+    position: absolute;
+    width: 160px;
+    height: 25px;
+    left: 39px;
+    top: 53px;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 36px;
+  }
+  .info {
+    .content {
+      position: absolute;
+      max-width: 370px;
+      height: 99px;
+      left: 40px;
+      top: 96px;
+      font-family: 'Poppins';
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 33px;
+    }
+    .desc {
+      position: absolute;
+      max-width: 244px;
+      height: 42px;
+      left: 103px;
+      top: 225px;
+      font-family: 'Poppins';
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 20px;
+      color: #979797;
+    }
+  }
+}

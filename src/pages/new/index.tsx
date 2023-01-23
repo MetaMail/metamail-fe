@@ -304,7 +304,6 @@ const NewMail = (props: any) => {
         message: 'ERROR',
         description: 'Failed to get message content',
       });
-
       return;
     }
 
